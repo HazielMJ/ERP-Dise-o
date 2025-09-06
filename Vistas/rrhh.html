@@ -44,7 +44,6 @@
       <button onclick="showView('compras')"><i class="fas fa-shopping-cart"></i> Compras y Ventas</button>
       <button onclick="showView('inventario')"><i class="fas fa-warehouse"></i> Inventarios</button>
 
-      <!-- RRHH con submenú -->
       <button onclick="toggleSubmenu()"><i class="fas fa-user-tie"></i> Recursos Humanos <i class="fa fa-chevron-down" style="margin-left:auto"></i></button>
       <div class="submenu" id="submenu-rrhh">
         <button onclick="showRH('empleados')"> Empleados</button>
@@ -66,7 +65,6 @@
       <span class="badge" id="badge-date"></span>
     </div>
 
-    <!-- ====== Módulos generales vacíos ====== -->
     <section id="view-usuarios" style="display:none"><div class="card"><h3>Gestión de usuarios y permisos</h3><p>Módulo en construcción.</p></div></section>
     <section id="view-finanzas" style="display:none"><div class="card"><h3>Finanzas</h3><p>Módulo en construcción.</p></div></section>
     <section id="view-compras" style="display:none"><div class="card"><h3>Compras y Ventas</h3><p>Módulo en construcción.</p></div></section>
@@ -75,7 +73,6 @@
     <section id="view-pos" style="display:none"><div class="card"><h3>Punto de Venta</h3><p>Módulo en construcción.</p></div></section>
     <section id="view-configuracion" style="display:none"><div class="card"><h3>Configuración</h3><p>Módulo en construcción.</p></div></section>
 
-    <!-- ====== Recursos Humanos ====== -->
     <section id="rh-empleados" style="display:none">
       <div class="card">
         <h3>Registro de empleados</h3>
@@ -169,27 +166,21 @@
     function showView(view){$$('section').forEach(s=>s.style.display='none');$('#view-'+view).style.display='block';$('#view-title').textContent="Módulo de "+view.toUpperCase();}
     function showRH(sub){$$('section').forEach(s=>s.style.display='none');$('#rh-'+sub).style.display='block';$('#view-title').textContent="RRHH — "+sub.charAt(0).toUpperCase()+sub.slice(1);renderAll();}
 
-    // ===== CRUD Empleados =====
     function saveEmployee(){const emp={name:$('#empName').value,role:$('#empRole').value,email:$('#empEmail').value};if(!emp.name)return;state.empleados.push(emp);DB.set("rrhh_empleados",state.empleados);renderEmpleados();}
     function renderEmpleados(){const b=$('#empBody');b.innerHTML="";state.empleados.forEach((e,i)=>{b.innerHTML+=`<tr><td>${e.name}</td><td>${e.role}</td><td>${e.email}</td><td><button class="btn danger" onclick="delItem('empleados',${i})">Eliminar</button></td></tr>`})}
 
-    // ===== CRUD Asistencias =====
     function saveAsistencia(){const a={emp:$('#asistEmp').value,date:$('#asistDate').value,in:$('#asistIn').value,out:$('#asistOut').value};if(!a.emp)return;state.asistencias.push(a);DB.set("rrhh_asist",state.asistencias);renderAsist();}
     function renderAsist(){const b=$('#asistBody');b.innerHTML="";state.asistencias.forEach((a,i)=>{b.innerHTML+=`<tr><td>${a.emp}</td><td>${a.date}</td><td>${a.in}</td><td>${a.out}</td><td><button class="btn danger" onclick="delItem('asistencias',${i})">Eliminar</button></td></tr>`})}
 
-    // ===== CRUD Vacaciones =====
     function saveVacacion(){const v={emp:$('#vacEmp').value,from:$('#vacFrom').value,to:$('#vacTo').value,motivo:$('#vacMotivo').value};if(!v.emp)return;state.vacaciones.push(v);DB.set("rrhh_vac",state.vacaciones);renderVac();}
     function renderVac(){const b=$('#vacBody');b.innerHTML="";state.vacaciones.forEach((v,i)=>{b.innerHTML+=`<tr><td>${v.emp}</td><td>${v.from}</td><td>${v.to}</td><td>${v.motivo}</td><td><button class="btn danger" onclick="delItem('vacaciones',${i})">Eliminar</button></td></tr>`})}
 
-    // ===== CRUD Capacitación =====
     function saveCapacitacion(){const c={emp:$('#capEmp').value,curso:$('#capCurso').value,date:$('#capDate').value,status:$('#capStatus').value};if(!c.emp)return;state.capacitacion.push(c);DB.set("rrhh_cap",state.capacitacion);renderCap();}
     function renderCap(){const b=$('#capBody');b.innerHTML="";state.capacitacion.forEach((c,i)=>{b.innerHTML+=`<tr><td>${c.emp}</td><td>${c.curso}</td><td>${c.date}</td><td>${c.status}</td><td><button class="btn danger" onclick="delItem('capacitacion',${i})">Eliminar</button></td></tr>`})}
 
-    // ===== CRUD Evaluaciones =====
     function saveEvaluacion(){const e={emp:$('#evalEmp').value,periodo:$('#evalPeriodo').value,score:$('#evalScore').value,obs:$('#evalObs').value};if(!e.emp)return;state.evaluaciones.push(e);DB.set("rrhh_eval",state.evaluaciones);renderEval();}
     function renderEval(){const b=$('#evalBody');b.innerHTML="";state.evaluaciones.forEach((e,i)=>{b.innerHTML+=`<tr><td>${e.emp}</td><td>${e.periodo}</td><td>${e.score}</td><td>${e.obs}</td><td><button class="btn danger" onclick="delItem('evaluaciones',${i})">Eliminar</button></td></tr>`})}
 
-    // ===== Borrado genérico =====
     function delItem(type,i){
       if(type==="empleados"){state.empleados.splice(i,1);DB.set("rrhh_empleados",state.empleados);renderEmpleados();}
       if(type==="asistencias"){state.asistencias.splice(i,1);DB.set("rrhh_asist",state.asistencias);renderAsist();}
@@ -201,7 +192,7 @@
     function renderAll(){renderEmpleados();renderAsist();renderVac();renderCap();renderEval();}
 
     $('#badge-date').textContent=new Date().toLocaleString('es-MX');
-    showView('usuarios'); // pantalla inicial
+    showView('usuarios'); 
   </script>
 </body>
 </html>
