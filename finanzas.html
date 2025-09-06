@@ -38,7 +38,7 @@
   <div class="sidebar">
     <div class="brand"><i class="fa-solid fa-cubes" style="font-size:20px"></i><h2 id="companyName">Mi Empresa</h2></div>
     <div class="menu">
-      <!-- Central-panel modules moved to sidebar -->
+      
       <button data-section="ventas" class="active"><i class="fa-solid fa-cash-register"></i><span> Ventas</span></button>
       <button data-section="compras"><i class="fa-solid fa-cart-shopping"></i><span> Compras</span></button>
       <button data-section="inventario"><i class="fa-solid fa-boxes-stacked"></i><span> Inventario</span></button>
@@ -62,7 +62,6 @@
       <div class="small">Moneda: <span id="cfg-currency">MXN</span> · Impuesto: <span id="cfg-tax">0%</span></div>
     </header>
 
-    <!-- VENTAS -->
     <section id="ventas" class="card full section">
       <h3>Ventas</h3>
       <div class="row">
@@ -89,7 +88,6 @@
       </div>
     </section>
 
-    <!-- COMPRAS -->
     <section id="compras" class="card full section hidden">
       <h3>Compras</h3>
       <div class="row">
@@ -115,7 +113,6 @@
       </div>
     </section>
 
-    <!-- INVENTARIO -->
     <section id="inventario" class="card full section hidden">
       <h3>Inventario</h3>
       <div class="row">
@@ -136,7 +133,6 @@
       </div>
     </section>
 
-    <!-- CLIENTES -->
     <section id="clientes" class="card full section hidden">
       <h3>Clientes</h3>
       <div class="row">
@@ -156,7 +152,6 @@
       </div>
     </section>
 
-    <!-- PROVEEDORES -->
     <section id="proveedores" class="card full section hidden">
       <h3>Proveedores</h3>
       <div class="row">
@@ -176,7 +171,6 @@
       </div>
     </section>
 
-    <!-- CONTABILIDAD -->
     <section id="contabilidad" class="card full section hidden">
       <h3>Contabilidad</h3>
       <form id="form-contabilidad" class="grid card half">
@@ -191,7 +185,6 @@
       </div>
     </section>
 
-    <!-- FACTURAS -->
     <section id="facturas" class="card full section hidden">
       <h3>Facturas</h3>
       <form id="form-facturas" class="grid card half">
@@ -207,7 +200,6 @@
       </div>
     </section>
 
-    <!-- PRESUPUESTO -->
     <section id="presupuesto" class="card full section hidden">
       <h3>Presupuesto</h3>
       <form id="form-presupuesto" class="grid card half">
@@ -223,7 +215,6 @@
       </div>
     </section>
 
-    <!-- TESORERIA -->
     <section id="tesoreria" class="card full section hidden">
       <h3>Tesorería</h3>
       <form id="form-tesoreria" class="grid card half">
@@ -238,7 +229,6 @@
       </div>
     </section>
 
-    <!-- NOMINA -->
     <section id="nomina" class="card full section hidden">
       <h3>Nómina</h3>
       <form id="form-nomina" class="grid card half">
@@ -251,7 +241,6 @@
       <div class="card full"><table id="tablaNom"><thead><tr><th>ID</th><th>Empleado</th><th>Puesto</th><th>Salario</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
     </section>
 
-    <!-- IMPUESTOS -->
     <section id="impuestos" class="card full section hidden">
       <h3>Impuestos</h3>
       <form id="form-impuestos" class="grid card half">
@@ -264,7 +253,6 @@
       <div class="card full"><table id="tablaImp"><thead><tr><th>ID</th><th>Periodo</th><th>Concepto</th><th>Monto</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
     </section>
 
-    <!-- INVERSIONES -->
     <section id="inversiones" class="card full section hidden">
       <h3>Inversiones / Créditos</h3>
       <form id="form-inversiones" class="grid card half">
@@ -277,7 +265,6 @@
       <div class="card full"><table id="tablaInv"><thead><tr><th>ID</th><th>Tipo</th><th>Entidad</th><th>Monto</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
     </section>
 
-    <!-- REPORTES -->
     <section id="reportes" class="card full section hidden">
       <h3>Reportes</h3>
       <p>Genera reportes por módulo (filtros simples) — sección en desarrollo para gráficas avanzadas.</p>
@@ -286,7 +273,6 @@
       </div>
     </section>
 
-    <!-- CONFIG -->
     <section id="config" class="card full section hidden">
       <h3>Configuración</h3>
       <form id="form-config" class="grid card half">
@@ -301,7 +287,6 @@
   </div>
 
 <script>
-// Simple persistence keys
 const KEYS = {
   VENTAS: 'erp_ventas', COMPRAS: 'erp_compras', PRODUCTS: 'erp_products', CLIENTS: 'erp_clients', SUPPLIERS: 'erp_suppliers',
   CONT: 'erp_contabilidad', FAC: 'erp_facturas', PRE: 'erp_presupuestos', TES: 'erp_tesoreria', NOM: 'erp_nomina', IMP:'erp_impuestos', INV:'erp_inversiones', CONFIG:'erp_config'
@@ -312,7 +297,6 @@ function uid(pref='id'){return pref+'_'+Math.random().toString(36).slice(2,9)}
 function save(key,data){localStorage.setItem(key,JSON.stringify(data))}
 function load(key){return JSON.parse(localStorage.getItem(key)||'[]')}
 
-// load state
 let ventas = load(KEYS.VENTAS);
 let compras = load(KEYS.COMPRAS);
 let products = load(KEYS.PRODUCTS);
@@ -329,7 +313,6 @@ let config = JSON.parse(localStorage.getItem(KEYS.CONFIG) || JSON.stringify({com
 
 function saveAll(){ save(KEYS.VENTAS,ventas); save(KEYS.COMPRAS,compras); save(KEYS.PRODUCTS,products); save(KEYS.CLIENTS,clients); save(KEYS.SUPPLIERS,suppliers); save(KEYS.CONT,contables); save(KEYS.FAC,facturas); save(KEYS.PRE,presupuestos); save(KEYS.TES,tesoreria); save(KEYS.NOM,nomina); save(KEYS.IMP,impuestos); save(KEYS.INV,inversiones); localStorage.setItem(KEYS.CONFIG,JSON.stringify(config)); }
 
-// Renderers
 function renderProducts(){ const tb=$('table-products').querySelector('tbody'); tb.innerHTML=''; products.forEach((p,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${p.name}</td><td>${p.stock}</td><td>${p.cost}</td><td>${p.price}</td><td><button class="inline-btn" data-act="del-prod" data-id="${p.id}"><i class="fa fa-trash"></i></button></td>`; tb.appendChild(tr)}); // fill selects
   ['sale-product','purchase-product'].forEach(id=>{ const sel=$(id); if(!sel) return; sel.innerHTML=''; products.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.textContent=`${p.name} (stock ${p.stock})`; sel.appendChild(o) }) }); }
 function renderClients(){ const tb=$('table-clients').querySelector('tbody'); tb.innerHTML=''; clients.forEach((c,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${c.name}</td><td>${c.phone||''}</td><td>${c.email||''}</td><td><button class="inline-btn" data-act="del-client" data-id="${c.id}"><i class="fa fa-trash"></i></button></td>`; tb.appendChild(tr)}); const sel=$('sale-client'); if(sel){ sel.innerHTML=''; clients.forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=c.name; sel.appendChild(o) }) } }
@@ -347,20 +330,16 @@ function renderInversiones(){ const tb=$('tablaInv').querySelector('tbody'); tb.
 function renderAll(){ renderProducts(); renderClients(); renderSuppliers(); renderSales(); renderPurchases(); renderContabilidad(); renderFacturas(); renderPresupuesto(); renderTesoreria(); renderNomina(); renderImpuestos(); renderInversiones(); // config
   $('companyName').textContent = config.company || 'Mi Empresa'; $('cfg-currency').textContent = config.currency || 'MXN'; $('cfg-tax').textContent = (config.tax||0)+'%'; $('cfg-name').value = config.company || ''; $('cfg-currency-input').value = config.currency || 'MXN'; $('cfg-tax-input').value = config.tax || 0; }
 
-// UI helpers
 function showSection(id){ document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active')); const btn = Array.from(document.querySelectorAll('.menu button')).find(x=>x.dataset.section===id); if(btn) btn.classList.add('active'); }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  // seed initial if empty
   if(products.length===0){ products.push({id:uid('prod'),name:'Alitas',stock:50,price:120,cost:80}); products.push({id:uid('prod'),name:'Boneless',stock:40,price:110,cost:75}); saveAll(); }
   if(clients.length===0){ clients.push({id:uid('cli'),name:'Cliente General',phone:'',email:''}); saveAll(); }
   if(suppliers.length===0){ suppliers.push({id:uid('sup'),name:'Proveedor Local',contact:'',phone:''}); saveAll(); }
 
   renderAll();
-  // sidebar nav
   document.querySelectorAll('.menu button').forEach(btn=>btn.addEventListener('click', ()=>{ showSection(btn.dataset.section); }));
 
-  // VENTAS
   if($('sale-date')) $('sale-date').valueAsDate = new Date();
   function recalcSale(){ const qty = Number($('sale-qty').value || 0); const price = Number($('sale-price').value || 0); $('sale-total').value = (qty*price).toFixed(2); }
   if($('sale-qty')) $('sale-qty').addEventListener('input', recalcSale);
@@ -368,46 +347,32 @@ document.addEventListener('DOMContentLoaded', ()=>{
   if($('sale-product')) $('sale-product').addEventListener('change', ()=>{ const pid = $('sale-product').value; const p = products.find(x=>x.id===pid); $('sale-stock').textContent = p? p.stock : '-'; if(p) $('sale-price').value = p.price; recalcSale(); });
   if($('form-sale')) $('form-sale').addEventListener('submit',(e)=>{ e.preventDefault(); const date=$('sale-date').value; const clientId=$('sale-client').value||null; const productId=$('sale-product').value; const qty=Number($('sale-qty').value); const price=Number($('sale-price').value); if(!productId||qty<=0){alert('Selecciona producto y cantidad');return;} const prod=products.find(p=>p.id===productId); if(!prod||prod.stock<qty){alert('Stock insuficiente');return;} const total = qty*price; const sale={id:uid('sale'),date,clientId,productId,productName:prod.name,qty,price,total}; ventas.push(sale); prod.stock = prod.stock - qty; saveAll(); renderAll(); e.target.reset(); $('sale-date').valueAsDate = new Date(); });
   if($('clear-sale')) $('clear-sale').addEventListener('click',()=>{ $('form-sale').reset(); $('sale-date').valueAsDate = new Date(); $('sale-stock').textContent='-' });
-
-  // COMPRAS
   if($('purchase-date')) $('purchase-date').valueAsDate = new Date();
   if($('form-purchase')) $('form-purchase').addEventListener('submit',(e)=>{ e.preventDefault(); const date=$('purchase-date').value; const supplierId=$('purchase-supplier').value||null; const productId=$('purchase-product').value||null; const newProd=$('purchase-product-new').value||''; const qty=Number($('purchase-qty').value||0); const cost=Number($('purchase-cost').value||0); if(qty<=0||cost<0){alert('Cantidad/costo inválido');return;} let prod=null; let productName=''; if(productId){ prod = products.find(p=>p.id===productId); productName = prod.name; } else if(newProd.trim()){ productName = newProd.trim(); prod = {id:uid('prod'),name:productName,stock:0,price:cost*1.5||0,cost:cost}; products.push(prod); } else { alert('Selecciona o crea un producto'); return; } prod.cost = cost; prod.stock = Number(prod.stock || 0) + qty; const purchase = {id:uid('pur'),date,supplierId,supplierName:(suppliers.find(s=>s.id===supplierId)||{}).name||'',productId:prod.id,productName:prod.name,qty,cost,total:qty*cost}; compras.push(purchase); saveAll(); renderAll(); e.target.reset(); $('purchase-date').valueAsDate = new Date(); });
 
-  // PRODUCTOS
   if($('form-product')) $('form-product').addEventListener('submit',(e)=>{ e.preventDefault(); const name=$('prod-name').value.trim(); const stock=Number($('prod-stock').value||0); const price=Number($('prod-price').value||0); const cost=Number($('prod-cost').value||0); if(!name){alert('Nombre requerido');return;} const existing = products.find(p=>p.name.toLowerCase()===name.toLowerCase()); if(existing){ existing.stock = stock; existing.price = price; existing.cost = cost; } else { products.push({id:uid('prod'),name,stock,price,cost}); } saveAll(); renderAll(); e.target.reset(); });
 
-  // CLIENTES
   if($('form-client')) $('form-client').addEventListener('submit',(e)=>{ e.preventDefault(); const name=$('client-name').value.trim(); const phone=$('client-phone').value.trim(); const email=$('client-email').value.trim(); if(!name){alert('Nombre requerido');return;} clients.push({id:uid('cli'),name,phone,email}); saveAll(); renderAll(); e.target.reset(); });
 
-  // PROVEEDORES
   if($('form-supplier')) $('form-supplier').addEventListener('submit',(e)=>{ e.preventDefault(); const name=$('supplier-name').value.trim(); const contact=$('supplier-contact').value.trim(); const phone=$('supplier-phone').value.trim(); if(!name){alert('Nombre requerido');return;} suppliers.push({id:uid('sup'),name,contact,phone}); saveAll(); renderAll(); e.target.reset(); });
 
-  // CONTABILIDAD
   if($('form-contabilidad')) $('form-contabilidad').addEventListener('submit',(e)=>{ e.preventDefault(); const fecha=$('fechaCont').value; const concepto=$('conceptoCont').value.trim(); const monto=Number($('montoCont').value||0); contables.push({id:uid('cont'),fecha,concepto,monto}); saveAll(); renderContabilidad(); e.target.reset(); });
 
-  // FACTURAS
   if($('form-facturas')) $('form-facturas').addEventListener('submit',(e)=>{ e.preventDefault(); const clienteId=$('clienteFac').value||null; const clienteName = (clients.find(c=>c.id===clienteId)||{}).name || ''; const fecha=$('fechaFac').value; const total=Number($('totalFac').value||0); const estado=$('estadoFac').value; facturas.push({id:uid('fac'),clienteId,clienteName,fecha,total,estado}); saveAll(); renderFacturas(); e.target.reset(); });
 
-  // PRESUPUESTO
   if($('form-presupuesto')) $('form-presupuesto').addEventListener('submit',(e)=>{ e.preventDefault(); const anio=$('anioPre').value; const area=$('areaPre').value; const asignado=Number($('asignadoPre').value||0); const usado=Number($('usadoPre').value||0); const disponible=asignado-usado; presupuestos.push({anio,area,asignado,usado,disponible}); saveAll(); renderPresupuesto(); e.target.reset(); });
 
-  // TESORERIA
   if($('form-tesoreria')) $('form-tesoreria').addEventListener('submit',(e)=>{ e.preventDefault(); const cuenta=$('cuentaTes').value; const banco=$('bancoTes').value; const saldo=Number($('saldoTes').value||0); const fecha=$('fechaTes').value; tesoreria.push({id:uid('tes'),cuenta,banco,saldo,fecha}); saveAll(); renderTesoreria(); e.target.reset(); });
 
-  // NOMINA
   if($('form-nomina')) $('form-nomina').addEventListener('submit',(e)=>{ e.preventDefault(); const empleado=$('empleadoNom').value; const puesto=$('puestoNom').value; const salario=Number($('salarioNom').value||0); const estado=$('estadoNom').value; nomina.push({id:uid('nom'),empleado,puesto,salario,estado}); saveAll(); renderNomina(); e.target.reset(); });
 
-  // IMPUESTOS
   if($('form-impuestos')) $('form-impuestos').addEventListener('submit',(e)=>{ e.preventDefault(); const periodo=$('periodoImp').value; const concepto=$('conceptoImp').value; const monto=Number($('montoImp').value||0); const estado=$('estadoImp').value; impuestos.push({id:uid('imp'),periodo,concepto,monto,estado}); saveAll(); renderImpuestos(); e.target.reset(); });
 
-  // INVERSIONES
   if($('form-inversiones')) $('form-inversiones').addEventListener('submit',(e)=>{ e.preventDefault(); const tipo=$('tipoInv').value; const entidad=$('entidadInv').value; const monto=Number($('montoInv').value||0); const estado=$('estadoInv').value; inversiones.push({id:uid('inv'),tipo,entidad,monto,estado}); saveAll(); renderInversiones(); e.target.reset(); });
 
-  // CONFIG
   if($('form-config')) $('form-config').addEventListener('submit',(e)=>{ e.preventDefault(); config.company = $('cfg-name').value || 'Mi Empresa'; config.currency = $('cfg-currency-input').value || 'MXN'; config.tax = Number($('cfg-tax-input').value||0); saveAll(); renderAll(); alert('Configuración guardada'); });
   if($('btn-clear-data')) $('btn-clear-data').addEventListener('click', ()=>{ if(confirm('¿Eliminar todos los datos?')){ Object.values(KEYS).forEach(k=>localStorage.removeItem(k)); location.reload(); } });
 
-  // Table action delegation (delete handlers)
   document.body.addEventListener('click',(e)=>{
     const btn = e.target.closest('button.inline-btn'); if(!btn) return; const act = btn.dataset.act; const id = btn.dataset.id;
     if(act==='del-prod'){ products = products.filter(p=>p.id!==id); saveAll(); renderAll(); }
@@ -419,7 +384,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(act==='del-pur'){ const idx = compras.findIndex(p=>p.id===id); if(idx>=0){ const pur = compras[idx]; const prod = products.find(p=>p.id===pur.productId); if(prod) prod.stock = Number(prod.stock) - Number(pur.qty); compras.splice(idx,1); saveAll(); renderAll(); } }
   });
 
-  // initial section
   showSection('ventas');
 });
 
