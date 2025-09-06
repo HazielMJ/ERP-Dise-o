@@ -252,14 +252,11 @@
 
 <script>
   function logout() {
-    // Simulación de cierre de sesión
     if (confirm("¿Está seguro que desea cerrar la sesión?")) {
-      // Redirigir a la página de login
       window.location.href = "login.html";
     }
   }
   
-  // Efecto de carga inicial para las tarjetas
   document.addEventListener('DOMContentLoaded', function() {
     const cards = document.querySelectorAll('.module-card');
     cards.forEach((card, index) => {
