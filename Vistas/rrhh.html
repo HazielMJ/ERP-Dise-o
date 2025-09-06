@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERP - Demo Completo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body{margin:0;font-family:'Segoe UI',sans-serif;display:flex;background:#f4f6f9;color:#2c3e50}
+    aside{width:240px;background:#226fbc;color:white;height:100vh;position:fixed;display:flex;flex-direction:column;padding-top:20px;overflow:auto}
+    .brand{text-align:center;margin-bottom:20px}
+    .brand h1{font-size:18px;margin:0}
+    .nav{display:flex;flex-direction:column}
+    .nav button{border:none;background:transparent;color:white;padding:14px;text-align:left;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.3s;border-radius:6px}
+    .nav button:hover{background:rgba(255,255,255,0.2);padding-left:25px}
+    .nav button.active{background:rgba(255,255,255,0.4);font-weight:bold}
+    .submenu{display:none;flex-direction:column;margin-left:20px}
+    .submenu button{font-size:14px;padding:10px 14px;background:rgba(255,255,255,0.05);border:none;color:white;text-align:left;border-radius:6px;margin:2px 0}
+    .submenu button:hover{background:rgba(255,255,255,0.2)}
+    main{margin-left:240px;padding:20px;width:calc(100% - 240px)}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+    .badge{padding:6px 10px;border-radius:999px;background:#e5e7eb;color:#333;font-size:12px}
+    .card{background:white;border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:0 4px 8px rgba(0,0,0,0.1)}
+    .card h3{margin-top:0;color:#2c3e50}
+    label{font-size:13px;color:#444;display:block;margin-top:8px}
+    input,select,textarea{width:100%;padding:8px;margin-top:4px;border-radius:6px;border:1px solid #ccc}
+    input:focus,select:focus,textarea:focus{border-color:#226fbc;outline:none}
+    .actions{margin-top:12px;display:flex;gap:10px;flex-wrap:wrap}
+    .btn{background:#0066cc;color:white;padding:8px 12px;border:none;border-radius:6px;cursor:pointer}
+    .btn:hover{background:#004080}
+    .btn.danger{background:#ef4444}.btn.danger:hover{background:#9f1c1c}
+    table{width:100%;border-collapse:collapse;margin-top:16px}
+    th,td{border:1px solid #ddd;padding:8px;text-align:center}
+    th{background:#0066cc;color:white}
+    .footer{margin-top:20px;font-size:12px;color:#555;text-align:center;opacity:.8}
+  </style>
+</head>
+<body>
+  <aside>
+    <div class="brand"><h1>📊 ERP</h1></div>
+    <div class="nav">
+      <button onclick="showView('usuarios')"><i class="fas fa-users-cog"></i> Control de Usuarios</button>
+      <button onclick="showView('finanzas')"><i class="fas fa-dollar-sign"></i> Finanzas</button>
+      <button onclick="showView('compras')"><i class="fas fa-shopping-cart"></i> Compras y Ventas</button>
+      <button onclick="showView('inventario')"><i class="fas fa-warehouse"></i> Inventarios</button>
+
+      <!-- RRHH con submenú -->
+      <button onclick="toggleSubmenu()"><i class="fas fa-user-tie"></i> Recursos Humanos <i class="fa fa-chevron-down" style="margin-left:auto"></i></button>
+      <div class="submenu" id="submenu-rrhh">
+        <button onclick="showRH('empleados')"> Empleados</button>
+        <button onclick="showRH('asistencias')"> Asistencias</button>
+        <button onclick="showRH('vacaciones')"> Vacaciones</button>
+        <button onclick="showRH('capacitacion')"> Capacitación</button>
+        <button onclick="showRH('evaluaciones')"> Evaluaciones</button>
+      </div>
+
+      <button onclick="showView('logistica')"><i class="fas fa-truck"></i> Logística</button>
+      <button onclick="showView('pos')"><i class="fas fa-cash-register"></i> Punto de Venta</button>
+      <button onclick="showView('configuracion')"><i class="fas fa-cogs"></i> Configuración</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="top">
+      <h2 id="view-title">Módulo</h2>
+      <span class="badge" id="badge-date"></span>
+    </div>
+
+    <!-- ====== Módulos generales vacíos ====== -->
+    <section id="view-usuarios" style="display:none"><div class="card"><h3>Gestión de usuarios y permisos</h3><p>Módulo en construcción.</p></div></section>
+    <section id="view-finanzas" style="display:none"><div class="card"><h3>Finanzas</h3><p>Módulo en construcción.</p></div></section>
+    <section id="view-compras" style="display:none"><div class="card"><h3>Compras y Ventas</h3><p>Módulo en construcción.</p></div></section>
+    <section id="view-inventario" style="display:none"><div class="card"><h3>Inventarios</h3><p>Módulo en construcción.</p></div></section>
+    <section id="view-logistica" style="display:none"><div class="card"><h3>Logística</h3><p>Módulo en construcción.</p></div></section>
+    <section id="view-pos" style="display:none"><div class="card"><h3>Punto de Venta</h3><p>Módulo en construcción.</p></div></section>
+    <section id="view-configuracion" style="display:none"><div class="card"><h3>Configuración</h3><p>Módulo en construcción.</p></div></section>
+
+    <!-- ====== Recursos Humanos ====== -->
+    <section id="rh-empleados" style="display:none">
+      <div class="card">
+        <h3>Registro de empleados</h3>
+        <label>Nombre</label><input id="empName">
+        <label>Puesto</label><input id="empRole">
+        <label>Email</label><input id="empEmail" type="email">
+        <div class="actions"><button class="btn" onclick="saveEmployee()">Guardar</button></div>
+      </div>
+      <div class="card">
+        <h3>Lista de empleados</h3>
+        <table><thead><tr><th>Nombre</th><th>Puesto</th><th>Email</th><th>Acciones</th></tr></thead><tbody id="empBody"></tbody></table>
+      </div>
+    </section>
+
+    <section id="rh-asistencias" style="display:none">
+      <div class="card">
+        <h3>Registro de asistencias</h3>
+        <label>Empleado</label><input id="asistEmp">
+        <label>Fecha</label><input id="asistDate" type="date">
+        <label>Entrada</label><input id="asistIn" type="time">
+        <label>Salida</label><input id="asistOut" type="time">
+        <div class="actions"><button class="btn" onclick="saveAsistencia()">Guardar</button></div>
+      </div>
+      <div class="card">
+        <h3>Historial de asistencias</h3>
+        <table><thead><tr><th>Empleado</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Acciones</th></tr></thead><tbody id="asistBody"></tbody></table>
+      </div>
+    </section>
+
+    <section id="rh-vacaciones" style="display:none">
+      <div class="card">
+        <h3>Solicitud de vacaciones</h3>
+        <label>Empleado</label><input id="vacEmp">
+        <label>Desde</label><input id="vacFrom" type="date">
+        <label>Hasta</label><input id="vacTo" type="date">
+        <label>Motivo</label><textarea id="vacMotivo"></textarea>
+        <div class="actions"><button class="btn" onclick="saveVacacion()">Guardar</button></div>
+      </div>
+      <div class="card">
+        <h3>Vacaciones registradas</h3>
+        <table><thead><tr><th>Empleado</th><th>Desde</th><th>Hasta</th><th>Motivo</th><th>Acciones</th></tr></thead><tbody id="vacBody"></tbody></table>
+      </div>
+    </section>
+
+    <section id="rh-capacitacion" style="display:none">
+      <div class="card">
+        <h3>Registro de capacitación</h3>
+        <label>Empleado</label><input id="capEmp">
+        <label>Curso</label><input id="capCurso">
+        <label>Fecha</label><input id="capDate" type="date">
+        <label>Estado</label><select id="capStatus"><option>Pendiente</option><option>Completado</option></select>
+        <div class="actions"><button class="btn" onclick="saveCapacitacion()">Guardar</button></div>
+      </div>
+      <div class="card">
+        <h3>Historial de capacitación</h3>
+        <table><thead><tr><th>Empleado</th><th>Curso</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="capBody"></tbody></table>
+      </div>
+    </section>
+
+    <section id="rh-evaluaciones" style="display:none">
+      <div class="card">
+        <h3>Evaluación de desempeño</h3>
+        <label>Empleado</label><input id="evalEmp">
+        <label>Periodo</label><input id="evalPeriodo" placeholder="Ene-Jun 2025">
+        <label>Calificación</label><input id="evalScore" type="number" step="0.1">
+        <label>Comentarios</label><textarea id="evalObs"></textarea>
+        <div class="actions"><button class="btn" onclick="saveEvaluacion()">Guardar</button></div>
+      </div>
+      <div class="card">
+        <h3>Historial de evaluaciones</h3>
+        <table><thead><tr><th>Empleado</th><th>Periodo</th><th>Calificación</th><th>Comentarios</th><th>Acciones</th></tr></thead><tbody id="evalBody"></tbody></table>
+      </div>
+    </section>
+
+    <div class="footer">ERP Demo — Módulos + RRHH completo</div>
+  </main>
+
+  <script>
+    const $=sel=>document.querySelector(sel); const $$=sel=>document.querySelectorAll(sel);
+    const DB={get:(k,d)=>JSON.parse(localStorage.getItem(k)||"null")??d,set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))};
+
+    const state={
+      empleados:DB.get("rrhh_empleados",[]),
+      asistencias:DB.get("rrhh_asist",[]),
+      vacaciones:DB.get("rrhh_vac",[]),
+      capacitacion:DB.get("rrhh_cap",[]),
+      evaluaciones:DB.get("rrhh_eval",[])
+    };
+
+    function toggleSubmenu(){const sm=$('#submenu-rrhh');sm.style.display=sm.style.display==='flex'?'none':'flex';}
+    function showView(view){$$('section').forEach(s=>s.style.display='none');$('#view-'+view).style.display='block';$('#view-title').textContent="Módulo de "+view.toUpperCase();}
+    function showRH(sub){$$('section').forEach(s=>s.style.display='none');$('#rh-'+sub).style.display='block';$('#view-title').textContent="RRHH — "+sub.charAt(0).toUpperCase()+sub.slice(1);renderAll();}
+
+    // ===== CRUD Empleados =====
+    function saveEmployee(){const emp={name:$('#empName').value,role:$('#empRole').value,email:$('#empEmail').value};if(!emp.name)return;state.empleados.push(emp);DB.set("rrhh_empleados",state.empleados);renderEmpleados();}
+    function renderEmpleados(){const b=$('#empBody');b.innerHTML="";state.empleados.forEach((e,i)=>{b.innerHTML+=`<tr><td>${e.name}</td><td>${e.role}</td><td>${e.email}</td><td><button class="btn danger" onclick="delItem('empleados',${i})">Eliminar</button></td></tr>`})}
+
+    // ===== CRUD Asistencias =====
+    function saveAsistencia(){const a={emp:$('#asistEmp').value,date:$('#asistDate').value,in:$('#asistIn').value,out:$('#asistOut').value};if(!a.emp)return;state.asistencias.push(a);DB.set("rrhh_asist",state.asistencias);renderAsist();}
+    function renderAsist(){const b=$('#asistBody');b.innerHTML="";state.asistencias.forEach((a,i)=>{b.innerHTML+=`<tr><td>${a.emp}</td><td>${a.date}</td><td>${a.in}</td><td>${a.out}</td><td><button class="btn danger" onclick="delItem('asistencias',${i})">Eliminar</button></td></tr>`})}
+
+    // ===== CRUD Vacaciones =====
+    function saveVacacion(){const v={emp:$('#vacEmp').value,from:$('#vacFrom').value,to:$('#vacTo').value,motivo:$('#vacMotivo').value};if(!v.emp)return;state.vacaciones.push(v);DB.set("rrhh_vac",state.vacaciones);renderVac();}
+    function renderVac(){const b=$('#vacBody');b.innerHTML="";state.vacaciones.forEach((v,i)=>{b.innerHTML+=`<tr><td>${v.emp}</td><td>${v.from}</td><td>${v.to}</td><td>${v.motivo}</td><td><button class="btn danger" onclick="delItem('vacaciones',${i})">Eliminar</button></td></tr>`})}
+
+    // ===== CRUD Capacitación =====
+    function saveCapacitacion(){const c={emp:$('#capEmp').value,curso:$('#capCurso').value,date:$('#capDate').value,status:$('#capStatus').value};if(!c.emp)return;state.capacitacion.push(c);DB.set("rrhh_cap",state.capacitacion);renderCap();}
+    function renderCap(){const b=$('#capBody');b.innerHTML="";state.capacitacion.forEach((c,i)=>{b.innerHTML+=`<tr><td>${c.emp}</td><td>${c.curso}</td><td>${c.date}</td><td>${c.status}</td><td><button class="btn danger" onclick="delItem('capacitacion',${i})">Eliminar</button></td></tr>`})}
+
+    // ===== CRUD Evaluaciones =====
+    function saveEvaluacion(){const e={emp:$('#evalEmp').value,periodo:$('#evalPeriodo').value,score:$('#evalScore').value,obs:$('#evalObs').value};if(!e.emp)return;state.evaluaciones.push(e);DB.set("rrhh_eval",state.evaluaciones);renderEval();}
+    function renderEval(){const b=$('#evalBody');b.innerHTML="";state.evaluaciones.forEach((e,i)=>{b.innerHTML+=`<tr><td>${e.emp}</td><td>${e.periodo}</td><td>${e.score}</td><td>${e.obs}</td><td><button class="btn danger" onclick="delItem('evaluaciones',${i})">Eliminar</button></td></tr>`})}
+
+    // ===== Borrado genérico =====
+    function delItem(type,i){
+      if(type==="empleados"){state.empleados.splice(i,1);DB.set("rrhh_empleados",state.empleados);renderEmpleados();}
+      if(type==="asistencias"){state.asistencias.splice(i,1);DB.set("rrhh_asist",state.asistencias);renderAsist();}
+      if(type==="vacaciones"){state.vacaciones.splice(i,1);DB.set("rrhh_vac",state.vacaciones);renderVac();}
+      if(type==="capacitacion"){state.capacitacion.splice(i,1);DB.set("rrhh_cap",state.capacitacion);renderCap();}
+      if(type==="evaluaciones"){state.evaluaciones.splice(i,1);DB.set("rrhh_eval",state.evaluaciones);renderEval();}
+    }
+
+    function renderAll(){renderEmpleados();renderAsist();renderVac();renderCap();renderEval();}
+
+    $('#badge-date').textContent=new Date().toLocaleString('es-MX');
+    showView('usuarios'); // pantalla inicial
+  </script>
+</body>
+</html>
