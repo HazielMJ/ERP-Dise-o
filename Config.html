@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración y Accesibilidad</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s, font-size 0.3s;
+      background: #f4f7fb;
+    }
+
+    h1 { margin-top: 0; }
+
+    .config {
+      background: #fff;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 500px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input, select, button {
+      padding: 8px;
+      margin: 5px 0 15px 0;
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+    }
+
+    button {
+      background: #0066cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover { background: #b7a74f; }
+
+    /* Temas */
+    body.dark { background: #1e1e1e; color: #eee; }
+    body.dark .config { background: #2c2c2c; color: #eee; }
+
+    body.high-contrast { background: black; color: yellow; }
+    body.high-contrast .config { background: black; color: yellow; border: 2px solid yellow; }
+  </style>
+</head>
+<body>
+  <h1>Configuración y Accesibilidad</h1>
+  <div class="config">
+    <h3>Datos de la Empresa</h3>
+    <label>Nombre de la tienda:</label>
+    <input type="text" id="nombreTienda">
+
+    <label>Nombre de la Empresa:</label>
+    <input type="text" id="companyName">
+
+    <label>Logo de la Empresa (URL):</label>
+    <input type="text" id="companyLogo">
+
+    <label>Dirección:</label>
+    <input type="text" id="address">
+
+    <label>Moneda Predeterminada:</label>
+    <select id="currency">
+      <option value="USD">USD</option>
+      <option value="EUR">EUR</option>
+      <option value="MXN">MXN</option>
+    </select>
+
+    <label>Idioma:</label>
+    <select id="language">
+      <option value="es">Español</option>
+      <option value="en">Inglés</option>
+    </select>
+
+    <h3>Accesibilidad</h3>
+    <label>Tamaño de Fuente:</label>
+    <select id="fontSize">
+      <option value="14px">Pequeña</option>
+      <option value="16px">Normal</option>
+      <option value="18px">Grande</option>
+      <option value="20px">Muy Grande</option>
+    </select>
+
+    <label>Tema:</label>
+    <select id="theme">
+      <option value="light">Claro</option>
+      <option value="dark">Oscuro</option>
+      <option value="high-contrast">Alto Contraste</option>
+    </select>
+
+    <button onclick="guardarConfig()">Guardar Configuración</button>
+  </div>
+
+  <script>
+    
+    function guardarConfig() {
+      let config = {
+        nombreTienda: document.getElementById("nombreTienda").value,
+        companyName: document.getElementById("companyName").value,
+        companyLogo: document.getElementById("companyLogo").value,
+        address: document.getElementById("address").value,
+        currency: document.getElementById("currency").value,
+        language: document.getElementById("language").value,
+        fontSize: document.getElementById("fontSize").value,
+        theme: document.getElementById("theme").value
+      };
+      localStorage.setItem("erpConfig", JSON.stringify(config));
+      aplicarConfig(config);
+      alert("Configuración guardada ✅");
+    }
+
+    
+    function aplicarConfig(config) {
+      if(!config) return;
+      document.body.style.fontSize = config.fontSize || "16px";
+      document.body.classList.remove("dark", "high-contrast");
+      if(config.theme === "dark") document.body.classList.add("dark");
+      if(config.theme === "high-contrast") document.body.classList.add("high-contrast");
+    }
+
+  
+    window.onload = () => {
+      let config = JSON.parse(localStorage.getItem("erpConfig"));
+      if(config){
+        document.getElementById("nombreTienda").value = config.nombreTienda || "";
+        document.getElementById("companyName").value = config.companyName || "";
+        document.getElementById("companyLogo").value = config.companyLogo || "";
+        document.getElementById("address").value = config.address || "";
+        document.getElementById("currency").value = config.currency || "USD";
+        document.getElementById("language").value = config.language || "es";
+        document.getElementById("fontSize").value = config.fontSize || "16px";
+        document.getElementById("theme").value = config.theme || "light";
+        aplicarConfig(config);
+      }
+    };
+  </script>
+</body>
+</html>
