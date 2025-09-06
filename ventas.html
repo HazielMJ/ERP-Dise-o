@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ventas - ERP</title>
+  <link rel="stylesheet" href="Vistas/styles.css">
+</head>
+<body>
+  <!-- Sidebar fijo -->
+  <aside class="sidebar">
+    <h1>ERP</h1>
+    <nav>
+      <a href="Vistas/pd.html">PD</a>
+      <a href="ventas.html" class="active">Ventas</a>
+      <a href="clientes.html">Clientes</a>
+      <a href="reportes.html">Reportes</a>
+      <a href="configuracion.html">Configuración</a>
+    </nav>
+  </aside>
+
+  <!-- Contenido principal -->
+  <main class="main">
+    <section class="page">
+      <h2>Ventas</h2>
+
+      <div class="toolbar">
+        <button class="btn primary">+ Nueva Venta</button>
+        <span class="pill">Caja Abierta</span>
+      </div>
+
+      <div class="card">
+        <div class="head">
+          <h3>Historial de Ventas</h3>
+        </div>
+        <div class="body">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#00123</td>
+                <td>Juan Pérez</td>
+                <td>$1,200</td>
+                <td>24/08/2025</td>
+                <td><span class="badge success">Pagado</span></td>
+              </tr>
+              <tr>
+                <td>#00124</td>
+                <td>María López</td>
+                <td>$850</td>
+                <td>24/08/2025</td>
+                <td><span class="badge">Pendiente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
