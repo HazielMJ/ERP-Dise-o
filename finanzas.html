@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERP - Todos los módulos</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root{--sidebar:#263238;--accent:#226fbc;--muted:#f4f6f9}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;display:flex;background:var(--muted)}
+    .sidebar{width:260px;background:var(--sidebar);color:#fff;height:100vh;position:fixed;inset:0 auto 0 0;padding:18px;overflow:auto}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+    .brand h2{margin:0;font-size:18px}
+    .menu{display:flex;flex-direction:column;gap:6px}
+    .menu button{background:transparent;border:0;color:inherit;padding:10px;border-radius:8px;text-align:left;display:flex;gap:10px;align-items:center;cursor:pointer}
+    .menu button:hover{background:rgba(255,255,255,0.04)}
+    .menu button.active{background:rgba(255,255,255,0.06);font-weight:600}
+    .main{margin-left:260px;padding:18px;flex:1;min-height:100vh}
+    header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .card{background:#fff;border-radius:10px;padding:12px;box-shadow:0 6px 18px rgba(0,0,0,0.06)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .half{flex:1 1 48%}
+    .full{flex:1 1 100%}
+    form.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+    input,select,textarea,button{padding:8px;border-radius:6px;border:1px solid #ddd;font-size:14px}
+    button.btn{background:var(--accent);color:#fff;border:0;cursor:pointer}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    th{background:var(--accent);color:#fff}
+    .hidden{display:none}
+    .small{font-size:13px;color:#666}
+    .inline-btn{background:transparent;border:0;cursor:pointer;padding:6px;border-radius:6px}
+    @media(max-width:900px){.sidebar{width:68px}.brand h2{display:none}.menu button span{display:none}.main{margin-left:68px}}
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="brand"><i class="fa-solid fa-cubes" style="font-size:20px"></i><h2 id="companyName">Mi Empresa</h2></div>
+    <div class="menu">
+      <!-- Central-panel modules moved to sidebar -->
+      <button data-section="ventas" class="active"><i class="fa-solid fa-cash-register"></i><span> Ventas</span></button>
+      <button data-section="compras"><i class="fa-solid fa-cart-shopping"></i><span> Compras</span></button>
+      <button data-section="inventario"><i class="fa-solid fa-boxes-stacked"></i><span> Inventario</span></button>
+      <button data-section="clientes"><i class="fa-solid fa-users"></i><span> Clientes</span></button>
+      <button data-section="proveedores"><i class="fa-solid fa-truck"></i><span> Proveedores</span></button>
+      <button data-section="contabilidad"><i class="fa-solid fa-book"></i><span> Contabilidad</span></button>
+      <button data-section="facturas"><i class="fa-solid fa-file-invoice"></i><span> Facturas</span></button>
+      <button data-section="presupuesto"><i class="fa-solid fa-wallet"></i><span> Presupuesto</span></button>
+      <button data-section="tesoreria"><i class="fa-solid fa-piggy-bank"></i><span> Tesorería</span></button>
+      <button data-section="nomina"><i class="fa-solid fa-users-gear"></i><span> Nómina</span></button>
+      <button data-section="impuestos"><i class="fa-solid fa-receipt"></i><span> Impuestos</span></button>
+      <button data-section="inversiones"><i class="fa-solid fa-coins"></i><span> Inversiones</span></button>
+      <button data-section="reportes"><i class="fa-solid fa-chart-line"></i><span> Reportes</span></button>
+      <button data-section="config"><i class="fa-solid fa-gear"></i><span> Configuración</span></button>
+    </div>
+  </div>
+
+  <div class="main">
+    <header>
+      <h1>ERP - Todos los módulos</h1>
+      <div class="small">Moneda: <span id="cfg-currency">MXN</span> · Impuesto: <span id="cfg-tax">0%</span></div>
+    </header>
+
+    <!-- VENTAS -->
+    <section id="ventas" class="card full section">
+      <h3>Ventas</h3>
+      <div class="row">
+        <div class="card half">
+          <h4>Registrar venta</h4>
+          <form id="form-sale" class="grid">
+            <div><label>Fecha</label><input type="date" id="sale-date" required></div>
+            <div><label>Cliente</label><select id="sale-client"></select></div>
+            <div><label>Producto</label><select id="sale-product"></select></div>
+            <div><label>Cantidad</label><input type="number" id="sale-qty" min="1" value="1" required></div>
+            <div><label>Precio unitario</label><input type="number" id="sale-price" step="0.01" min="0" required></div>
+            <div><label>Total</label><input type="text" id="sale-total" readonly></div>
+            <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center">
+              <button class="btn" type="submit">Registrar venta</button>
+              <button id="clear-sale" type="button" class="btn" style="background:#7f8c8d">Limpiar</button>
+              <div class="small" style="margin-left:auto">Stock disponible: <span id="sale-stock">-</span></div>
+            </div>
+          </form>
+        </div>
+        <div class="card half">
+          <h4>Últimas ventas</h4>
+          <table id="table-sales"><thead><tr><th>#</th><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Cant</th><th>Precio</th><th>Total</th><th></th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPRAS -->
+    <section id="compras" class="card full section hidden">
+      <h3>Compras</h3>
+      <div class="row">
+        <div class="card half">
+          <h4>Registrar compra</h4>
+          <form id="form-purchase" class="grid">
+            <div><label>Fecha</label><input type="date" id="purchase-date" required></div>
+            <div><label>Proveedor</label><select id="purchase-supplier"></select></div>
+            <div><label>Producto (existente)</label><select id="purchase-product"><option value="">-- seleccionar --</option></select></div>
+            <div><label>O crear producto (nombre)</label><input type="text" id="purchase-product-new" placeholder="Nombre nuevo (opcional)"></div>
+            <div><label>Cantidad</label><input type="number" id="purchase-qty" min="1" value="1" required></div>
+            <div><label>Costo unitario</label><input type="number" id="purchase-cost" step="0.01" min="0" required></div>
+            <div style="grid-column:1/-1;display:flex;gap:8px;align-items:center">
+              <button class="btn" type="submit">Registrar compra</button>
+              <button id="clear-purchase" type="button" class="btn" style="background:#7f8c8d">Limpiar</button>
+            </div>
+          </form>
+        </div>
+        <div class="card half">
+          <h4>Últimas compras</h4>
+          <table id="table-purchases"><thead><tr><th>#</th><th>Fecha</th><th>Proveedor</th><th>Producto</th><th>Cant</th><th>Costo</th><th>Total</th><th></th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTARIO -->
+    <section id="inventario" class="card full section hidden">
+      <h3>Inventario</h3>
+      <div class="row">
+        <div class="card half">
+          <h4>Productos</h4>
+          <form id="form-product" class="grid">
+            <div><label>Nombre</label><input type="text" id="prod-name" required></div>
+            <div><label>Stock</label><input type="number" id="prod-stock" min="0" value="0" required></div>
+            <div><label>Precio venta</label><input type="number" id="prod-price" step="0.01" min="0" required></div>
+            <div><label>Costo</label><input type="number" id="prod-cost" step="0.01" min="0" required></div>
+            <div style="grid-column:1/-1"><button class="btn" type="submit">Agregar / Actualizar producto</button></div>
+          </form>
+        </div>
+        <div class="card half">
+          <h4>Listado de productos</h4>
+          <table id="table-products"><thead><tr><th>#</th><th>Producto</th><th>Stock</th><th>Costo</th><th>Precio</th><th>Acciones</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLIENTES -->
+    <section id="clientes" class="card full section hidden">
+      <h3>Clientes</h3>
+      <div class="row">
+        <div class="card half">
+          <h4>Agregar cliente</h4>
+          <form id="form-client" class="grid">
+            <div><label>Nombre</label><input id="client-name" required></div>
+            <div><label>Teléfono</label><input id="client-phone"></div>
+            <div><label>Email</label><input id="client-email" type="email"></div>
+            <div style="grid-column:1/-1"><button class="btn" type="submit">Agregar cliente</button></div>
+          </form>
+        </div>
+        <div class="card half">
+          <h4>Listado de clientes</h4>
+          <table id="table-clients"><thead><tr><th>#</th><th>Nombre</th><th>Tel</th><th>Email</th><th>Acciones</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROVEEDORES -->
+    <section id="proveedores" class="card full section hidden">
+      <h3>Proveedores</h3>
+      <div class="row">
+        <div class="card half">
+          <h4>Agregar proveedor</h4>
+          <form id="form-supplier" class="grid">
+            <div><label>Empresa / Nombre</label><input id="supplier-name" required></div>
+            <div><label>Contacto</label><input id="supplier-contact"></div>
+            <div><label>Teléfono</label><input id="supplier-phone"></div>
+            <div style="grid-column:1/-1"><button class="btn" type="submit">Agregar proveedor</button></div>
+          </form>
+        </div>
+        <div class="card half">
+          <h4>Listado de proveedores</h4>
+          <table id="table-suppliers"><thead><tr><th>#</th><th>Empresa</th><th>Contacto</th><th>Tel</th><th>Acciones</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTABILIDAD -->
+    <section id="contabilidad" class="card full section hidden">
+      <h3>Contabilidad</h3>
+      <form id="form-contabilidad" class="grid card half">
+        <div><label>Fecha</label><input type="date" id="fechaCont" required></div>
+        <div><label>Concepto</label><input type="text" id="conceptoCont" placeholder="Concepto" required></div>
+        <div><label>Monto</label><input type="number" id="montoCont" required></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Agregar</button></div>
+      </form>
+      <div class="card full">
+        <h4>Asientos contables</h4>
+        <table id="tablaCont"><thead><tr><th>ID</th><th>Fecha</th><th>Concepto</th><th>Monto</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <!-- FACTURAS -->
+    <section id="facturas" class="card full section hidden">
+      <h3>Facturas</h3>
+      <form id="form-facturas" class="grid card half">
+        <div><label>Cliente</label><select id="clienteFac"></select></div>
+        <div><label>Fecha</label><input type="date" id="fechaFac" required></div>
+        <div><label>Total</label><input type="number" id="totalFac" required></div>
+        <div><label>Estado</label><select id="estadoFac"><option>Pagada</option><option>Pendiente</option></select></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Agregar factura</button></div>
+      </form>
+      <div class="card full">
+        <h4>Listado de facturas</h4>
+        <table id="tablaFac"><thead><tr><th>ID</th><th>Cliente</th><th>Fecha</th><th>Total</th><th>Estado</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <!-- PRESUPUESTO -->
+    <section id="presupuesto" class="card full section hidden">
+      <h3>Presupuesto</h3>
+      <form id="form-presupuesto" class="grid card half">
+        <div><label>Año</label><input type="number" id="anioPre" required></div>
+        <div><label>Área</label><input type="text" id="areaPre" required></div>
+        <div><label>Asignado</label><input type="number" id="asignadoPre" required></div>
+        <div><label>Usado</label><input type="number" id="usadoPre" required></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Registrar presupuesto</button></div>
+      </form>
+      <div class="card full">
+        <h4>Presupuestos</h4>
+        <table id="tablaPre"><thead><tr><th>Año</th><th>Área</th><th>Asignado</th><th>Usado</th><th>Disponible</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <!-- TESORERIA -->
+    <section id="tesoreria" class="card full section hidden">
+      <h3>Tesorería</h3>
+      <form id="form-tesoreria" class="grid card half">
+        <div><label>Cuenta</label><input id="cuentaTes" required></div>
+        <div><label>Banco</label><input id="bancoTes" required></div>
+        <div><label>Saldo</label><input type="number" id="saldoTes" required></div>
+        <div><label>Fecha</label><input type="date" id="fechaTes" required></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Agregar cuenta</button></div>
+      </form>
+      <div class="card full">
+        <table id="tablaTes"><thead><tr><th>Cuenta</th><th>Banco</th><th>Saldo</th><th>Último movimiento</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <!-- NOMINA -->
+    <section id="nomina" class="card full section hidden">
+      <h3>Nómina</h3>
+      <form id="form-nomina" class="grid card half">
+        <div><label>Empleado</label><input id="empleadoNom" required></div>
+        <div><label>Puesto</label><input id="puestoNom" required></div>
+        <div><label>Salario</label><input type="number" id="salarioNom" required></div>
+        <div><label>Estado</label><select id="estadoNom"><option>Pagado</option><option>Pendiente</option></select></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Agregar empleado</button></div>
+      </form>
+      <div class="card full"><table id="tablaNom"><thead><tr><th>ID</th><th>Empleado</th><th>Puesto</th><th>Salario</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <!-- IMPUESTOS -->
+    <section id="impuestos" class="card full section hidden">
+      <h3>Impuestos</h3>
+      <form id="form-impuestos" class="grid card half">
+        <div><label>Periodo</label><input id="periodoImp" required></div>
+        <div><label>Concepto</label><input id="conceptoImp" required></div>
+        <div><label>Monto</label><input type="number" id="montoImp" required></div>
+        <div><label>Estado</label><select id="estadoImp"><option>Pagado</option><option>Pendiente</option></select></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Registrar impuesto</button></div>
+      </form>
+      <div class="card full"><table id="tablaImp"><thead><tr><th>ID</th><th>Periodo</th><th>Concepto</th><th>Monto</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <!-- INVERSIONES -->
+    <section id="inversiones" class="card full section hidden">
+      <h3>Inversiones / Créditos</h3>
+      <form id="form-inversiones" class="grid card half">
+        <div><label>Tipo</label><input id="tipoInv" required></div>
+        <div><label>Entidad</label><input id="entidadInv" required></div>
+        <div><label>Monto</label><input type="number" id="montoInv" required></div>
+        <div><label>Estado</label><select id="estadoInv"><option>Activo</option><option>Finalizado</option></select></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Agregar inversión</button></div>
+      </form>
+      <div class="card full"><table id="tablaInv"><thead><tr><th>ID</th><th>Tipo</th><th>Entidad</th><th>Monto</th><th>Estado</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <!-- REPORTES -->
+    <section id="reportes" class="card full section hidden">
+      <h3>Reportes</h3>
+      <p>Genera reportes por módulo (filtros simples) — sección en desarrollo para gráficas avanzadas.</p>
+      <div class="card"><p class="small">Se muestran totales combinados de los registros.</p>
+        <div id="report-summary" class="row"></div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section id="config" class="card full section hidden">
+      <h3>Configuración</h3>
+      <form id="form-config" class="grid card half">
+        <div><label>Nombre de la empresa</label><input id="cfg-name"></div>
+        <div><label>Moneda (ISO)</label><input id="cfg-currency-input" placeholder="MXN"></div>
+        <div><label>Impuesto (%)</label><input id="cfg-tax-input" type="number" min="0" value="0"></div>
+        <div style="grid-column:1/-1"><button class="btn" type="submit">Guardar configuración</button></div>
+      </form>
+      <div class="card"><button id="btn-clear-data" class="btn" style="background:#c0392b">Borrar todos los datos (localStorage)</button><p class="small">Esto eliminará todos los registros guardados localmente.</p></div>
+    </section>
+
+  </div>
+
+<script>
+// Simple persistence keys
+const KEYS = {
+  VENTAS: 'erp_ventas', COMPRAS: 'erp_compras', PRODUCTS: 'erp_products', CLIENTS: 'erp_clients', SUPPLIERS: 'erp_suppliers',
+  CONT: 'erp_contabilidad', FAC: 'erp_facturas', PRE: 'erp_presupuestos', TES: 'erp_tesoreria', NOM: 'erp_nomina', IMP:'erp_impuestos', INV:'erp_inversiones', CONFIG:'erp_config'
+};
+
+const $ = id => document.getElementById(id);
+function uid(pref='id'){return pref+'_'+Math.random().toString(36).slice(2,9)}
+function save(key,data){localStorage.setItem(key,JSON.stringify(data))}
+function load(key){return JSON.parse(localStorage.getItem(key)||'[]')}
+
+// load state
+let ventas = load(KEYS.VENTAS);
+let compras = load(KEYS.COMPRAS);
+let products = load(KEYS.PRODUCTS);
+let clients = load(KEYS.CLIENTS);
+let suppliers = load(KEYS.SUPPLIERS);
+let contables = load(KEYS.CONT);
+let facturas = load(KEYS.FAC);
+let presupuestos = load(KEYS.PRE);
+let tesoreria = load(KEYS.TES);
+let nomina = load(KEYS.NOM);
+let impuestos = load(KEYS.IMP);
+let inversiones = load(KEYS.INV);
+let config = JSON.parse(localStorage.getItem(KEYS.CONFIG) || JSON.stringify({company:'Mi Empresa', currency:'MXN', tax:0}));
+
+function saveAll(){ save(KEYS.VENTAS,ventas); save(KEYS.COMPRAS,compras); save(KEYS.PRODUCTS,products); save(KEYS.CLIENTS,clients); save(KEYS.SUPPLIERS,suppliers); save(KEYS.CONT,contables); save(KEYS.FAC,facturas); save(KEYS.PRE,presupuestos); save(KEYS.TES,tesoreria); save(KEYS.NOM,nomina); save(KEYS.IMP,impuestos); save(KEYS.INV,inversiones); localStorage.setItem(KEYS.CONFIG,JSON.stringify(config)); }
+
+// Renderers
+function renderProducts(){ const tb=$('table-products').querySelector('tbody'); tb.innerHTML=''; products.forEach((p,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${p.name}</td><td>${p.stock}</td><td>${p.cost}</td><td>${p.price}</td><td><button class="inline-btn" data-act="del-prod" data-id="${p.id}"><i class="fa fa-trash"></i></button></td>`; tb.appendChild(tr)}); // fill selects
+  ['sale-product','purchase-product'].forEach(id=>{ const sel=$(id); if(!sel) return; sel.innerHTML=''; products.forEach(p=>{ const o=document.createElement('option'); o.value=p.id; o.textContent=`${p.name} (stock ${p.stock})`; sel.appendChild(o) }) }); }
+function renderClients(){ const tb=$('table-clients').querySelector('tbody'); tb.innerHTML=''; clients.forEach((c,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${c.name}</td><td>${c.phone||''}</td><td>${c.email||''}</td><td><button class="inline-btn" data-act="del-client" data-id="${c.id}"><i class="fa fa-trash"></i></button></td>`; tb.appendChild(tr)}); const sel=$('sale-client'); if(sel){ sel.innerHTML=''; clients.forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=c.name; sel.appendChild(o) }) } }
+function renderSuppliers(){ const tb=$('table-suppliers').querySelector('tbody'); tb.innerHTML=''; suppliers.forEach((s,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${s.name}</td><td>${s.contact||''}</td><td>${s.phone||''}</td><td><button class="inline-btn" data-act="del-sup" data-id="${s.id}"><i class="fa fa-trash"></i></button></td>`; tb.appendChild(tr)}); const sel=$('purchase-supplier'); if(sel){ sel.innerHTML=''; suppliers.forEach(s=>{ const o=document.createElement('option'); o.value=s.id; o.textContent=s.name; sel.appendChild(o) }) } }
+function renderSales(){ const tb=$('table-sales').querySelector('tbody'); tb.innerHTML=''; ventas.forEach((v,i)=>{ const cli = clients.find(c=>c.id===v.clientId); const prod = products.find(p=>p.id===v.productId); const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${v.date}</td><td>${cli?cli.name:'-'}</td><td>${prod?prod.name:v.productName}</td><td>${v.qty}</td><td>${v.price}</td><td>${v.total}</td><td><button class="inline-btn" data-act="del-sale" data-id="${v.id}"><i class="fa fa-trash"></i></button></td>`; tb.appendChild(tr) }) }
+function renderPurchases(){ const tb=$('table-purchases').querySelector('tbody'); tb.innerHTML=''; compras.forEach((p,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${p.date}</td><td>${p.supplierName}</td><td>${p.productName}</td><td>${p.qty}</td><td>${p.cost}</td><td>${p.total}</td><td><button class="inline-btn" data-act="del-pur" data-id="${p.id}"><i class="fa fa-trash"></i></button></td>`; tb.appendChild(tr) }) }
+function renderContabilidad(){ const tb=$('tablaCont').querySelector('tbody'); tb.innerHTML=''; contables.forEach((c,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${c.fecha}</td><td>${c.concepto}</td><td>${c.monto}</td>`; tb.appendChild(tr) }) }
+function renderFacturas(){ const tb=$('tablaFac').querySelector('tbody'); tb.innerHTML=''; facturas.forEach((f,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${f.clienteName}</td><td>${f.fecha}</td><td>${f.total}</td><td>${f.estado}</td>`; tb.appendChild(tr) }) }
+function renderPresupuesto(){ const tb=$('tablaPre').querySelector('tbody'); tb.innerHTML=''; presupuestos.forEach(p=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${p.anio}</td><td>${p.area}</td><td>${p.asignado}</td><td>${p.usado}</td><td>${p.disponible}</td>`; tb.appendChild(tr) }) }
+function renderTesoreria(){ const tb=$('tablaTes').querySelector('tbody'); tb.innerHTML=''; tesoreria.forEach(t=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${t.cuenta}</td><td>${t.banco}</td><td>${t.saldo}</td><td>${t.fecha}</td>`; tb.appendChild(tr) }) }
+function renderNomina(){ const tb=$('tablaNom').querySelector('tbody'); tb.innerHTML=''; nomina.forEach((n,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${n.empleado}</td><td>${n.puesto}</td><td>${n.salario}</td><td>${n.estado}</td>`; tb.appendChild(tr) }) }
+function renderImpuestos(){ const tb=$('tablaImp').querySelector('tbody'); tb.innerHTML=''; impuestos.forEach((im,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${im.periodo}</td><td>${im.concepto}</td><td>${im.monto}</td><td>${im.estado}</td>`; tb.appendChild(tr) }) }
+function renderInversiones(){ const tb=$('tablaInv').querySelector('tbody'); tb.innerHTML=''; inversiones.forEach((inv,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td>${i+1}</td><td>${inv.tipo}</td><td>${inv.entidad}</td><td>${inv.monto}</td><td>${inv.estado}</td>`; tb.appendChild(tr) }) }
+
+function renderAll(){ renderProducts(); renderClients(); renderSuppliers(); renderSales(); renderPurchases(); renderContabilidad(); renderFacturas(); renderPresupuesto(); renderTesoreria(); renderNomina(); renderImpuestos(); renderInversiones(); // config
+  $('companyName').textContent = config.company || 'Mi Empresa'; $('cfg-currency').textContent = config.currency || 'MXN'; $('cfg-tax').textContent = (config.tax||0)+'%'; $('cfg-name').value = config.company || ''; $('cfg-currency-input').value = config.currency || 'MXN'; $('cfg-tax-input').value = config.tax || 0; }
+
+// UI helpers
+function showSection(id){ document.querySelectorAll('.section').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active')); const btn = Array.from(document.querySelectorAll('.menu button')).find(x=>x.dataset.section===id); if(btn) btn.classList.add('active'); }
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  // seed initial if empty
+  if(products.length===0){ products.push({id:uid('prod'),name:'Alitas',stock:50,price:120,cost:80}); products.push({id:uid('prod'),name:'Boneless',stock:40,price:110,cost:75}); saveAll(); }
+  if(clients.length===0){ clients.push({id:uid('cli'),name:'Cliente General',phone:'',email:''}); saveAll(); }
+  if(suppliers.length===0){ suppliers.push({id:uid('sup'),name:'Proveedor Local',contact:'',phone:''}); saveAll(); }
+
+  renderAll();
+  // sidebar nav
+  document.querySelectorAll('.menu button').forEach(btn=>btn.addEventListener('click', ()=>{ showSection(btn.dataset.section); }));
+
+  // VENTAS
+  if($('sale-date')) $('sale-date').valueAsDate = new Date();
+  function recalcSale(){ const qty = Number($('sale-qty').value || 0); const price = Number($('sale-price').value || 0); $('sale-total').value = (qty*price).toFixed(2); }
+  if($('sale-qty')) $('sale-qty').addEventListener('input', recalcSale);
+  if($('sale-price')) $('sale-price').addEventListener('input', recalcSale);
+  if($('sale-product')) $('sale-product').addEventListener('change', ()=>{ const pid = $('sale-product').value; const p = products.find(x=>x.id===pid); $('sale-stock').textContent = p? p.stock : '-'; if(p) $('sale-price').value = p.price; recalcSale(); });
+  if($('form-sale')) $('form-sale').addEventListener('submit',(e)=>{ e.preventDefault(); const date=$('sale-date').value; const clientId=$('sale-client').value||null; const productId=$('sale-product').value; const qty=Number($('sale-qty').value); const price=Number($('sale-price').value); if(!productId||qty<=0){alert('Selecciona producto y cantidad');return;} const prod=products.find(p=>p.id===productId); if(!prod||prod.stock<qty){alert('Stock insuficiente');return;} const total = qty*price; const sale={id:uid('sale'),date,clientId,productId,productName:prod.name,qty,price,total}; ventas.push(sale); prod.stock = prod.stock - qty; saveAll(); renderAll(); e.target.reset(); $('sale-date').valueAsDate = new Date(); });
+  if($('clear-sale')) $('clear-sale').addEventListener('click',()=>{ $('form-sale').reset(); $('sale-date').valueAsDate = new Date(); $('sale-stock').textContent='-' });
+
+  // COMPRAS
+  if($('purchase-date')) $('purchase-date').valueAsDate = new Date();
+  if($('form-purchase')) $('form-purchase').addEventListener('submit',(e)=>{ e.preventDefault(); const date=$('purchase-date').value; const supplierId=$('purchase-supplier').value||null; const productId=$('purchase-product').value||null; const newProd=$('purchase-product-new').value||''; const qty=Number($('purchase-qty').value||0); const cost=Number($('purchase-cost').value||0); if(qty<=0||cost<0){alert('Cantidad/costo inválido');return;} let prod=null; let productName=''; if(productId){ prod = products.find(p=>p.id===productId); productName = prod.name; } else if(newProd.trim()){ productName = newProd.trim(); prod = {id:uid('prod'),name:productName,stock:0,price:cost*1.5||0,cost:cost}; products.push(prod); } else { alert('Selecciona o crea un producto'); return; } prod.cost = cost; prod.stock = Number(prod.stock || 0) + qty; const purchase = {id:uid('pur'),date,supplierId,supplierName:(suppliers.find(s=>s.id===supplierId)||{}).name||'',productId:prod.id,productName:prod.name,qty,cost,total:qty*cost}; compras.push(purchase); saveAll(); renderAll(); e.target.reset(); $('purchase-date').valueAsDate = new Date(); });
+
+  // PRODUCTOS
+  if($('form-product')) $('form-product').addEventListener('submit',(e)=>{ e.preventDefault(); const name=$('prod-name').value.trim(); const stock=Number($('prod-stock').value||0); const price=Number($('prod-price').value||0); const cost=Number($('prod-cost').value||0); if(!name){alert('Nombre requerido');return;} const existing = products.find(p=>p.name.toLowerCase()===name.toLowerCase()); if(existing){ existing.stock = stock; existing.price = price; existing.cost = cost; } else { products.push({id:uid('prod'),name,stock,price,cost}); } saveAll(); renderAll(); e.target.reset(); });
+
+  // CLIENTES
+  if($('form-client')) $('form-client').addEventListener('submit',(e)=>{ e.preventDefault(); const name=$('client-name').value.trim(); const phone=$('client-phone').value.trim(); const email=$('client-email').value.trim(); if(!name){alert('Nombre requerido');return;} clients.push({id:uid('cli'),name,phone,email}); saveAll(); renderAll(); e.target.reset(); });
+
+  // PROVEEDORES
+  if($('form-supplier')) $('form-supplier').addEventListener('submit',(e)=>{ e.preventDefault(); const name=$('supplier-name').value.trim(); const contact=$('supplier-contact').value.trim(); const phone=$('supplier-phone').value.trim(); if(!name){alert('Nombre requerido');return;} suppliers.push({id:uid('sup'),name,contact,phone}); saveAll(); renderAll(); e.target.reset(); });
+
+  // CONTABILIDAD
+  if($('form-contabilidad')) $('form-contabilidad').addEventListener('submit',(e)=>{ e.preventDefault(); const fecha=$('fechaCont').value; const concepto=$('conceptoCont').value.trim(); const monto=Number($('montoCont').value||0); contables.push({id:uid('cont'),fecha,concepto,monto}); saveAll(); renderContabilidad(); e.target.reset(); });
+
+  // FACTURAS
+  if($('form-facturas')) $('form-facturas').addEventListener('submit',(e)=>{ e.preventDefault(); const clienteId=$('clienteFac').value||null; const clienteName = (clients.find(c=>c.id===clienteId)||{}).name || ''; const fecha=$('fechaFac').value; const total=Number($('totalFac').value||0); const estado=$('estadoFac').value; facturas.push({id:uid('fac'),clienteId,clienteName,fecha,total,estado}); saveAll(); renderFacturas(); e.target.reset(); });
+
+  // PRESUPUESTO
+  if($('form-presupuesto')) $('form-presupuesto').addEventListener('submit',(e)=>{ e.preventDefault(); const anio=$('anioPre').value; const area=$('areaPre').value; const asignado=Number($('asignadoPre').value||0); const usado=Number($('usadoPre').value||0); const disponible=asignado-usado; presupuestos.push({anio,area,asignado,usado,disponible}); saveAll(); renderPresupuesto(); e.target.reset(); });
+
+  // TESORERIA
+  if($('form-tesoreria')) $('form-tesoreria').addEventListener('submit',(e)=>{ e.preventDefault(); const cuenta=$('cuentaTes').value; const banco=$('bancoTes').value; const saldo=Number($('saldoTes').value||0); const fecha=$('fechaTes').value; tesoreria.push({id:uid('tes'),cuenta,banco,saldo,fecha}); saveAll(); renderTesoreria(); e.target.reset(); });
+
+  // NOMINA
+  if($('form-nomina')) $('form-nomina').addEventListener('submit',(e)=>{ e.preventDefault(); const empleado=$('empleadoNom').value; const puesto=$('puestoNom').value; const salario=Number($('salarioNom').value||0); const estado=$('estadoNom').value; nomina.push({id:uid('nom'),empleado,puesto,salario,estado}); saveAll(); renderNomina(); e.target.reset(); });
+
+  // IMPUESTOS
+  if($('form-impuestos')) $('form-impuestos').addEventListener('submit',(e)=>{ e.preventDefault(); const periodo=$('periodoImp').value; const concepto=$('conceptoImp').value; const monto=Number($('montoImp').value||0); const estado=$('estadoImp').value; impuestos.push({id:uid('imp'),periodo,concepto,monto,estado}); saveAll(); renderImpuestos(); e.target.reset(); });
+
+  // INVERSIONES
+  if($('form-inversiones')) $('form-inversiones').addEventListener('submit',(e)=>{ e.preventDefault(); const tipo=$('tipoInv').value; const entidad=$('entidadInv').value; const monto=Number($('montoInv').value||0); const estado=$('estadoInv').value; inversiones.push({id:uid('inv'),tipo,entidad,monto,estado}); saveAll(); renderInversiones(); e.target.reset(); });
+
+  // CONFIG
+  if($('form-config')) $('form-config').addEventListener('submit',(e)=>{ e.preventDefault(); config.company = $('cfg-name').value || 'Mi Empresa'; config.currency = $('cfg-currency-input').value || 'MXN'; config.tax = Number($('cfg-tax-input').value||0); saveAll(); renderAll(); alert('Configuración guardada'); });
+  if($('btn-clear-data')) $('btn-clear-data').addEventListener('click', ()=>{ if(confirm('¿Eliminar todos los datos?')){ Object.values(KEYS).forEach(k=>localStorage.removeItem(k)); location.reload(); } });
+
+  // Table action delegation (delete handlers)
+  document.body.addEventListener('click',(e)=>{
+    const btn = e.target.closest('button.inline-btn'); if(!btn) return; const act = btn.dataset.act; const id = btn.dataset.id;
+    if(act==='del-prod'){ products = products.filter(p=>p.id!==id); saveAll(); renderAll(); }
+    if(act==='del-client'){ clients = clients.filter(c=>c.id!==id); saveAll(); renderAll(); }
+    if(act==='del-sup'){ suppliers = suppliers.filter(s=>s.id!==id); saveAll(); renderAll(); }
+    if(act==='del-sale'){ const idx = ventas.findIndex(v=>v.id===id); if(idx>=0){ // restore stock
+        const v = ventas[idx]; const prod = products.find(p=>p.id===v.productId); if(prod) prod.stock = Number(prod.stock) + Number(v.qty); ventas.splice(idx,1); saveAll(); renderAll(); }
+    }
+    if(act==='del-pur'){ const idx = compras.findIndex(p=>p.id===id); if(idx>=0){ const pur = compras[idx]; const prod = products.find(p=>p.id===pur.productId); if(prod) prod.stock = Number(prod.stock) - Number(pur.qty); compras.splice(idx,1); saveAll(); renderAll(); } }
+  });
+
+  // initial section
+  showSection('ventas');
+});
+
+function saveAll(){ save(KEYS.VENTAS,ventas); save(KEYS.COMPRAS,compras); save(KEYS.PRODUCTS,products); save(KEYS.CLIENTS,clients); save(KEYS.SUPPLIERS,suppliers); save(KEYS.CONT,contables); save(KEYS.FAC,facturas); save(KEYS.PRE,presupuestos); save(KEYS.TES,tesoreria); save(KEYS.NOM,nomina); save(KEYS.IMP,impuestos); save(KEYS.INV,inversiones); localStorage.setItem(KEYS.CONFIG,JSON.stringify(config)); }
+
+</script>
+</body>
+</html>
