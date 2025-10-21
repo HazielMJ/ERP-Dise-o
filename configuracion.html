@@ -3,20 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <title>Configuración - ERP</title>
-  <link rel="stylesheet" href="Vistas/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header>
+<div class="header-nav">
+  <a href="usuarios.html"><i class="fas fa-users-cog"></i> Usuarios</a>
+  <a href="finanzas.html"><i class="fas fa-dollar-sign"></i> Finanzas</a>
+  <a href="compras.html"><i class="fas fa-shopping-cart"></i> Compras/Ventas</a>
+  <a href="/Inventario/inventario.html"><i class="fas fa-warehouse"></i> Inventario</a>
+  <a href="rrhh.html"><i class="fas fa-user-tie"></i> RRHH</a>
+  <a href="logistica.html"><i class="fas fa-truck"></i> Logística</a>
 
-  <aside class="sidebar">
-    <h1>ERP</h1>
-    <nav>
-      <a href="Vistas/pd.html">PD</a>
+  <!-- POS con submenú -->
+  <div class="dropdown">
+    <a href="#" class="dropbtn active"><i class="fas fa-cash-register"></i> POS <i class="fas fa-chevron-down"></i></a>
+    <div class="dropdown-content">
+      <a href="Vistas/pd.html">General</a>
       <a href="ventas.html">Ventas</a>
       <a href="clientes.html">Clientes</a>
-      <a href="reportes.html" >Reportes</a>
-      <a href="configuracion.html"class="active">Configuración</a>
-    </nav>
-  </aside>
+      <a href="reportes.html">Reportes</a>
+    </div>
+  </div>
+
+  <a href="configuracion.html"><i class="fas fa-cogs"></i> Configuración</a>
+  <button class="dark-mode-toggle" onclick="toggleDarkMode()" title="Cambiar tema">
+    <i class="fas fa-moon"></i>
+  </button>
+</div>
+
+</header>
+
 
   <!-- Contenido principal -->
   <main class="main">

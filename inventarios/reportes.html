@@ -604,6 +604,8 @@ footer {
     transform: rotate(180deg);
 }
 
+
+
     </style>
 </head>
 <body>
@@ -621,7 +623,7 @@ footer {
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="../Vistas/dashboard.html" class="nav-link active" data-module="dashboard">
+                    <a href="../Vistas/dashboard.html" class="nav-link" data-module="dashboard">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -645,18 +647,18 @@ footer {
                     </a>
                 </li>
 <li class="nav-item pos-menu">
-    <a href="/inventarios/inventarios.html" class="nav-link" data-module="pos">
+    <a href="inventarios.html" class="nav-link active" data-module="pos">
         <i class="fas fa-cash-register"></i>
         <span>Inventario</span>
         <i class="fas fa-chevron-down submenu-toggle" style="margin-left:auto;"></i>
     </a>
     <ul class="submenu">
-        <li><a href="../inventarios/almacen.html" class="nav-link" data-module="inv-almacen">Almacen</a></li>
-        <li><a href="../inventarios/kardex.html" class="nav-link" data-module="inv-kardex">Kardex</a></li>
-        <li><a href="../inventarios/movimientos.html" class="nav-link" data-module="inv-movientos">Movimientos</a></li>
-        <li><a href="../inventarios/productos.html" class="nav-link" data-module="inv-productos">Productos</a></li>
-        <li><a href="../inventarios/proveedores.html" class="nav-link" data-module="inv-proveedores">Proveedores</a></li>
-        <li><a href="../inventarios/reportes.html" class="nav-link" data-module="inv-reportes">Reportes</a></li>
+        <li><a href="almacen.html" class="nav-link" data-module="inv-almacen">Almacen</a></li>
+        <li><a href="kardex.html" class="nav-link" data-module="inv-kardex">Kardex</a></li>
+        <li><a href="movimientos.html" class="nav-link" data-module="inv-movientos">Movimientos</a></li>
+        <li><a href="productos.html" class="nav-link" data-module="inv-productos">Productos</a></li>
+        <li><a href="proveedores.html" class="nav-link" data-module="inv-proveedores">Proveedores</a></li>
+        <li><a href="reportes.html" class="nav-link active" data-module="inv-reportes">Reportes</a></li>
     </ul>
 </li>
                 <li class="nav-item">
@@ -690,9 +692,9 @@ footer {
         <i class="fas fa-chevron-down submenu-toggle" style="margin-left:auto;"></i>
     </a>
     <ul class="submenu">
-        <li><a href="clientes.html" class="nav-link" data-module="pos-clientes">Clientes</a></li>
-        <li><a href="ventas.html" class="nav-link" data-module="pos-ventas">Ventas</a></li>
-        <li><a href="reportes.html" class="nav-link" data-module="pos-reportes">Reportes</a></li>
+        <li><a href="../clientes.html" class="nav-link" data-module="pos-clientes">Clientes</a></li>
+        <li><a href="../ventas.html" class="nav-link" data-module="pos-ventas">Ventas</a></li>
+        <li><a href="../reportes.html" class="nav-link" data-module="pos-reportes">Reportes</a></li>
     </ul>
 </li>
                 <li class="nav-item">
@@ -720,7 +722,7 @@ footer {
         <main class="main-content">
             <header class="header">
                 <div class="header-left">
-                    <h1 id="page-title">CLIENTES</h1>
+                    <h1 id="page-title">Inventario - Reportes</h1>
                 </div>
                 <div class="header-right">
                     <button class="action-btn btn-primary">
@@ -739,7 +741,71 @@ footer {
             </header>
             <div class="dashboard-content">
 
-              
+  <div class="container">
+    <h2>Reportes</h2>
+
+    <div class="card">
+      <h3>Generar Reporte</h3>
+      <div class="form-grid">
+        <select>
+          <option value="">Tipo de reporte</option>
+          <option value="ventas">Ventas</option>
+          <option value="almacen">Inventario</option>
+          <option value="finanzas">Finanzas</option>
+          <option value="usuarios">Usuarios</option>
+        </select>
+
+        <input type="date" placeholder="Desde">
+        <input type="date" placeholder="Hasta">
+        <select>
+          <option value="">Formato</option>
+          <option value="pdf">PDF</option>
+          <option value="excel">Excel</option>
+          <option value="csv">CSV</option>
+        </select>
+      </div>
+      <br>
+      <button class="btn"><i class="fas fa-chart-line"></i> Generar</button>
+    </div>
+
+    <div class="card">
+      <h3>Historial de Reportes</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tipo</th>
+            <th>Fecha Generación</th>
+            <th>Rango</th>
+            <th>Formato</th>
+            <th>Generado Por</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>R-001</td>
+            <td>Ventas</td>
+            <td>2025-10-08</td>
+            <td>01/10/2025 - 08/10/2025</td>
+            <td>PDF</td>
+            <td>Admin</td>
+            <td>
+              <button class="btn"><i class="fas fa-download"></i></button>
+              <button class="btn"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="export-buttons">
+        <button class="btn"><i class="fas fa-file-pdf"></i> Exportar a PDF</button>
+        <button class="btn"><i class="fas fa-file-excel"></i> Exportar a Excel</button>
+        <button class="btn"><i class="fas fa-print"></i> Imprimir</button>
+      </div>
+    </div>
+  </div>
+
             </div>
         </main>
     </div>

@@ -1,0 +1,241 @@
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: 40px auto;
+    }
+
+    h2 {
+      color: #004AAD;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .form-grid textarea {
+      grid-column: 1 / -1;
+      height: 80px;
+      resize: vertical;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .btn {
+      background-color: #004AAD;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #003080;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background-color: #545b62;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #004AAD;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #004AAD;
+      margin: 0 3px;
+    }
+
+    .action-btn:hover {
+      color: #003080;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Gestión de Proveedores</h2>
+
+    <div class="card">
+      <h3>Registrar o Editar Proveedor</h3>
+      <div class="form-grid">
+        <input type="text" id="nombre" placeholder="Nombre del Proveedor">
+        <input type="text" id="empresa" placeholder="Empresa">
+        <input type="email" id="correo" placeholder="Correo Electrónico">
+        <input type="tel" id="telefono" placeholder="Teléfono">
+        <input type="text" id="rfc" placeholder="RFC">
+        <input type="text" id="categoria" placeholder="Categoría de Producto">
+        <textarea id="direccion" placeholder="Dirección" rows="3"></textarea>
+      </div>
+      <br>
+      <button class="btn" id="btnAgregar"><i class="fas fa-user-plus"></i> Agregar Proveedor</button>
+      <button class="btn btn-secondary" id="btnCancelar" style="display:none;">Cancelar</button>
+    </div>
+
+    <div class="card">
+      <h3>Listado de Proveedores</h3>
+      <table id="tablaProveedores">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Proveedor</th>
+            <th>Empresa</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>RFC</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Se agregan dinámicamente -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const tabla = document.querySelector("#tablaProveedores tbody");
+    const btnAgregar = document.getElementById("btnAgregar");
+    const btnCancelar = document.getElementById("btnCancelar");
+
+    const inputs = {
+      nombre: document.getElementById("nombre"),
+      empresa: document.getElementById("empresa"),
+      correo: document.getElementById("correo"),
+      telefono: document.getElementById("telefono"),
+      rfc: document.getElementById("rfc"),
+      categoria: document.getElementById("categoria"),
+      direccion: document.getElementById("direccion")
+    };
+
+    let editando = null;
+    let contador = 1;
+
+    function limpiarFormulario() {
+      for (let key in inputs) inputs[key].value = "";
+      editando = null;
+      btnAgregar.innerHTML = '<i class="fas fa-user-plus"></i> Agregar Proveedor';
+      btnCancelar.style.display = "none";
+    }
+
+    function agregarProveedor() {
+      const proveedor = {};
+      for (let key in inputs) {
+        if (inputs[key].value.trim() === "") {
+          alert("Por favor completa todos los campos.");
+          return;
+        }
+        proveedor[key] = inputs[key].value.trim();
+      }
+
+      if (editando) {
+        // Editar registro existente
+        const fila = editando;
+        fila.cells[1].textContent = proveedor.nombre;
+        fila.cells[2].textContent = proveedor.empresa;
+        fila.cells[3].textContent = proveedor.correo;
+        fila.cells[4].textContent = proveedor.telefono;
+        fila.cells[5].textContent = proveedor.rfc;
+        fila.cells[6].textContent = proveedor.categoria;
+        fila.dataset.direccion = proveedor.direccion;
+        limpiarFormulario();
+      } else {
+        // Crear nuevo registro
+        const fila = tabla.insertRow();
+        fila.dataset.direccion = proveedor.direccion;
+        fila.innerHTML = `
+          <td>P-${String(contador).padStart(3, '0')}</td>
+          <td>${proveedor.nombre}</td>
+          <td>${proveedor.empresa}</td>
+          <td>${proveedor.correo}</td>
+          <td>${proveedor.telefono}</td>
+          <td>${proveedor.rfc}</td>
+          <td>${proveedor.categoria}</td>
+          <td>
+            <button class="action-btn" onclick="editarFila(this)"><i class="fas fa-pen"></i></button>
+            <button class="action-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>
+          </td>
+        `;
+        contador++;
+      }
+    }
+
+    function editarFila(btn) {
+      const fila = btn.closest("tr");
+      inputs.nombre.value = fila.cells[1].textContent;
+      inputs.empresa.value = fila.cells[2].textContent;
+      inputs.correo.value = fila.cells[3].textContent;
+      inputs.telefono.value = fila.cells[4].textContent;
+      inputs.rfc.value = fila.cells[5].textContent;
+      inputs.categoria.value = fila.cells[6].textContent;
+      inputs.direccion.value = fila.dataset.direccion || "";
+
+      editando = fila;
+      btnAgregar.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+      btnCancelar.style.display = "inline-block";
+    }
+
+    function eliminarFila(btn) {
+      if (confirm("¿Deseas eliminar este proveedor?")) {
+        const fila = btn.closest("tr");
+        fila.remove();
+      }
+    }
+
+    btnAgregar.addEventListener("click", agregarProveedor);
+    btnCancelar.addEventListener("click", limpiarFormulario);
+  </script>
+
+</body>
+</html>

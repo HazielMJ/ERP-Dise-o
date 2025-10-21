@@ -621,7 +621,7 @@ footer {
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="../Vistas/dashboard.html" class="nav-link active" data-module="dashboard">
+                    <a href="../Vistas/dashboard.html" class="nav-link" data-module="dashboard">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -645,18 +645,18 @@ footer {
                     </a>
                 </li>
 <li class="nav-item pos-menu">
-    <a href="/inventarios/inventarios.html" class="nav-link" data-module="pos">
+    <a href="inventarios.html" class="nav-link active" data-module="pos">
         <i class="fas fa-cash-register"></i>
         <span>Inventario</span>
         <i class="fas fa-chevron-down submenu-toggle" style="margin-left:auto;"></i>
     </a>
     <ul class="submenu">
-        <li><a href="../inventarios/almacen.html" class="nav-link" data-module="inv-almacen">Almacen</a></li>
-        <li><a href="../inventarios/kardex.html" class="nav-link" data-module="inv-kardex">Kardex</a></li>
-        <li><a href="../inventarios/movimientos.html" class="nav-link" data-module="inv-movientos">Movimientos</a></li>
-        <li><a href="../inventarios/productos.html" class="nav-link" data-module="inv-productos">Productos</a></li>
-        <li><a href="../inventarios/proveedores.html" class="nav-link" data-module="inv-proveedores">Proveedores</a></li>
-        <li><a href="../inventarios/reportes.html" class="nav-link" data-module="inv-reportes">Reportes</a></li>
+        <li><a href="almacen.html" class="nav-link active" data-module="inv-almacen">Almacen</a></li>
+        <li><a href="kardex.html" class="nav-link" data-module="inv-kardex">Kardex</a></li>
+        <li><a href="movimientos.html" class="nav-link" data-module="inv-movientos">Movimientos</a></li>
+        <li><a href="productos.html" class="nav-link" data-module="inv-productos">Productos</a></li>
+        <li><a href="proveedores.html" class="nav-link" data-module="inv-proveedores">Proveedores</a></li>
+        <li><a href="reportes.html" class="nav-link" data-module="inv-reportes">Reportes</a></li>
     </ul>
 </li>
                 <li class="nav-item">
@@ -690,9 +690,9 @@ footer {
         <i class="fas fa-chevron-down submenu-toggle" style="margin-left:auto;"></i>
     </a>
     <ul class="submenu">
-        <li><a href="clientes.html" class="nav-link" data-module="pos-clientes">Clientes</a></li>
-        <li><a href="ventas.html" class="nav-link" data-module="pos-ventas">Ventas</a></li>
-        <li><a href="reportes.html" class="nav-link" data-module="pos-reportes">Reportes</a></li>
+        <li><a href="../clientes.html" class="nav-link" data-module="pos-clientes">Clientes</a></li>
+        <li><a href="../ventas.html" class="nav-link" data-module="pos-ventas">Ventas</a></li>
+        <li><a href="../reportes.html" class="nav-link" data-module="pos-reportes">Reportes</a></li>
     </ul>
 </li>
                 <li class="nav-item">
@@ -720,7 +720,7 @@ footer {
         <main class="main-content">
             <header class="header">
                 <div class="header-left">
-                    <h1 id="page-title">CLIENTES</h1>
+                    <h1 id="page-title">Inventario - Almacen</h1>
                 </div>
                 <div class="header-right">
                     <button class="action-btn btn-primary">
@@ -738,8 +738,70 @@ footer {
                 </div>
             </header>
             <div class="dashboard-content">
+<!-- almacen.html -->
+<div class="tab-content active" style="padding: 20px;">
+  <h2>🏭 Gestión de Almacenes</h2>
+  <p>Administra los diferentes almacenes de tu empresa. Puedes agregar, editar o eliminar registros.</p>
 
-              
+  <!-- Botón principal -->
+  <div class="actions" style="margin: 15px 0;">
+    <button onclick="mostrarFormularioAlmacen()" style="
+      background:#007bff; 
+      color:white; 
+      border:none; 
+      padding:10px 16px; 
+      border-radius:8px; 
+      cursor:pointer; 
+      font-weight:600;">
+      <i class="fas fa-plus"></i> Nuevo Almacén
+    </button>
+  </div>
+
+  <!-- Formulario de Almacén -->
+  <div id="formularioAlmacen" style="
+    display:none; 
+    background:white; 
+    padding:20px; 
+    border-radius:10px; 
+    box-shadow:0 2px 5px rgba(0,0,0,0.1); 
+    margin-bottom:20px;
+  ">
+    <h3 id="formTitulo">Agregar Almacén</h3>
+    <input type="hidden" id="almacenId">
+
+    <div style="display:flex; flex-wrap:wrap; gap:10px;">
+      <input type="text" id="nombreAlmacen" placeholder="Nombre del Almacén" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
+      <input type="text" id="ubicacionAlmacen" placeholder="Ubicación" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
+      <input type="number" id="capacidadAlmacen" placeholder="Capacidad" style="flex:1; padding:10px; border:1px solid #ccc; border-radius:6px;">
+    </div>
+
+    <div style="margin-top:15px;">
+      <button onclick="guardarAlmacen()" style="background:#007bff; color:white; border:none; padding:10px 16px; border-radius:8px; cursor:pointer;">
+        <i class="fas fa-save"></i> Guardar
+      </button>
+      <button onclick="cancelarAlmacen()" style="background:#ccc; border:none; padding:10px 16px; border-radius:8px; cursor:pointer;">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla de almacenes -->
+  <table id="tablaAlmacenes" style="width:100%; border-collapse:collapse; background:white; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+    <thead style="background:#0066cc; color:white;">
+      <tr>
+        <th style="padding:10px;">ID</th>
+        <th style="padding:10px;">Nombre</th>
+        <th style="padding:10px;">Ubicación</th>
+        <th style="padding:10px;">Capacidad</th>
+        <th style="padding:10px;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="cuerpoAlmacenes">
+      <!-- Se llenará dinámicamente con JS -->
+    </tbody>
+  </table>
+</div>
+
             </div>
         </main>
     </div>
@@ -766,6 +828,101 @@ posLink.addEventListener('click', (e) => {
     posMenu.classList.toggle('open');
 });
 
+
+// --- Datos simulados de ejemplo ---
+let almacenes = [
+  { id: 1, nombre: "Central", ubicacion: "CDMX", capacidad: 500 },
+  { id: 2, nombre: "Norte", ubicacion: "Guadalajara", capacidad: 300 }
+];
+let editando = false;
+
+// --- Mostrar el formulario ---
+function mostrarFormularioAlmacen(id = null) {
+  const form = document.getElementById("formularioAlmacen");
+  form.style.display = "block";
+  if (id) {
+    const almacen = almacenes.find(a => a.id === id);
+    document.getElementById("almacenId").value = almacen.id;
+    document.getElementById("nombreAlmacen").value = almacen.nombre;
+    document.getElementById("ubicacionAlmacen").value = almacen.ubicacion;
+    document.getElementById("capacidadAlmacen").value = almacen.capacidad;
+    document.getElementById("formTitulo").innerText = "Editar Almacén";
+    editando = true;
+  } else {
+    document.getElementById("formTitulo").innerText = "Agregar Almacén";
+    document.getElementById("almacenId").value = "";
+    document.getElementById("nombreAlmacen").value = "";
+    document.getElementById("ubicacionAlmacen").value = "";
+    document.getElementById("capacidadAlmacen").value = "";
+    editando = false;
+  }
+}
+
+// --- Cancelar acción ---
+function cancelarAlmacen() {
+  document.getElementById("formularioAlmacen").style.display = "none";
+  editando = false;
+}
+
+// --- Guardar o editar ---
+function guardarAlmacen() {
+  const nombre = document.getElementById("nombreAlmacen").value.trim();
+  const ubicacion = document.getElementById("ubicacionAlmacen").value.trim();
+  const capacidad = document.getElementById("capacidadAlmacen").value.trim();
+
+  if (!nombre || !ubicacion || !capacidad) {
+    alert("Por favor completa todos los campos.");
+    return;
+  }
+
+  if (editando) {
+    const id = parseInt(document.getElementById("almacenId").value);
+    const index = almacenes.findIndex(a => a.id === id);
+    almacenes[index] = { id, nombre, ubicacion, capacidad: parseInt(capacidad) };
+  } else {
+    const nuevoId = almacenes.length ? Math.max(...almacenes.map(a => a.id)) + 1 : 1;
+    almacenes.push({ id: nuevoId, nombre, ubicacion, capacidad: parseInt(capacidad) });
+  }
+
+  renderAlmacenes();
+  cancelarAlmacen();
+}
+
+// --- Eliminar almacén ---
+function eliminarAlmacen(id) {
+  if (confirm("¿Seguro que deseas eliminar este almacén?")) {
+    almacenes = almacenes.filter(a => a.id !== id);
+    renderAlmacenes();
+  }
+}
+
+// --- Renderizar tabla ---
+function renderAlmacenes() {
+  const cuerpo = document.getElementById("cuerpoAlmacenes");
+  cuerpo.innerHTML = "";
+  almacenes.forEach(a => {
+    const fila = `
+      <tr>
+        <td style="padding:10px; text-align:center;">${a.id}</td>
+        <td style="padding:10px;">${a.nombre}</td>
+        <td style="padding:10px;">${a.ubicacion}</td>
+        <td style="padding:10px; text-align:center;">${a.capacidad}</td>
+        <td style="padding:10px; text-align:center;">
+          <button onclick="mostrarFormularioAlmacen(${a.id})" style="background:#ffc107; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button onclick="eliminarAlmacen(${a.id})" style="background:#dc3545; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; color:white;">
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `;
+    cuerpo.innerHTML += fila;
+  });
+}
+
+// --- Cargar tabla al inicio ---
+renderAlmacenes();
 
     </script>
 </body>

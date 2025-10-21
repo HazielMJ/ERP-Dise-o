@@ -604,6 +604,7 @@ footer {
     transform: rotate(180deg);
 }
 
+
     </style>
 </head>
 <body>
@@ -621,7 +622,7 @@ footer {
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="../Vistas/dashboard.html" class="nav-link active" data-module="dashboard">
+                    <a href="../Vistas/dashboard.html" class="nav-link" data-module="dashboard">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
@@ -645,18 +646,18 @@ footer {
                     </a>
                 </li>
 <li class="nav-item pos-menu">
-    <a href="/inventarios/inventarios.html" class="nav-link" data-module="pos">
+    <a href="inventarios.html" class="nav-link active" data-module="pos">
         <i class="fas fa-cash-register"></i>
         <span>Inventario</span>
         <i class="fas fa-chevron-down submenu-toggle" style="margin-left:auto;"></i>
     </a>
     <ul class="submenu">
-        <li><a href="../inventarios/almacen.html" class="nav-link" data-module="inv-almacen">Almacen</a></li>
-        <li><a href="../inventarios/kardex.html" class="nav-link" data-module="inv-kardex">Kardex</a></li>
-        <li><a href="../inventarios/movimientos.html" class="nav-link" data-module="inv-movientos">Movimientos</a></li>
-        <li><a href="../inventarios/productos.html" class="nav-link" data-module="inv-productos">Productos</a></li>
-        <li><a href="../inventarios/proveedores.html" class="nav-link" data-module="inv-proveedores">Proveedores</a></li>
-        <li><a href="../inventarios/reportes.html" class="nav-link" data-module="inv-reportes">Reportes</a></li>
+        <li><a href="almacen.html" class="nav-link" data-module="inv-almacen">Almacen</a></li>
+        <li><a href="kardex.html" class="nav-link" data-module="inv-kardex">Kardex</a></li>
+        <li><a href="movimientos.html" class="nav-link" data-module="inv-movientos">Movimientos</a></li>
+        <li><a href="productos.html" class="nav-link" data-module="inv-productos">Productos</a></li>
+        <li><a href="proveedores.html" class="nav-link active" data-module="inv-proveedores">Proveedores</a></li>
+        <li><a href="reportes.html" class="nav-link" data-module="inv-reportes">Reportes</a></li>
     </ul>
 </li>
                 <li class="nav-item">
@@ -690,9 +691,9 @@ footer {
         <i class="fas fa-chevron-down submenu-toggle" style="margin-left:auto;"></i>
     </a>
     <ul class="submenu">
-        <li><a href="clientes.html" class="nav-link" data-module="pos-clientes">Clientes</a></li>
-        <li><a href="ventas.html" class="nav-link" data-module="pos-ventas">Ventas</a></li>
-        <li><a href="reportes.html" class="nav-link" data-module="pos-reportes">Reportes</a></li>
+        <li><a href="../clientes.html" class="nav-link" data-module="pos-clientes">Clientes</a></li>
+        <li><a href="../ventas.html" class="nav-link" data-module="pos-ventas">Ventas</a></li>
+        <li><a href="../reportes.html" class="nav-link" data-module="pos-reportes">Reportes</a></li>
     </ul>
 </li>
                 <li class="nav-item">
@@ -720,7 +721,7 @@ footer {
         <main class="main-content">
             <header class="header">
                 <div class="header-left">
-                    <h1 id="page-title">CLIENTES</h1>
+                    <h1 id="page-title">Inventario - Proveedores</h1>
                 </div>
                 <div class="header-right">
                     <button class="action-btn btn-primary">
@@ -739,7 +740,48 @@ footer {
             </header>
             <div class="dashboard-content">
 
-              
+
+  <div class="container">
+    <h2>Gestión de Proveedores</h2>
+
+    <div class="card">
+      <h3>Registrar o Editar Proveedor</h3>
+      <div class="form-grid">
+        <input type="text" id="nombre" placeholder="Nombre del Proveedor">
+        <input type="text" id="empresa" placeholder="Empresa">
+        <input type="email" id="correo" placeholder="Correo Electrónico">
+        <input type="tel" id="telefono" placeholder="Teléfono">
+        <input type="text" id="rfc" placeholder="RFC">
+        <input type="text" id="categoria" placeholder="Categoría de Producto">
+        <textarea id="direccion" placeholder="Dirección" rows="3"></textarea>
+      </div>
+      <br>
+      <button class="btn" id="btnAgregar"><i class="fas fa-user-plus"></i> Agregar Proveedor</button>
+      <button class="btn btn-secondary" id="btnCancelar" style="display:none;">Cancelar</button>
+    </div>
+
+    <div class="card">
+      <h3>Listado de Proveedores</h3>
+      <table id="tablaProveedores">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Proveedor</th>
+            <th>Empresa</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>RFC</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Se agregan dinámicamente -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
             </div>
         </main>
     </div>
@@ -766,6 +808,96 @@ posLink.addEventListener('click', (e) => {
     posMenu.classList.toggle('open');
 });
 
+ const tabla = document.querySelector("#tablaProveedores tbody");
+    const btnAgregar = document.getElementById("btnAgregar");
+    const btnCancelar = document.getElementById("btnCancelar");
+
+    const inputs = {
+      nombre: document.getElementById("nombre"),
+      empresa: document.getElementById("empresa"),
+      correo: document.getElementById("correo"),
+      telefono: document.getElementById("telefono"),
+      rfc: document.getElementById("rfc"),
+      categoria: document.getElementById("categoria"),
+      direccion: document.getElementById("direccion")
+    };
+
+    let editando = null;
+    let contador = 1;
+
+    function limpiarFormulario() {
+      for (let key in inputs) inputs[key].value = "";
+      editando = null;
+      btnAgregar.innerHTML = '<i class="fas fa-user-plus"></i> Agregar Proveedor';
+      btnCancelar.style.display = "none";
+    }
+
+    function agregarProveedor() {
+      const proveedor = {};
+      for (let key in inputs) {
+        if (inputs[key].value.trim() === "") {
+          alert("Por favor completa todos los campos.");
+          return;
+        }
+        proveedor[key] = inputs[key].value.trim();
+      }
+
+      if (editando) {
+        // Editar registro existente
+        const fila = editando;
+        fila.cells[1].textContent = proveedor.nombre;
+        fila.cells[2].textContent = proveedor.empresa;
+        fila.cells[3].textContent = proveedor.correo;
+        fila.cells[4].textContent = proveedor.telefono;
+        fila.cells[5].textContent = proveedor.rfc;
+        fila.cells[6].textContent = proveedor.categoria;
+        fila.dataset.direccion = proveedor.direccion;
+        limpiarFormulario();
+      } else {
+        // Crear nuevo registro
+        const fila = tabla.insertRow();
+        fila.dataset.direccion = proveedor.direccion;
+        fila.innerHTML = `
+          <td>P-${String(contador).padStart(3, '0')}</td>
+          <td>${proveedor.nombre}</td>
+          <td>${proveedor.empresa}</td>
+          <td>${proveedor.correo}</td>
+          <td>${proveedor.telefono}</td>
+          <td>${proveedor.rfc}</td>
+          <td>${proveedor.categoria}</td>
+          <td>
+            <button class="action-btn" onclick="editarFila(this)"><i class="fas fa-pen"></i></button>
+            <button class="action-btn" onclick="eliminarFila(this)"><i class="fas fa-trash"></i></button>
+          </td>
+        `;
+        contador++;
+      }
+    }
+
+    function editarFila(btn) {
+      const fila = btn.closest("tr");
+      inputs.nombre.value = fila.cells[1].textContent;
+      inputs.empresa.value = fila.cells[2].textContent;
+      inputs.correo.value = fila.cells[3].textContent;
+      inputs.telefono.value = fila.cells[4].textContent;
+      inputs.rfc.value = fila.cells[5].textContent;
+      inputs.categoria.value = fila.cells[6].textContent;
+      inputs.direccion.value = fila.dataset.direccion || "";
+
+      editando = fila;
+      btnAgregar.innerHTML = '<i class="fas fa-save"></i> Guardar Cambios';
+      btnCancelar.style.display = "inline-block";
+    }
+
+    function eliminarFila(btn) {
+      if (confirm("¿Deseas eliminar este proveedor?")) {
+        const fila = btn.closest("tr");
+        fila.remove();
+      }
+    }
+
+    btnAgregar.addEventListener("click", agregarProveedor);
+    btnCancelar.addEventListener("click", limpiarFormulario);
 
     </script>
 </body>
