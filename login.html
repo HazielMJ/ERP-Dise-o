@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login ERP</title>
+    <link rel="stylesheet" href="LoginStyle.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo">ERP</div>
+            <h3>Iniciar Sesión</h3>
+        </div>
+        
+        <div id="error" class="error"></div>
+        <div id="success" class="success"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Correo electrónico</label>
+                <input type="email" id="email" name="email" placeholder="tu@email.com" required autocomplete="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                    <button type="button" class="password-toggle" id="passwordToggle">👁️</button>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-primary" id="loginBtn">
+                <span id="loginText">Ingresar</span>
+            </button>
+        </form>
+        
+        <div class="forgot-password">
+            <a href="#" onclick="alert('Funcionalidad próximamente disponible')">¿Olvidaste tu contraseña?</a>
+        </div>
+    </div>
+</body>
+</html>
