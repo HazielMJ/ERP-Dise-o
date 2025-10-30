@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema ERP - Recursos Humanos</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="rrhhstyles.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <button class="toggle-btn" id="toggleBtn">
+                <i class="fas fa-angle-left"></i>
+            </button>
+            
+            <div class="sidebar-header">
+                <h2>
+                    <i class="fas fa-chart-line"></i>
+                    <span class="text-content">ERP System</span>
+                </h2>
+                <p class="text-content">Sistema Integral de Gestión</p>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span class="text-content">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/contabilidad" class="nav-link">
+                        <i class="fas fa-calculator"></i>
+                        <span class="text-content">Contabilidad</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/ventas" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="text-content">Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/compras" class="nav-link">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="text-content">Compras</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/inventario" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span class="text-content">Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/clientes" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span class="text-content">Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/proveedores" class="nav-link">
+                        <i class="fas fa-truck"></i>
+                        <span class="text-content">Proveedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/rrhh" class="nav-link active">
+                        <i class="fas fa-user-tie"></i>
+                        <span class="text-content">Recursos Humanos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/logistica" class="nav-link">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span class="text-content">Logística</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/punto-venta" class="nav-link">
+                        <i class="fas fa-cash-register"></i>
+                        <span class="text-content">Punto de Venta</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/facturacion" class="nav-link">
+                        <i class="fas fa-file-invoice"></i>
+                        <span class="text-content">Facturación</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/reportes" class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="text-content">Reportes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/configuracion" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span class="text-content">Configuración</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1><i class="fas fa-user-tie"></i> Recursos Humanos</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <div class="user-avatar">AD</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--gris-texto);">Admin User</div>
+                            <div style="font-size: 12px; color: var(--gris-texto-secundario);">Administrador</div>
+                        </div>
+                    </div>
+                    <button class="logout-btn" onclick="cerrarSesion()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Estadísticas -->
+                <div class="stats-mini">
+                    <div class="stat-mini">
+                        <div class="stat-mini-icon" style="background: linear-gradient(45deg, var(--verde-exito), var(--verde-exito-gradient));">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-mini-content">
+                            <h3 id="totalEmpleados">0</h3>
+                            <p>Empleados Activos</p>
+                        </div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="stat-mini-icon" style="background: linear-gradient(45deg, var(--azul-principal), var(--azul-principal-gradient));">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="stat-mini-content">
+                            <h3 id="totalDepartamentos">0</h3>
+                            <p>Departamentos</p>
+                        </div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="stat-mini-icon" style="background: linear-gradient(45deg, var(--amarillo-advertencia), #e0a800);">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <div class="stat-mini-content">
+                            <h3 id="totalPuestos">0</h3>
+                            <p>Puestos</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('empleados')">
+                        <i class="fas fa-users"></i> Empleados
+                    </button>
+                    <button class="tab" onclick="switchTab('departamentos')">
+                        <i class="fas fa-building"></i> Departamentos
+                    </button>
+                    <button class="tab" onclick="switchTab('puestos')">
+                        <i class="fas fa-briefcase"></i> Puestos
+                    </button>
+                </div>
+
+                <div id="tab-empleados" class="tab-content active">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <input type="text" class="search-input" id="searchEmpleados" placeholder="Buscar empleados por nombre, RFC, código...">
+                            <button class="btn btn-secondary" onclick="buscarEmpleados()">
+                                <i class="fas fa-search"></i> Buscar
+                            </button>
+                        </div>
+                        <button class="btn btn-primary" onclick="mostrarModalEmpleado()">
+                            <i class="fas fa-plus"></i> Nuevo Empleado
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="loading" id="loadingEmpleados">
+                            <div class="spinner"></div>
+                            <p>Cargando empleados...</p>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Nombre Completo</th>
+                                        <th>RFC</th>
+                                        <th>Puesto</th>
+                                        <th>Departamento</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="empleadosBody">
+                                    <tr>
+                                        <td colspan="7">
+                                            <div class="empty-state">
+                                                <i class="fas fa-users"></i>
+                                                <h3>No hay empleados registrados</h3>
+                                                <p>Comienza agregando un nuevo empleado</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-departamentos" class="tab-content">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <input type="text" class="search-input" id="searchDepartamentos" placeholder="Buscar departamentos...">
+                        </div>
+                        <button class="btn btn-primary" onclick="mostrarModalDepartamento()">
+                            <i class="fas fa-plus"></i> Nuevo Departamento
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="loading" id="loadingDepartamentos">
+                            <div class="spinner"></div>
+                            <p>Cargando departamentos...</p>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Nombre</th>
+                                        <th>Departamento Padre</th>
+                                        <th>Jefe</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="departamentosBody">
+                                    <tr>
+                                        <td colspan="6">
+                                            <div class="empty-state">
+                                                <i class="fas fa-building"></i>
+                                                <h3>No hay departamentos registrados</h3>
+                                                <p>Comienza agregando un nuevo departamento</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-puestos" class="tab-content">
+                    <div class="action-bar">
+                        <div class="search-box">
+                            <input type="text" class="search-input" id="searchPuestos" placeholder="Buscar puestos...">
+                        </div>
+                        <button class="btn btn-primary" onclick="mostrarModalPuesto()">
+                            <i class="fas fa-plus"></i> Nuevo Puesto
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="loading" id="loadingPuestos">
+                            <div class="spinner"></div>
+                            <p>Cargando puestos...</p>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Nombre</th>
+                                        <th>Nivel Jerárquico</th>
+                                        <th>Salario Mín.</th>
+                                        <th>Salario Máx.</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="puestosBody">
+                                    <tr>
+                                        <td colspan="7">
+                                            <div class="empty-state">
+                                                <i class="fas fa-briefcase"></i>
+                                                <h3>No hay puestos registrados</h3>
+                                                <p>Comienza agregando un nuevo puesto</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="modalEmpleado">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> <span id="tituloModalEmpleado">Nuevo Empleado</span></h2>
+                <button class="close-btn" onclick="cerrarModalEmpleado()">&times;</button>
+            </div>
+            <form id="formEmpleado" onsubmit="guardarEmpleado(event)">
+                <input type="hidden" id="empleadoId">
+                
+                <h3 class="form-section-title"><i class="fas fa-user"></i> Información Personal</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre *</label>
+                        <input type="text" id="empleadoNombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" id="empleadoApellido">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipo Documento</label>
+                        <select id="empleadoTipoDocumento">
+                            <option value="">Seleccionar</option>
+                            <option value="DNI">DNI</option>
+                            <option value="CURP">CURP</option>
+                            <option value="RFC">RFC</option>
+                            <option value="PASAPORTE">Pasaporte</option>
+                            <option value="OTRO">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Número Documento</label>
+                        <input type="text" id="empleadoNumeroDocumento">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>RFC</label>
+                        <input type="text" id="empleadoRfc" maxlength="13" placeholder="13 caracteres">
+                    </div>
+                    <div class="form-group">
+                        <label>CURP</label>
+                        <input type="text" id="empleadoCurp" maxlength="18" placeholder="18 caracteres">
+                    </div>
+                    <div class="form-group">
+                        <label>NSS</label>
+                        <input type="text" id="empleadoNss" maxlength="11" placeholder="11 dígitos">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha Nacimiento</label>
+                        <input type="date" id="empleadoFechaNacimiento">
+                    </div>
+                    <div class="form-group">
+                        <label>Género</label>
+                        <select id="empleadoGenero">
+                            <option value="">Seleccionar</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                            <option value="OTRO">Otro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3 class="form-section-title"><i class="fas fa-address-card"></i> Información de Contacto</h3>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <input type="text" id="empleadoDireccion" placeholder="Calle, número, colonia">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Código Postal</label>
+                        <input type="text" id="empleadoCp" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <input type="tel" id="empleadoTelefono" placeholder="10 dígitos">
+                    </div>
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <input type="email" id="empleadoCorreo" placeholder="ejemplo@correo.com">
+                    </div>
+                </div>
+
+                <h3 class="form-section-title"><i class="fas fa-briefcase"></i> Información Laboral</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha Contratación *</label>
+                        <input type="date" id="empleadoFechaContratacion" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo Contrato</label>
+                        <select id="empleadoTipoContrato">
+                            <option value="">Seleccionar</option>
+                            <option value="INDEFINIDO">Indefinido</option>
+                            <option value="TEMPORAL">Temporal</option>
+                            <option value="PRACTICAS">Prácticas</option>
+                            <option value="HONORARIOS">Honorarios</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Puesto *</label>
+                        <select id="empleadoPuestoId" required>
+                            <option value="">Seleccionar puesto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Departamento *</label>
+                        <select id="empleadoDepartamentoId" required>
+                            <option value="">Seleccionar departamento</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Salario Base</label>
+                        <input type="number" id="empleadoSalarioBase" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Jornada</label>
+                        <select id="empleadoJornada">
+                            <option value="COMPLETA">Completa</option>
+                            <option value="PARCIAL">Parcial</option>
+                            <option value="POR_HORAS">Por Horas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalEmpleado()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="modalDepartamento">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-building"></i> <span id="tituloModalDepartamento">Nuevo Departamento</span></h2>
+                <button class="close-btn" onclick="cerrarModalDepartamento()">&times;</button>
+            </div>
+            <form id="formDepartamento" onsubmit="guardarDepartamento(event)">
+                <input type="hidden" id="departamentoId">
+                
+                <div class="form-group">
+                    <label>Código *</label>
+                    <input type="text" id="departamentoCodigo" required placeholder="Ej: DEPT-001">
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="departamentoNombre" required placeholder="Nombre del departamento">
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="departamentoDescripcion" rows="3" placeholder="Descripción del departamento (opcional)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Departamento Padre</label>
+                    <select id="departamentoPadreId">
+                        <option value="">Sin departamento padre</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalDepartamento()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="modalPuesto">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-briefcase"></i> <span id="tituloModalPuesto">Nuevo Puesto</span></h2>
+                <button class="close-btn" onclick="cerrarModalPuesto()">&times;</button>
+            </div>
+            <form id="formPuesto" onsubmit="guardarPuesto(event)">
+                <input type="hidden" id="puestoId">
+                
+                <div class="form-group">
+                    <label>Código *</label>
+                    <input type="text" id="puestoCodigo" required placeholder="Ej: PUESTO-001">
+                </div>
+
+                <div class="form-group">
+                    <label>Nombre *</label>
+                    <input type="text" id="puestoNombre" required placeholder="Nombre del puesto">
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="puestoDescripcion" rows="3" placeholder="Descripción del puesto (opcional)"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Nivel Jerárquico</label>
+                    <input type="number" id="puestoNivelJerarquico" min="1" placeholder="1 = Más alto">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Salario Mínimo</label>
+                        <input type="number" id="puestoSalarioMinimo" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Salario Máximo</label>
+                        <input type="number" id="puestoSalarioMaximo" step="0.01" min="0" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalPuesto()">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+</body>
+</html>
