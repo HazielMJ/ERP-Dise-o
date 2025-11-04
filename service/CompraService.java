@@ -46,7 +46,6 @@ public class CompraService {
             throw new RuntimeException("La compra ya fue recibida");
         }
         
-        // Aumentar stock en inventario
         for (DetalleCompra detalle : compra.getDetalles()) {
             inventarioService.aumentarStock(detalle.getProducto().getIdProducto(), 
                 detalle.getCantidad().intValue());
@@ -56,8 +55,8 @@ public class CompraService {
         compra.setEstado(Compra.EstadoCompra.RECIBIDA);
         compra.setFechaEntregaReal(LocalDate.now());
         compraRepository.save(compra);
+
         
-        // Actualizar saldo del proveedor
         if (compra.getTipoPago() == Compra.TipoPago.CREDITO) {
             proveedorService.actualizarSaldo(compra.getProveedor().getIdProveedor(), compra.getTotalCompra(), true);
         }
@@ -75,10 +74,10 @@ public class CompraService {
         detalle.setCantidadRecibida(detalle.getCantidadRecibida().add(cantidadRecibida));
         detalleCompraRepository.save(detalle);
         
-        // Aumentar stock
+        
         inventarioService.aumentarStock(detalle.getProducto().getIdProducto(), cantidadRecibida.intValue());
         
-        // Verificar si todas las líneas fueron recibidas
+        
         boolean todasRecibidas = compra.getDetalles().stream()
             .allMatch(d -> d.getCantidadRecibida().compareTo(d.getCantidad()) >= 0);
         
