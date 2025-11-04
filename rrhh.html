@@ -105,7 +105,6 @@
         </aside>
 
         <main class="main-content">
-            <!-- Header -->
             <header class="header">
                 <div class="header-left">
                     <h1><i class="fas fa-user-tie"></i> Recursos Humanos</h1>
@@ -125,9 +124,7 @@
                 </div>
             </header>
 
-            <!-- Content Area -->
             <div class="content-area">
-                <!-- Estadísticas -->
                 <div class="stats-mini">
                     <div class="stat-mini">
                         <div class="stat-mini-icon" style="background: linear-gradient(45deg, var(--verde-exito), var(--verde-exito-gradient));">
@@ -158,7 +155,6 @@
                     </div>
                 </div>
 
-                <!-- Tabs -->
                 <div class="tabs">
                     <button class="tab active" onclick="switchTab('empleados')">
                         <i class="fas fa-users"></i> Empleados
@@ -555,5 +551,623 @@
     </div>
 
 
+    <script>
+        const API_BASE = 'http://localhost:8082/api';
+
+        document.getElementById('toggleBtn').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            const icon = this.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-angle-left');
+                icon.classList.add('fa-angle-right');
+            } else {
+                icon.classList.remove('fa-angle-right');
+                icon.classList.add('fa-angle-left');
+            }
+        });
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.closest('.tab').classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+
+            if (tabName === 'empleados') cargarEmpleados();
+            if (tabName === 'departamentos') cargarDepartamentos();
+            if (tabName === 'puestos') cargarPuestos();
+        }
+
+        function cerrarSesion() {
+            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+                showNotification('Cerrando sesión...', 'info');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1000);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--azul-principal);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideInRight 0.3s ease;
+                max-width: 400px;
+            `;
+            
+            if (type === 'success') notification.style.background = 'var(--verde-exito)';
+            if (type === 'error') notification.style.background = 'var(--rojo-peligro)';
+            if (type === 'warning') notification.style.background = 'var(--amarillo-advertencia)';
+            
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        async function cargarEmpleados() {
+            const loading = document.getElementById('loadingEmpleados');
+            const tbody = document.getElementById('empleadosBody');
+            
+            loading.classList.add('active');
+            
+            try {
+                const response = await fetch(`${API_BASE}/empleados/activos`);
+                const empleados = await response.json();
+                
+                if (empleados.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-users"></i>
+                                    <h3>No hay empleados registrados</h3>
+                                    <p>Comienza agregando un nuevo empleado</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = empleados.map(emp => `
+                        <tr>
+                            <td><strong>${emp.codigoEmpleado || 'N/A'}</strong></td>
+                            <td>${emp.nombre} ${emp.apellido || ''}</td>
+                            <td>${emp.rfc || 'N/A'}</td>
+                            <td>${emp.puesto?.nombrePuesto || 'N/A'}</td>
+                            <td>${emp.departamento?.nombreDepartamento || 'N/A'}</td>
+                            <td><span class="badge badge-${emp.estado === 'ACTIVO' ? 'success' : 'warning'}">${emp.estado}</span></td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="editarEmpleado(${emp.idEmpleado})" style="padding: 5px 10px; font-size: 12px; margin-right: 5px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger" onclick="darBajaEmpleado(${emp.idEmpleado})" style="padding: 5px 10px; font-size: 12px;">
+                                    <i class="fas fa-user-slash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+                
+                document.getElementById('totalEmpleados').textContent = empleados.length;
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al cargar empleados', 'error');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h3>Error al cargar datos</h3>
+                                <p>Por favor, verifica que el servidor esté activo</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function mostrarModalEmpleado(id = null) {
+            document.getElementById('tituloModalEmpleado').textContent = id ? 'Editar Empleado' : 'Nuevo Empleado';
+            document.getElementById('formEmpleado').reset();
+            document.getElementById('empleadoId').value = id || '';
+            
+            await cargarPuestosSelect();
+            await cargarDepartamentosSelect();
+            
+            if (id) {
+                try {
+                    const response = await fetch(`${API_BASE}/empleados/${id}`);
+                    const empleado = await response.json();
+                    
+                    document.getElementById('empleadoNombre').value = empleado.nombre || '';
+                    document.getElementById('empleadoApellido').value = empleado.apellido || '';
+                    document.getElementById('empleadoTipoDocumento').value = empleado.tipoDocumento || '';
+                    document.getElementById('empleadoNumeroDocumento').value = empleado.numeroDocumento || '';
+                    document.getElementById('empleadoRfc').value = empleado.rfc || '';
+                    document.getElementById('empleadoCurp').value = empleado.curp || '';
+                    document.getElementById('empleadoNss').value = empleado.nss || '';
+                    document.getElementById('empleadoFechaNacimiento').value = empleado.fechaNacimiento || '';
+                    document.getElementById('empleadoGenero').value = empleado.genero || '';
+                    document.getElementById('empleadoDireccion').value = empleado.direccion || '';
+                    document.getElementById('empleadoCp').value = empleado.cp || '';
+                    document.getElementById('empleadoTelefono').value = empleado.telefono || '';
+                    document.getElementById('empleadoCorreo').value = empleado.correo || '';
+                    document.getElementById('empleadoFechaContratacion').value = empleado.fechaContratacion || '';
+                    document.getElementById('empleadoTipoContrato').value = empleado.tipoContrato || '';
+                    document.getElementById('empleadoPuestoId').value = empleado.puesto?.idPuesto || '';
+                    document.getElementById('empleadoDepartamentoId').value = empleado.departamento?.idDepartamento || '';
+                    document.getElementById('empleadoSalarioBase').value = empleado.salarioBase || '';
+                    document.getElementById('empleadoJornada').value = empleado.jornada || 'COMPLETA';
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification('Error al cargar empleado', 'error');
+                }
+            }
+            
+            document.getElementById('modalEmpleado').classList.add('active');
+        }
+
+        function cerrarModalEmpleado() {
+            document.getElementById('modalEmpleado').classList.remove('active');
+        }
+
+        async function guardarEmpleado(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('empleadoId').value;
+            const empleado = {
+                nombre: document.getElementById('empleadoNombre').value,
+                apellido: document.getElementById('empleadoApellido').value || null,
+                tipoDocumento: document.getElementById('empleadoTipoDocumento').value || null,
+                numeroDocumento: document.getElementById('empleadoNumeroDocumento').value || null,
+                rfc: document.getElementById('empleadoRfc').value || null,
+                curp: document.getElementById('empleadoCurp').value || null,
+                nss: document.getElementById('empleadoNss').value || null,
+                fechaNacimiento: document.getElementById('empleadoFechaNacimiento').value || null,
+                genero: document.getElementById('empleadoGenero').value || null,
+                direccion: document.getElementById('empleadoDireccion').value || null,
+                cp: document.getElementById('empleadoCp').value || null,
+                telefono: document.getElementById('empleadoTelefono').value || null,
+                correo: document.getElementById('empleadoCorreo').value || null,
+                fechaContratacion: document.getElementById('empleadoFechaContratacion').value,
+                tipoContrato: document.getElementById('empleadoTipoContrato').value || null,
+                puesto: { idPuesto: parseInt(document.getElementById('empleadoPuestoId').value) },
+                departamento: { idDepartamento: parseInt(document.getElementById('empleadoDepartamentoId').value) },
+                salarioBase: parseFloat(document.getElementById('empleadoSalarioBase').value) || null,
+                jornada: document.getElementById('empleadoJornada').value
+            };
+            
+            try {
+                const url = id ? `${API_BASE}/empleados/${id}` : `${API_BASE}/empleados`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(empleado)
+                });
+                
+                if (response.ok) {
+                    showNotification(`Empleado ${id ? 'actualizado' : 'creado'} exitosamente`, 'success');
+                    cerrarModalEmpleado();
+                    cargarEmpleados();
+                } else {
+                    const error = await response.text();
+                    showNotification(error || 'Error al guardar empleado', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al guardar empleado', 'error');
+            }
+        }
+
+        async function editarEmpleado(id) {
+            await mostrarModalEmpleado(id);
+        }
+
+        async function darBajaEmpleado(id) {
+            if (!confirm('¿Estás seguro de dar de baja a este empleado?')) return;
+            
+            const fechaTermino = prompt('Fecha de término (YYYY-MM-DD):', new Date().toISOString().split('T')[0]);
+            if (!fechaTermino) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/empleados/${id}/dar-baja?fechaTermino=${fechaTermino}`, {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    showNotification('Empleado dado de baja exitosamente', 'success');
+                    cargarEmpleados();
+                } else {
+                    showNotification('Error al dar de baja empleado', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al dar de baja empleado', 'error');
+            }
+        }
+
+        function buscarEmpleados() {
+            const searchTerm = document.getElementById('searchEmpleados').value.toLowerCase();
+            const rows = document.querySelectorAll('#empleadosBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        document.getElementById('searchEmpleados').addEventListener('input', buscarEmpleados);
+
+        async function cargarDepartamentos() {
+            const loading = document.getElementById('loadingDepartamentos');
+            const tbody = document.getElementById('departamentosBody');
+            
+            loading.classList.add('active');
+            
+            try {
+                const response = await fetch(`${API_BASE}/departamentos`);
+                const departamentos = await response.json();
+                
+                if (departamentos.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-building"></i>
+                                    <h3>No hay departamentos registrados</h3>
+                                    <p>Comienza agregando un nuevo departamento</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = departamentos.map(dept => `
+                        <tr>
+                            <td><strong>${dept.codigoDepartamento}</strong></td>
+                            <td>${dept.nombreDepartamento}</td>
+                            <td>${dept.departamentoPadre?.nombreDepartamento || 'N/A'}</td>
+                            <td>${dept.jefe ? `${dept.jefe.nombre} ${dept.jefe.apellido || ''}` : 'Sin asignar'}</td>
+                            <td><span class="badge badge-${dept.estado === 'ACTIVO' ? 'success' : 'warning'}">${dept.estado}</span></td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="editarDepartamento(${dept.idDepartamento})" style="padding: 5px 10px; font-size: 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+                
+                document.getElementById('totalDepartamentos').textContent = departamentos.length;
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al cargar departamentos', 'error');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h3>Error al cargar datos</h3>
+                                <p>Por favor, verifica que el servidor esté activo</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function mostrarModalDepartamento(id = null) {
+            document.getElementById('tituloModalDepartamento').textContent = id ? 'Editar Departamento' : 'Nuevo Departamento';
+            document.getElementById('formDepartamento').reset();
+            document.getElementById('departamentoId').value = id || '';
+            
+            await cargarDepartamentosPadreSelect();
+            
+            if (id) {
+                try {
+                    const response = await fetch(`${API_BASE}/departamentos/${id}`);
+                    const departamento = await response.json();
+                    
+                    document.getElementById('departamentoCodigo').value = departamento.codigoDepartamento;
+                    document.getElementById('departamentoNombre').value = departamento.nombreDepartamento;
+                    document.getElementById('departamentoDescripcion').value = departamento.descripcion || '';
+                    document.getElementById('departamentoPadreId').value = departamento.departamentoPadre?.idDepartamento || '';
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification('Error al cargar departamento', 'error');
+                }
+            }
+            
+            document.getElementById('modalDepartamento').classList.add('active');
+        }
+
+        function cerrarModalDepartamento() {
+            document.getElementById('modalDepartamento').classList.remove('active');
+        }
+
+        async function guardarDepartamento(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('departamentoId').value;
+            const padreId = document.getElementById('departamentoPadreId').value;
+            
+            const departamento = {
+                codigoDepartamento: document.getElementById('departamentoCodigo').value,
+                nombreDepartamento: document.getElementById('departamentoNombre').value,
+                descripcion: document.getElementById('departamentoDescripcion').value || null,
+                departamentoPadre: padreId ? { idDepartamento: parseInt(padreId) } : null
+            };
+            
+            try {
+                const url = id ? `${API_BASE}/departamentos/${id}` : `${API_BASE}/departamentos`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(departamento)
+                });
+                
+                if (response.ok) {
+                    showNotification(`Departamento ${id ? 'actualizado' : 'creado'} exitosamente`, 'success');
+                    cerrarModalDepartamento();
+                    cargarDepartamentos();
+                } else {
+                    const error = await response.text();
+                    showNotification(error || 'Error al guardar departamento', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al guardar departamento', 'error');
+            }
+        }
+
+        async function editarDepartamento(id) {
+            await mostrarModalDepartamento(id);
+        }
+
+        document.getElementById('searchDepartamentos').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#departamentosBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        async function cargarPuestos() {
+            const loading = document.getElementById('loadingPuestos');
+            const tbody = document.getElementById('puestosBody');
+            
+            loading.classList.add('active');
+            
+            try {
+                const response = await fetch(`${API_BASE}/puestos`);
+                const puestos = await response.json();
+                
+                if (puestos.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <i class="fas fa-briefcase"></i>
+                                    <h3>No hay puestos registrados</h3>
+                                    <p>Comienza agregando un nuevo puesto</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    tbody.innerHTML = puestos.map(puesto => `
+                        <tr>
+                            <td><strong>${puesto.codigoPuesto}</strong></td>
+                            <td>${puesto.nombrePuesto}</td>
+                            <td>${puesto.nivelJerarquico || 'N/A'}</td>
+                            <td>${puesto.salarioMinimo ? parseFloat(puesto.salarioMinimo).toLocaleString('es-MX', {minimumFractionDigits: 2}) : 'N/A'}</td>
+                            <td>${puesto.salarioMaximo ? parseFloat(puesto.salarioMaximo).toLocaleString('es-MX', {minimumFractionDigits: 2}) : 'N/A'}</td>
+                            <td><span class="badge badge-${puesto.estado === 'ACTIVO' ? 'success' : 'warning'}">${puesto.estado}</span></td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="editarPuesto(${puesto.idPuesto})" style="padding: 5px 10px; font-size: 12px;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+                
+                document.getElementById('totalPuestos').textContent = puestos.length;
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al cargar puestos', 'error');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7">
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h3>Error al cargar datos</h3>
+                                <p>Por favor, verifica que el servidor esté activo</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        async function mostrarModalPuesto(id = null) {
+            document.getElementById('tituloModalPuesto').textContent = id ? 'Editar Puesto' : 'Nuevo Puesto';
+            document.getElementById('formPuesto').reset();
+            document.getElementById('puestoId').value = id || '';
+            
+            if (id) {
+                try {
+                    const response = await fetch(`${API_BASE}/puestos/${id}`);
+                    const puesto = await response.json();
+                    
+                    document.getElementById('puestoCodigo').value = puesto.codigoPuesto;
+                    document.getElementById('puestoNombre').value = puesto.nombrePuesto;
+                    document.getElementById('puestoDescripcion').value = puesto.descripcion || '';
+                    document.getElementById('puestoNivelJerarquico').value = puesto.nivelJerarquico || '';
+                    document.getElementById('puestoSalarioMinimo').value = puesto.salarioMinimo || '';
+                    document.getElementById('puestoSalarioMaximo').value = puesto.salarioMaximo || '';
+                } catch (error) {
+                    console.error('Error:', error);
+                    showNotification('Error al cargar puesto', 'error');
+                }
+            }
+            
+            document.getElementById('modalPuesto').classList.add('active');
+        }
+
+        function cerrarModalPuesto() {
+            document.getElementById('modalPuesto').classList.remove('active');
+        }
+
+        async function guardarPuesto(event) {
+            event.preventDefault();
+            
+            const id = document.getElementById('puestoId').value;
+            const puesto = {
+                codigoPuesto: document.getElementById('puestoCodigo').value,
+                nombrePuesto: document.getElementById('puestoNombre').value,
+                descripcion: document.getElementById('puestoDescripcion').value || null,
+                nivelJerarquico: parseInt(document.getElementById('puestoNivelJerarquico').value) || null,
+                salarioMinimo: parseFloat(document.getElementById('puestoSalarioMinimo').value) || null,
+                salarioMaximo: parseFloat(document.getElementById('puestoSalarioMaximo').value) || null
+            };
+            
+            try {
+                const url = id ? `${API_BASE}/puestos/${id}` : `${API_BASE}/puestos`;
+                const method = id ? 'PUT' : 'POST';
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(puesto)
+                });
+                
+                if (response.ok) {
+                    showNotification(`Puesto ${id ? 'actualizado' : 'creado'} exitosamente`, 'success');
+                    cerrarModalPuesto();
+                    cargarPuestos();
+                } else {
+                    const error = await response.text();
+                    showNotification(error || 'Error al guardar puesto', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showNotification('Error al guardar puesto', 'error');
+            }
+        }
+
+        async function editarPuesto(id) {
+            await mostrarModalPuesto(id);
+        }
+
+        document.getElementById('searchPuestos').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#puestosBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        });
+
+        async function cargarPuestosSelect() {
+            try {
+                const response = await fetch(`${API_BASE}/puestos`);
+                const puestos = await response.json();
+                
+                const select = document.getElementById('empleadoPuestoId');
+                select.innerHTML = '<option value="">Seleccionar puesto</option>';
+                puestos.forEach(puesto => {
+                    if (puesto.estado === 'ACTIVO') {
+                        select.innerHTML += `<option value="${puesto.idPuesto}">${puesto.nombrePuesto}</option>`;
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar puestos:', error);
+                showNotification('Error al cargar lista de puestos', 'warning');
+            }
+        }
+
+        async function cargarDepartamentosSelect() {
+            try {
+                const response = await fetch(`${API_BASE}/departamentos`);
+                const departamentos = await response.json();
+                
+                const select = document.getElementById('empleadoDepartamentoId');
+                select.innerHTML = '<option value="">Seleccionar departamento</option>';
+                departamentos.forEach(dept => {
+                    if (dept.estado === 'ACTIVO') {
+                        select.innerHTML += `<option value="${dept.idDepartamento}">${dept.nombreDepartamento}</option>`;
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar departamentos:', error);
+                showNotification('Error al cargar lista de departamentos', 'warning');
+            }
+        }
+
+        async function cargarDepartamentosPadreSelect() {
+            try {
+                const response = await fetch(`${API_BASE}/departamentos`);
+                const departamentos = await response.json();
+                
+                const select = document.getElementById('departamentoPadreId');
+                const idActual = document.getElementById('departamentoId').value;
+                select.innerHTML = '<option value="">Sin departamento padre</option>';
+                departamentos.forEach(dept => {
+                    if (dept.estado === 'ACTIVO' && dept.idDepartamento != idActual) {
+                        select.innerHTML += `<option value="${dept.idDepartamento}">${dept.nombreDepartamento}</option>`;
+                    }
+                });
+            } catch (error) {
+                console.error('Error al cargar departamentos:', error);
+                showNotification('Error al cargar lista de departamentos', 'warning');
+            }
+        }
+
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarEmpleados();
+            showNotification('¡Bienvenido al módulo de Recursos Humanos!', 'success');
+        });
+    </script>
+    
+    
 </body>
 </html>
