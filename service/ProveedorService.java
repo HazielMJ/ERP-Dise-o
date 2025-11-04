@@ -44,4 +44,32 @@ public class ProveedorService {
             proveedor.getSaldoActual().subtract(monto);
         proveedor.setSaldoActual(nuevoSaldo);
         proveedorRepository.save(proveedor);
+    }
     
+    public void desactivarProveedor(Integer id) {
+        Proveedor proveedor = obtenerProveedorPorId(id);
+        proveedor.setEstado(Proveedor.EstadoProveedor.INACTIVO);
+        proveedorRepository.save(proveedor);
+    }
+    
+    @Transactional(readOnly = true)
+    public Proveedor obtenerProveedorPorId(Integer id) {
+        return proveedorRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Proveedor> obtenerTodosLosProveedores() {
+        return proveedorRepository.findAll();
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Proveedor> obtenerProveedoresActivos() {
+        return proveedorRepository.findByEstado(Proveedor.EstadoProveedor.ACTIVO);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Proveedor> buscarProveedoresPorNombre(String nombre) {
+        return proveedorRepository.findByNombreEmpresaContaining(nombre);
+    }
+}
