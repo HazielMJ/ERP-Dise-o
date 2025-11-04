@@ -14,9 +14,9 @@ public class LoginResponse {
     private Boolean cambiarPassword;
     private String mensaje;
     
-    // ✅ NUEVOS CAMPOS: Información del rol y empleado
-    private String rol;                // ROL del empleado: ADMIN, GERENTE, VENDEDOR, etc.
-    private Integer idEmpleado;        // ID del empleado vinculado
-    private String nombreEmpleado;     // Nombre completo del empleado
-    private String codigoEmpleado;     // Código del empleado
+    
+    private String rol;                
+    private Integer idEmpleado;        
+    private String nombreEmpleado;    
+    private String codigoEmpleado;     
 }
