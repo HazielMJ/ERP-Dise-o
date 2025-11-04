@@ -719,5 +719,1033 @@
         </div>
     </div>
 
+    <script>
+// ==================== PARTE 1: VARIABLES, INICIALIZACIÓN Y CARGA DE DATOS ====================
+
+// ==================== VARIABLES GLOBALES ====================
+let compras = [];
+let proveedores = [];
+let productos = [];
+let usuarioActual = null;
+let productoIndex = 0;
+let tabActual = 'compras';
+
+// ==================== INICIALIZACIÓN ====================
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🛒 Módulo de Compras - Iniciando...');
+    
+    cargarUsuario();
+    cargarProveedores();
+    cargarProductos();
+    cargarCompras();
+    inicializarEventos();
+    setFechaHoy();
+    
+    console.log('✅ Módulo cargado correctamente');
+});
+
+// ==================== CARGAR USUARIO ====================
+function cargarUsuario() {
+    const usuarioStorage = localStorage.getItem('usuario');
+    if (usuarioStorage) {
+        usuarioActual = JSON.parse(usuarioStorage);
+        console.log('👤 Usuario:', usuarioActual.nombre);
+    } else {
+        console.warn('⚠️ No hay usuario en sesión');
+    }
+}
+
+// ==================== INICIALIZAR EVENTOS ====================
+function inicializarEventos() {
+    document.getElementById('searchCompras').addEventListener('input', filtrarCompras);
+    document.getElementById('estadoFilterCompras').addEventListener('change', filtrarCompras);
+    document.getElementById('searchProveedores').addEventListener('input', filtrarProveedores);
+    document.getElementById('estadoFilterProveedores').addEventListener('change', filtrarProveedores);
+    document.getElementById('descuentoGlobal').addEventListener('input', calcularTotales);
+    console.log('🎯 Eventos inicializados');
+}
+
+function setFechaHoy() {
+    const hoy = new Date().toISOString().split('T')[0];
+    document.getElementById('fechaCompra').value = hoy;
+}
+
+// ==================== SISTEMA DE TABS ====================
+function cambiarTab(nombreTab) {
+    tabActual = nombreTab;
+    
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.tab === nombreTab) {
+            btn.classList.add('active');
+        }
+    });
+    
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+    document.getElementById(`tab-${nombreTab}`).classList.add('active');
+    
+    const btnAccion = document.getElementById('btnAccionPrincipal');
+    if (nombreTab === 'compras') {
+        btnAccion.innerHTML = '<i class="fas fa-plus"></i> Nueva Compra';
+        btnAccion.onclick = abrirModalNuevaCompra;
+    } else if (nombreTab === 'proveedores') {
+        btnAccion.innerHTML = '<i class="fas fa-plus"></i> Nuevo Proveedor';
+        btnAccion.onclick = abrirModalNuevoProveedor;
+    }
+    
+    console.log(`📑 Tab activo: ${nombreTab}`);
+}
+
+// ==================== CARGAR DATOS - PROVEEDORES ====================
+async function cargarProveedores() {
+    try {
+        const response = await fetch('/api/proveedores');
+        proveedores = await response.json();
+        
+        const select = document.getElementById('proveedorId');
+        select.innerHTML = '<option value="">Seleccione un proveedor</option>';
+        
+        proveedores.forEach(proveedor => {
+            const option = document.createElement('option');
+            option.value = proveedor.idProveedor;
+            option.textContent = proveedor.nombreEmpresa;
+            select.appendChild(option);
+        });
+        
+        renderizarProveedores(proveedores);
+        actualizarEstadisticasProveedores();
+        
+        console.log(`✅ ${proveedores.length} proveedores cargados`);
+    } catch (error) {
+        console.error('❌ Error al cargar proveedores:', error);
+        showNotification('Error al cargar proveedores', 'error');
+    }
+}
+
+// ==================== CARGAR DATOS - PRODUCTOS ====================
+async function cargarProductos() {
+    try {
+        const response = await fetch('/api/productos');
+        productos = await response.json();
+        console.log(`✅ ${productos.length} productos cargados`);
+    } catch (error) {
+        console.error('❌ Error al cargar productos:', error);
+        showNotification('Error al cargar productos', 'error');
+    }
+}
+
+// ==================== CARGAR DATOS - COMPRAS ====================
+async function cargarCompras() {
+    try {
+        const response = await fetch('/api/compras');
+        compras = await response.json();
+        
+        renderizarCompras(compras);
+        actualizarEstadisticasCompras();
+        
+        console.log(`✅ ${compras.length} compras cargadas`);
+    } catch (error) {
+        console.error('❌ Error al cargar compras:', error);
+        showNotification('Error al cargar compras', 'error');
+    }
+}
+
+// ==================== RENDERIZAR TABLA DE COMPRAS ====================
+function renderizarCompras(comprasData) {
+    const tbody = document.getElementById('comprasTableBody');
+    
+    if (comprasData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7" class="empty-state">
+                    <i class="fas fa-shopping-bag"></i>
+                    <h3>No hay compras registradas</h3>
+                    <p>Comienza creando tu primera orden de compra</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = comprasData.map(compra => `
+        <tr>
+            <td><strong>${compra.numeroCompra}</strong></td>
+            <td>${formatearFecha(compra.fechaCompra)}</td>
+            <td>${compra.proveedor.nombreEmpresa}</td>
+            <td><strong style="color: var(--verde-exito)">$${formatearNumero(compra.totalCompra)}</strong></td>
+            <td>${getBadgeEstado(compra.estado)}</td>
+            <td>${getBadgeTipoPago(compra.tipoPago)}</td>
+            <td>
+                <button class="btn btn-icon btn-primary" onclick="verDetallesCompra(${compra.idCompra})" title="Ver Detalles">
+                    <i class="fas fa-eye"></i>
+                </button>
+                ${compra.estado === 'PENDIENTE' ? `
+                    <button class="btn btn-icon btn-success" onclick="recibirCompra(${compra.idCompra})" title="Recibir">
+                        <i class="fas fa-check"></i>
+                    </button>
+                    <button class="btn btn-icon btn-danger" onclick="anularCompra(${compra.idCompra})" title="Anular">
+                        <i class="fas fa-ban"></i>
+                    </button>
+                ` : ''}
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ==================== RENDERIZAR TABLA DE PROVEEDORES ====================
+function renderizarProveedores(proveedoresData) {
+    const tbody = document.getElementById('proveedoresTableBody');
+    
+    if (proveedoresData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-state">
+                    <i class="fas fa-truck"></i>
+                    <h3>No hay proveedores registrados</h3>
+                    <p>Agrega tu primer proveedor</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    tbody.innerHTML = proveedoresData.map(proveedor => `
+        <tr>
+            <td><strong>${proveedor.nombreEmpresa}</strong></td>
+            <td>${proveedor.rfc || 'N/A'}</td>
+            <td>${proveedor.contactoNombre || 'N/A'}</td>
+            <td>${proveedor.telefono || 'N/A'}</td>
+            <td>$${formatearNumero(proveedor.limiteCredito)}</td>
+            <td><strong style="color: ${proveedor.saldoActual > proveedor.limiteCredito ? 'var(--rojo-peligro)' : 'var(--verde-exito)'}">$${formatearNumero(proveedor.saldoActual)}</strong></td>
+            <td>${getEstadoProveedor(proveedor.estado)}</td>
+            <td>
+                <button class="btn btn-icon btn-primary" onclick="verDetallesProveedor(${proveedor.idProveedor})" title="Ver Detalles">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="btn btn-icon btn-warning" onclick="editarProveedor(${proveedor.idProveedor})" title="Editar">
+                    <i class="fas fa-edit"></i>
+                </button>
+                ${proveedor.estado === 'ACTIVO' ? `
+                    <button class="btn btn-icon btn-danger" onclick="desactivarProveedor(${proveedor.idProveedor})" title="Desactivar">
+                        <i class="fas fa-times"></i>
+                    </button>
+                ` : `
+                    <button class="btn btn-icon btn-success" onclick="activarProveedor(${proveedor.idProveedor})" title="Activar">
+                        <i class="fas fa-check"></i>
+                    </button>
+                `}
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ==================== BADGES Y ESTADOS ====================
+function getBadgeEstado(estado) {
+    const badges = {
+        'PENDIENTE': '<span class="badge badge-warning"><i class="fas fa-clock"></i> Pendiente</span>',
+        'RECIBIDA': '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Recibida</span>',
+        'PARCIAL': '<span class="badge badge-info"><i class="fas fa-hourglass-half"></i> Parcial</span>',
+        'ANULADA': '<span class="badge badge-danger"><i class="fas fa-ban"></i> Anulada</span>'
+    };
+    return badges[estado] || estado;
+}
+
+function getBadgeTipoPago(tipo) {
+    const badges = {
+        'EFECTIVO': '<span class="badge badge-success"><i class="fas fa-money-bill"></i> Efectivo</span>',
+        'TARJETA': '<span class="badge badge-info"><i class="fas fa-credit-card"></i> Tarjeta</span>',
+        'TRANSFERENCIA': '<span class="badge badge-info"><i class="fas fa-exchange-alt"></i> Transferencia</span>',
+        'CREDITO': '<span class="badge badge-warning"><i class="fas fa-clock"></i> Crédito</span>'
+    };
+    return badges[tipo] || tipo;
+}
+
+function getEstadoProveedor(estado) {
+    if (estado === 'ACTIVO') {
+        return '<span class="estado-visual estado-activo"><span class="estado-dot"></span> Activo</span>';
+    } else {
+        return '<span class="estado-visual estado-inactivo"><span class="estado-dot"></span> Inactivo</span>';
+    }
+}
+
+// ==================== ESTADÍSTICAS - COMPRAS ====================
+function actualizarEstadisticasCompras() {
+    const total = compras.length;
+    const pendientes = compras.filter(c => c.estado === 'PENDIENTE').length;
+    const recibidas = compras.filter(c => c.estado === 'RECIBIDA').length;
+    
+    const mesActual = new Date().getMonth();
+    const añoActual = new Date().getFullYear();
+    const montoMes = compras
+        .filter(c => {
+            const fecha = new Date(c.fechaCompra);
+            return fecha.getMonth() === mesActual && fecha.getFullYear() === añoActual;
+        })
+        .reduce((sum, c) => sum + parseFloat(c.totalCompra), 0);
+    
+    document.getElementById('totalCompras').textContent = total;
+    document.getElementById('comprasPendientes').textContent = pendientes;
+    document.getElementById('comprasRecibidas').textContent = recibidas;
+    document.getElementById('montoTotalMes').textContent = '$' + formatearNumero(montoMes);
+    document.getElementById('badgeCompras').textContent = total;
+}
+
+// ==================== ESTADÍSTICAS - PROVEEDORES ====================
+function actualizarEstadisticasProveedores() {
+    const total = proveedores.length;
+    const activos = proveedores.filter(p => p.estado === 'ACTIVO').length;
+    const saldoExcedido = proveedores.filter(p => p.saldoActual > p.limiteCredito).length;
+    const deudaTotal = proveedores.reduce((sum, p) => sum + parseFloat(p.saldoActual), 0);
+    
+    document.getElementById('totalProveedores').textContent = total;
+    document.getElementById('proveedoresActivos').textContent = activos;
+    document.getElementById('proveedoresSaldoExcedido').textContent = saldoExcedido;
+    document.getElementById('totalDeudaProveedores').textContent = '$' + formatearNumero(deudaTotal);
+    document.getElementById('badgeProveedores').textContent = total;
+}
+
+// ==================== FILTROS - COMPRAS ====================
+function filtrarCompras() {
+    const searchTerm = document.getElementById('searchCompras').value.toLowerCase();
+    const estadoFilter = document.getElementById('estadoFilterCompras').value;
+    
+    const comprasFiltradas = compras.filter(compra => {
+        const matchSearch = !searchTerm || 
+            compra.numeroCompra.toLowerCase().includes(searchTerm) ||
+            compra.proveedor.nombreEmpresa.toLowerCase().includes(searchTerm);
+        
+        const matchEstado = !estadoFilter || compra.estado === estadoFilter;
+        
+        return matchSearch && matchEstado;
+    });
+    
+    renderizarCompras(comprasFiltradas);
+}
+
+// ==================== FILTROS - PROVEEDORES ====================
+function filtrarProveedores() {
+    const searchTerm = document.getElementById('searchProveedores').value.toLowerCase();
+    const estadoFilter = document.getElementById('estadoFilterProveedores').value;
+    
+    const proveedoresFiltrados = proveedores.filter(proveedor => {
+        const matchSearch = !searchTerm || 
+            proveedor.nombreEmpresa.toLowerCase().includes(searchTerm) ||
+            (proveedor.rfc && proveedor.rfc.toLowerCase().includes(searchTerm)) ||
+            (proveedor.contactoNombre && proveedor.contactoNombre.toLowerCase().includes(searchTerm));
+        
+        const matchEstado = !estadoFilter || proveedor.estado === estadoFilter;
+        
+        return matchSearch && matchEstado;
+    });
+    
+    renderizarProveedores(proveedoresFiltrados);
+}
+// ==================== PARTE 2: MODALES Y GESTIÓN DE PRODUCTOS ====================
+
+// ==================== MODAL - NUEVA COMPRA ====================
+function abrirModalNuevaCompra() {
+    document.getElementById('modalCompraTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Nueva Orden de Compra';
+    document.getElementById('formCompra').reset();
+    document.getElementById('compraId').value = '';
+    document.getElementById('productosTableBody').innerHTML = '';
+    productoIndex = 0;
+    calcularTotales();
+    setFechaHoy();
+    document.getElementById('modalCompra').classList.add('active');
+}
+
+// ==================== MODAL - NUEVO PROVEEDOR ====================
+function abrirModalNuevoProveedor() {
+    document.getElementById('modalProveedorTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Nuevo Proveedor';
+    document.getElementById('formProveedor').reset();
+    document.getElementById('proveedorIdEdit').value = '';
+    document.getElementById('estadoProveedor').value = 'ACTIVO';
+    document.getElementById('modalProveedor').classList.add('active');
+}
+
+// ==================== CERRAR MODALES ====================
+function cerrarModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+}
+
+// ==================== GESTIÓN DE PRODUCTOS EN COMPRA ====================
+function agregarProducto() {
+    if (productos.length === 0) {
+        showNotification('No hay productos disponibles', 'warning');
+        return;
+    }
+    
+    const tbody = document.getElementById('productosTableBody');
+    const index = productoIndex++;
+    
+    const row = document.createElement('tr');
+    row.id = `producto-row-${index}`;
+    row.innerHTML = `
+        <td>
+            <select class="form-input producto-select" data-index="${index}" required>
+                <option value="">Seleccione producto</option>
+                ${productos.map(p => `<option value="${p.idProducto}" data-precio="${p.precioCompra}">${p.nombre}</option>`).join('')}
+            </select>
+        </td>
+        <td>
+            <input type="number" class="form-input producto-cantidad" data-index="${index}" 
+                   min="1" step="0.01" value="1" required>
+        </td>
+        <td>
+            <input type="number" class="form-input producto-precio" data-index="${index}" 
+                   min="0" step="0.01" value="0" required>
+        </td>
+        <td>
+            <input type="number" class="form-input producto-descuento" data-index="${index}" 
+                   min="0" step="0.01" value="0">
+        </td>
+        <td>
+            <strong class="producto-subtotal" data-index="${index}">$0.00</strong>
+        </td>
+        <td>
+            <button type="button" class="btn btn-icon btn-danger" onclick="eliminarProducto(${index})">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    `;
+    
+    tbody.appendChild(row);
+    
+    row.querySelector('.producto-select').addEventListener('change', function(e) {
+        const option = e.target.selectedOptions[0];
+        const precio = option.dataset.precio || 0;
+        row.querySelector('.producto-precio').value = precio;
+        calcularSubtotalProducto(index);
+    });
+    
+    row.querySelector('.producto-cantidad').addEventListener('input', () => calcularSubtotalProducto(index));
+    row.querySelector('.producto-precio').addEventListener('input', () => calcularSubtotalProducto(index));
+    row.querySelector('.producto-descuento').addEventListener('input', () => calcularSubtotalProducto(index));
+}
+
+function eliminarProducto(index) {
+    const row = document.getElementById(`producto-row-${index}`);
+    if (row) {
+        row.remove();
+        calcularTotales();
+    }
+}
+
+function calcularSubtotalProducto(index) {
+    const row = document.getElementById(`producto-row-${index}`);
+    if (!row) return;
+    
+    const cantidad = parseFloat(row.querySelector('.producto-cantidad').value) || 0;
+    const precio = parseFloat(row.querySelector('.producto-precio').value) || 0;
+    const descuento = parseFloat(row.querySelector('.producto-descuento').value) || 0;
+    
+    const subtotal = (cantidad * precio) - descuento;
+    row.querySelector('.producto-subtotal').textContent = '$' + formatearNumero(subtotal);
+    
+    calcularTotales();
+}
+
+function calcularTotales() {
+    let subtotal = 0;
+    
+    document.querySelectorAll('.producto-subtotal').forEach(element => {
+        const valor = element.textContent.replace('$', '').replace(/,/g, '');
+        subtotal += parseFloat(valor) || 0;
+    });
+    
+    const descuentoGlobal = parseFloat(document.getElementById('descuentoGlobal').value) || 0;
+    const impuestos = subtotal * 0.16;
+    const total = subtotal + impuestos - descuentoGlobal;
+    
+    document.getElementById('subtotalDisplay').textContent = '$' + formatearNumero(subtotal);
+    document.getElementById('impuestosDisplay').textContent = '$' + formatearNumero(impuestos);
+    document.getElementById('descuentoDisplay').textContent = '$' + formatearNumero(descuentoGlobal);
+    document.getElementById('totalDisplay').textContent = '$' + formatearNumero(total);
+}
+
+// ==================== GUARDAR COMPRA ====================
+async function guardarCompra() {
+    if (!document.getElementById('fechaCompra').value) {
+        showNotification('Seleccione la fecha de compra', 'error');
+        return;
+    }
+    
+    if (!document.getElementById('proveedorId').value) {
+        showNotification('Seleccione un proveedor', 'error');
+        return;
+    }
+    
+    const productosRows = document.querySelectorAll('#productosTableBody tr');
+    if (productosRows.length === 0) {
+        showNotification('Agregue al menos un producto', 'error');
+        return;
+    }
+    
+    const detalles = [];
+    let valid = true;
+    
+    productosRows.forEach(row => {
+        const index = row.id.split('-')[2];
+        const productoId = row.querySelector('.producto-select').value;
+        const cantidad = row.querySelector('.producto-cantidad').value;
+        const precio = row.querySelector('.producto-precio').value;
+        const descuento = row.querySelector('.producto-descuento').value || 0;
+        
+        if (!productoId || !cantidad || !precio) {
+            valid = false;
+            return;
+        }
+        
+        const subtotal = (parseFloat(cantidad) * parseFloat(precio)) - parseFloat(descuento);
+        const impuesto = subtotal * 0.16;
+        
+        detalles.push({
+            producto: { idProducto: parseInt(productoId) },
+            cantidad: parseFloat(cantidad),
+            precioUnitario: parseFloat(precio),
+            descuento: parseFloat(descuento),
+            subtotal: subtotal,
+            impuesto: impuesto,
+            total: subtotal + impuesto
+        });
+    });
+    
+    if (!valid) {
+        showNotification('Complete todos los campos de los productos', 'error');
+        return;
+    }
+    
+    const subtotalTotal = detalles.reduce((sum, d) => sum + d.subtotal, 0);
+    const impuestosTotal = detalles.reduce((sum, d) => sum + d.impuesto, 0);
+    const descuentoGlobal = parseFloat(document.getElementById('descuentoGlobal').value) || 0;
+    
+    const compra = {
+        fechaCompra: document.getElementById('fechaCompra').value,
+        proveedor: { idProveedor: parseInt(document.getElementById('proveedorId').value) },
+        usuario: { id: usuarioActual?.id || 1 },
+        numeroFacturaProveedor: document.getElementById('numeroFacturaProveedor').value || null,
+        tipoPago: document.getElementById('tipoPago').value,
+        fechaEntregaEstimada: document.getElementById('fechaEntregaEstimada').value || null,
+        observaciones: document.getElementById('observaciones').value || null,
+        subtotal: subtotalTotal,
+        impuestos: impuestosTotal,
+        descuento: descuentoGlobal,
+        totalCompra: subtotalTotal + impuestosTotal - descuentoGlobal,
+        estado: 'PENDIENTE',
+        detalles: detalles
+    };
+    
+    try {
+        const response = await fetch('/api/compras', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(compra)
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al guardar la compra');
+        }
+        
+        await response.json();
+        showNotification('✅ Compra registrada exitosamente', 'success');
+        cerrarModal('modalCompra');
+        cargarCompras();
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('❌ Error al guardar la compra', 'error');
+    }
+}
+
+// ==================== GUARDAR PROVEEDOR ====================
+async function guardarProveedor() {
+    if (!document.getElementById('nombreEmpresa').value.trim()) {
+        showNotification('El nombre de la empresa es requerido', 'error');
+        return;
+    }
+    
+    const proveedorId = document.getElementById('proveedorIdEdit').value;
+    const proveedor = {
+        nombreEmpresa: document.getElementById('nombreEmpresa').value.trim(),
+        rfc: document.getElementById('rfcProveedor').value.trim() || null,
+        telefono: document.getElementById('telefonoProveedor').value.trim() || null,
+        email: document.getElementById('emailProveedor').value.trim() || null,
+        direccion: document.getElementById('direccionProveedor').value.trim() || null,
+        contactoNombre: document.getElementById('contactoNombre').value.trim() || null,
+        contactoTelefono: document.getElementById('contactoTelefono').value.trim() || null,
+        limiteCredito: parseFloat(document.getElementById('limiteCreditoProveedor').value) || 0,
+        estado: document.getElementById('estadoProveedor').value,
+        observaciones: document.getElementById('observacionesProveedor').value.trim() || null
+    };
+    
+    try {
+        const url = proveedorId ? `/api/proveedores/${proveedorId}` : '/api/proveedores';
+        const method = proveedorId ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(proveedor)
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al guardar el proveedor');
+        }
+        
+        await response.json();
+        showNotification(`✅ Proveedor ${proveedorId ? 'actualizado' : 'registrado'} exitosamente`, 'success');
+        cerrarModal('modalProveedor');
+        cargarProveedores();
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('❌ Error al guardar el proveedor', 'error');
+    }
+}
+
+// ==================== PARTE 3: DETALLES, ACCIONES Y UTILIDADES ====================
+
+// ==================== VER DETALLES COMPRA ====================
+async function verDetallesCompra(idCompra) {
+    try {
+        const response = await fetch(`/api/compras/${idCompra}`);
+        const compra = await response.json();
+        
+        const content = document.getElementById('detallesCompraContent');
+        content.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 25px;">
+                <div class="form-group">
+                    <label class="form-label">Número de Compra</label>
+                    <div style="padding: 12px; background: var(--gris-suave-3); border-radius: 8px; font-weight: 700;">
+                        ${compra.numeroCompra}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Fecha</label>
+                    <div style="padding: 12px; background: var(--gris-suave-3); border-radius: 8px;">
+                        ${formatearFecha(compra.fechaCompra)}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Proveedor</label>
+                    <div style="padding: 12px; background: var(--gris-suave-3); border-radius: 8px;">
+                        ${compra.proveedor.nombreEmpresa}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Estado</label>
+                    <div style="padding: 12px; background: var(--gris-suave-3); border-radius: 8px;">
+                        ${getBadgeEstado(compra.estado)}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo de Pago</label>
+                    <div style="padding: 12px; background: var(--gris-suave-3); border-radius: 8px;">
+                        ${getBadgeTipoPago(compra.tipoPago)}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">N° Factura Proveedor</label>
+                    <div style="padding: 12px; background: var(--gris-suave-3); border-radius: 8px;">
+                        ${compra.numeroFacturaProveedor || 'N/A'}
+                    </div>
+                </div>
+            </div>
+            
+            <h4 style="color: var(--azul-principal); margin-bottom: 15px;">
+                <i class="fas fa-boxes"></i> Productos
+            </h4>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unit.</th>
+                        <th>Descuento</th>
+                        <th>Subtotal</th>
+                        <th>IVA</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${compra.detalles.map(detalle => `
+                        <tr>
+                            <td>${detalle.producto.nombre}</td>
+                            <td>${detalle.cantidad}</td>
+                            <td>$${formatearNumero(detalle.precioUnitario)}</td>
+                            <td>$${formatearNumero(detalle.descuento)}</td>
+                            <td>$${formatearNumero(detalle.subtotal)}</td>
+                            <td>$${formatearNumero(detalle.impuesto)}</td>
+                            <td><strong>$${formatearNumero(detalle.total)}</strong></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            
+            <div class="total-section" style="margin-top: 20px;">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <strong>$${formatearNumero(compra.subtotal)}</strong>
+                </div>
+                <div class="total-row">
+                    <span>IVA (16%):</span>
+                    <strong>$${formatearNumero(compra.impuestos)}</strong>
+                </div>
+                <div class="total-row">
+                    <span>Descuento:</span>
+                    <strong>$${formatearNumero(compra.descuento)}</strong>
+                </div>
+                <div class="total-row final">
+                    <span>TOTAL:</span>
+                    <strong>$${formatearNumero(compra.totalCompra)}</strong>
+                </div>
+            </div>
+            
+            ${compra.observaciones ? `
+                <div style="margin-top: 20px; padding: 15px; background: var(--gris-suave-3); border-radius: 8px;">
+                    <strong>Observaciones:</strong>
+                    <p style="margin-top: 8px;">${compra.observaciones}</p>
+                </div>
+            ` : ''}
+        `;
+        
+        document.getElementById('modalDetallesCompra').classList.add('active');
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al cargar los detalles', 'error');
+    }
+}
+
+// ==================== VER DETALLES PROVEEDOR ====================
+async function verDetallesProveedor(idProveedor) {
+    try {
+        const response = await fetch(`/api/proveedores/${idProveedor}`);
+        const proveedor = await response.json();
+        
+        const content = document.getElementById('detallesProveedorContent');
+        content.innerHTML = `
+            <div class="info-card">
+                <h4 style="color: var(--azul-principal); margin-bottom: 15px;">
+                    <i class="fas fa-building"></i> Información Empresarial
+                </h4>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-building"></i> Empresa:</span>
+                    <span class="info-value">${proveedor.nombreEmpresa}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-id-card"></i> RFC:</span>
+                    <span class="info-value">${proveedor.rfc || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-phone"></i> Teléfono:</span>
+                    <span class="info-value">${proveedor.telefono || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-envelope"></i> Email:</span>
+                    <span class="info-value">${proveedor.email || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-map-marker-alt"></i> Dirección:</span>
+                    <span class="info-value">${proveedor.direccion || 'N/A'}</span>
+                </div>
+            </div>
+            
+            <div class="info-card">
+                <h4 style="color: var(--azul-principal); margin-bottom: 15px;">
+                    <i class="fas fa-user"></i> Contacto
+                </h4>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-user"></i> Nombre:</span>
+                    <span class="info-value">${proveedor.contactoNombre || 'N/A'}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-phone-alt"></i> Teléfono:</span>
+                    <span class="info-value">${proveedor.contactoTelefono || 'N/A'}</span>
+                </div>
+            </div>
+            
+            <div class="info-card">
+                <h4 style="color: var(--azul-principal); margin-bottom: 15px;">
+                    <i class="fas fa-dollar-sign"></i> Información Financiera
+                </h4>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-money-bill-wave"></i> Límite de Crédito:</span>
+                    <span class="info-value" style="color: var(--azul-principal)">$${formatearNumero(proveedor.limiteCredito)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-wallet"></i> Saldo Actual:</span>
+                    <span class="info-value" style="color: ${proveedor.saldoActual > proveedor.limiteCredito ? 'var(--rojo-peligro)' : 'var(--verde-exito)'}">$${formatearNumero(proveedor.saldoActual)}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-toggle-on"></i> Estado:</span>
+                    <span class="info-value">${getEstadoProveedor(proveedor.estado)}</span>
+                </div>
+            </div>
+            
+            ${proveedor.observaciones ? `
+                <div class="info-card">
+                    <h4 style="color: var(--azul-principal); margin-bottom: 15px;">
+                        <i class="fas fa-comment"></i> Observaciones
+                    </h4>
+                    <p>${proveedor.observaciones}</p>
+                </div>
+            ` : ''}
+        `;
+        
+        document.getElementById('modalDetallesProveedor').classList.add('active');
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al cargar los detalles del proveedor', 'error');
+    }
+}
+
+// ==================== EDITAR PROVEEDOR ====================
+async function editarProveedor(idProveedor) {
+    try {
+        const response = await fetch(`/api/proveedores/${idProveedor}`);
+        const proveedor = await response.json();
+        
+        document.getElementById('modalProveedorTitle').innerHTML = '<i class="fas fa-edit"></i> Editar Proveedor';
+        document.getElementById('proveedorIdEdit').value = proveedor.idProveedor;
+        document.getElementById('nombreEmpresa').value = proveedor.nombreEmpresa;
+        document.getElementById('rfcProveedor').value = proveedor.rfc || '';
+        document.getElementById('telefonoProveedor').value = proveedor.telefono || '';
+        document.getElementById('emailProveedor').value = proveedor.email || '';
+        document.getElementById('direccionProveedor').value = proveedor.direccion || '';
+        document.getElementById('contactoNombre').value = proveedor.contactoNombre || '';
+        document.getElementById('contactoTelefono').value = proveedor.contactoTelefono || '';
+        document.getElementById('limiteCreditoProveedor').value = proveedor.limiteCredito;
+        document.getElementById('estadoProveedor').value = proveedor.estado;
+        document.getElementById('observacionesProveedor').value = proveedor.observaciones || '';
+        
+        document.getElementById('modalProveedor').classList.add('active');
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('Error al cargar el proveedor', 'error');
+    }
+}
+
+// ==================== RECIBIR COMPRA ====================
+async function recibirCompra(idCompra) {
+    if (!confirm('¿Confirma que ha recibido esta compra? Se actualizará el inventario.')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/compras/${idCompra}/recibir`, {
+            method: 'POST'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al recibir la compra');
+        }
+        
+        showNotification('✅ Compra recibida. Inventario actualizado', 'success');
+        cargarCompras();
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('❌ Error al recibir la compra', 'error');
+    }
+}
+
+// ==================== ANULAR COMPRA ====================
+async function anularCompra(idCompra) {
+    if (!confirm('⚠️ ¿Está seguro de anular esta compra? Esta acción no se puede deshacer.')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/compras/${idCompra}/anular`, {
+            method: 'POST'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al anular la compra');
+        }
+        
+        showNotification('✅ Compra anulada exitosamente', 'success');
+        cargarCompras();
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('❌ Error al anular la compra', 'error');
+    }
+}
+
+// ==================== DESACTIVAR PROVEEDOR ====================
+async function desactivarProveedor(idProveedor) {
+    if (!confirm('¿Está seguro de desactivar este proveedor?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/proveedores/${idProveedor}/desactivar`, {
+            method: 'PUT'
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al desactivar el proveedor');
+        }
+        
+        showNotification('✅ Proveedor desactivado exitosamente', 'success');
+        cargarProveedores();
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('❌ Error al desactivar el proveedor', 'error');
+    }
+}
+
+// ==================== ACTIVAR PROVEEDOR ====================
+async function activarProveedor(idProveedor) {
+    try {
+        const proveedor = proveedores.find(p => p.idProveedor === idProveedor);
+        if (!proveedor) return;
+        
+        proveedor.estado = 'ACTIVO';
+        
+        const response = await fetch(`/api/proveedores/${idProveedor}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(proveedor)
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al activar el proveedor');
+        }
+        
+        showNotification('✅ Proveedor activado exitosamente', 'success');
+        cargarProveedores();
+    } catch (error) {
+        console.error('Error:', error);
+        showNotification('❌ Error al activar el proveedor', 'error');
+    }
+}
+
+// ==================== SIDEBAR ====================
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('active');
+}
+
+document.addEventListener('click', function(e) {
+    const sidebar = document.getElementById('sidebar');
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    
+    if (window.innerWidth <= 768) {
+        if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+            sidebar.classList.remove('active');
+        }
+    }
+});
+
+// ==================== CERRAR SESIÓN ====================
+function cerrarSesion() {
+    if (confirm('¿Está seguro que desea cerrar sesión?')) {
+        showNotification('Cerrando sesión...', 'info');
+        localStorage.removeItem('usuario');
+        
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1000);
+    }
+}
+
+// ==================== UTILIDADES ====================
+function formatearFecha(fecha) {
+    if (!fecha) return 'N/A';
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-MX', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+}
+
+function formatearNumero(numero) {
+    return parseFloat(numero).toLocaleString('es-MX', { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+    });
+}
+
+// ==================== NOTIFICACIONES ====================
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    let bgColor, icon;
+    
+    switch(type) {
+        case 'success':
+            bgColor = 'var(--verde-exito)';
+            icon = 'fa-check-circle';
+            break;
+        case 'error':
+            bgColor = 'var(--rojo-peligro)';
+            icon = 'fa-exclamation-circle';
+            break;
+        case 'warning':
+            bgColor = 'var(--amarillo-advertencia)';
+            icon = 'fa-exclamation-triangle';
+            break;
+        default:
+            bgColor = 'var(--azul-principal)';
+            icon = 'fa-info-circle';
+    }
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${bgColor};
+        color: ${type === 'warning' ? '#333' : 'white'};
+        padding: 18px 24px;
+        border-radius: 12px;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+        z-index: 10000;
+        animation: slideIn 0.4s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+        max-width: 350px;
+    `;
+    
+    notification.innerHTML = `
+        <i class="fas ${icon}" style="font-size: 20px;"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.4s ease';
+        setTimeout(() => notification.remove(), 400);
+    }, 3500);
+}
+
+// ==================== ESTILOS DE ANIMACIÓN ====================
+const styleAnimations = document.createElement('style');
+styleAnimations.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+`;
+document.head.appendChild(styleAnimations);
+
+// ==================== CONSOLE LOG ====================
+console.log('%c🛒 Módulo de Compras', 'color: #4a90e2; font-size: 20px; font-weight: bold;');
+console.log('%c✅ Sistema cargado', 'color: #28a745; font-size: 14px;');
+console.log('%c📋 Funcionalidades:', 'color: #333; font-size: 13px; font-weight: bold;');
+console.log('%c  • CRUD Compras', 'color: #6c757d; font-size: 12px;');
+console.log('%c  • CRUD Proveedores', 'color: #6c757d; font-size: 12px;');
+console.log('%c  • Sistema de tabs', 'color: #6c757d; font-size: 12px;');
+console.log('%c  • Filtros en tiempo real', 'color: #6c757d; font-size: 12px;');
+
+</script>
+</body>
+</html>
 </body>
 </html>
