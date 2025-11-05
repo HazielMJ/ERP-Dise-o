@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Facturación</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+td.acciones {
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* Espacio entre los botones */
+}
+
+/* Botones de acción */
+.btn-action {
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    min-width: 80px; /* Tamaño uniforme */
+}
+
+/* Botón Modificar */
+.btn-edit {
+    background-color: #2196f3; /* azul */
+    color: #fff;
+}
+.btn-edit:hover {
+    background-color: #0b7dda;
+}
+
+/* Botón Eliminar */
+.btn-delete {
+    background-color: #e53935; /* rojo */
+    color: #fff;
+}
+.btn-delete:hover {
+    background-color: #c62828;
+}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <aside class="sidebar">
+        <div class="sidebar-header"><h2>ERP</h2><p>Panel de administración</p></div>
+        <ul class="nav-menu">
+            <li><a class="nav-link" th:href="@{/impuesto}">Impuestos</a></li>
+            <li><a class="nav-link" th:href="@{/contabilidad}">Contabilidad</a></li>
+            <li><a class="nav-link" th:href="@{/nomina}">Nómina</a></li>
+            <li><a class="nav-link active" th:href="@{/factura}">Facturas</a></li>
+        </ul>
+        <div class="logout-section"><button class="btn-logout">Cerrar sesión</button></div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header"><h1>ERP – Facturación</h1></header>
+
+        <section class="content-section">
+            <div class="card">
+                <div class="section-title">
+                    <h3>Gestión de Facturación</h3>
+                    <p class="small-muted">Alta, edición y consulta de facturas</p>
+                </div>
+
+                <!-- ✅ FORMULARIO FACTURA -->
+                <form th:action="@{/factura/guardar}" method="post" class="row">
+                    <input type="hidden" name="id_factura" th:value="${factura.id_factura}" />
+
+                    <div class="field">
+                        <label>Número Factura</label>
+                        <input type="text" name="numero_factura" th:value="${factura.numero_factura}" required placeholder="Ej: F-0001">
+                    </div>
+
+                    <div class="field">
+                        <label>Serie</label>
+                        <input type="text" name="serie" th:value="${factura.serie}" placeholder="Ej: A">
+                    </div>
+
+                    <div class="field">
+                        <label>Folio</label>
+                        <input type="number" name="folio" th:value="${factura.folio}" placeholder="Ej: 001">
+                    </div>
+
+                   <!-- Fecha Emisión -->
+<div class="field">
+  <label>Fecha Emisión</label>
+  <input type="date" name="fecha_emision"
+         th:value="${factura != null and factura.fecha_emision != null ? #temporals.format(factura.fecha_emision, 'yyyy-MM-dd') : ''}" />
+</div>
+
+<!-- Fecha Vencimiento -->
+<div class="field">
+  <label>Fecha Vencimiento</label>
+  <input type="date" name="fecha_vencimiento"
+         th:value="${factura != null and factura.fecha_vencimiento != null ? #temporals.format(factura.fecha_vencimiento, 'yyyy-MM-dd') : ''}" />
+</div>
+
+<!-- Fecha Creación -->
+<div class="field">
+  <label>Fecha Creación</label>
+  <input type="datetime-local" name="fecha_creacion"
+         th:value="${factura != null and factura.fecha_creacion != null ? #temporals.format(factura.fecha_creacion, 'yyyy-MM-dd''T''HH:mm') : ''}" />
+</div>
+
+
+                    <div class="field">
+                        <label>ID Cliente</label>
+                        <input type="number" name="id_cliente" th:value="${factura.id_cliente}" required placeholder="Ej: 1">
+                    </div>
+
+                    <div class="field">
+                        <label>ID Venta</label>
+                        <input type="number" name="id_venta" th:value="${factura.id_venta}" required placeholder="Ej: 1">
+                    </div>
+
+                    <div class="field">
+                        <label>Subtotal</label>
+                        <input type="number" step="0.01" name="subtotal" th:value="${factura.subtotal}" placeholder="Ej: 5000.00" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Impuestos</label>
+                        <input type="number" step="0.01" name="impuestos" th:value="${factura.impuestos}" placeholder="Ej: 800.00">
+                    </div>
+
+                    <div class="field">
+                        <label>Descuentos</label>
+                        <input type="number" step="0.01" name="descuentos" th:value="${factura.descuentos}" placeholder="Ej: 0.00">
+                    </div>
+
+                    <div class="field">
+                        <label>Total</label>
+                        <input type="number" step="0.01" name="total" th:value="${factura.total}" placeholder="Ej: 5800.00" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Estado</label>
+                        <select name="estado" required>
+                            <option th:selected="${factura.estado == 'PENDIENTE'}" value="PENDIENTE">PENDIENTE</option>
+                            <option th:selected="${factura.estado == 'PAGADA'}" value="PAGADA">PAGADA</option>
+                            <option th:selected="${factura.estado == 'VENCIDA'}" value="VENCIDA">VENCIDA</option>
+                            <option th:selected="${factura.estado == 'ANULADA'}" value="ANULADA">ANULADA</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Tipo Factura</label>
+                        <select name="tipo_factura">
+                            <option th:selected="${factura.tipo_factura == 'VENTA'}" value="VENTA">VENTA</option>
+                            <option th:selected="${factura.tipo_factura == 'COMPRA'}" value="COMPRA">COMPRA</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Forma Pago</label>
+                        <select name="forma_pago">
+                            <option th:selected="${factura.forma_pago == 'EFECTIVO'}" value="EFECTIVO">EFECTIVO</option>
+                            <option th:selected="${factura.forma_pago == 'TARJETA'}" value="TARJETA">TARJETA</option>
+                            <option th:selected="${factura.forma_pago == 'TRANSFERENCIA'}" value="TRANSFERENCIA">TRANSFERENCIA</option>
+                            <option th:selected="${factura.forma_pago == 'MIXTO'}" value="MIXTO">MIXTO</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Uso CFDI</label>
+                        <input type="text" name="uso_cfdi" th:value="${factura.uso_cfdi}" value="G03">
+                    </div>
+
+                    <div class="field">
+                        <label>Método Pago</label>
+                        <input type="text" name="metodo_pago" th:value="${factura.metodo_pago}" value="PUE">
+                    </div>
+
+                    <div class="field">
+                        <label>UUID Fiscal</label>
+                        <input type="text" name="uuid_fiscal" th:value="${factura.uuid_fiscal}" placeholder="Ej: UUID-ABCD-1234">
+                    </div>
+
+                    <input type="hidden" name="id_usuario" th:value="${factura.id_usuario}" value="1">
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" 
+                            th:text="${factura.id_factura != null} ? 'Actualizar' : 'Guardar'"></button>
+                    </div>
+                </form>
+
+                <!-- ✅ TABLA FACTURAS COMPLETA -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Número Factura</th><th>Serie</th><th>Folio</th>
+                            <th>Fecha Emisión</th><th>Fecha Vencimiento</th><th>Fecha Creación</th>
+                            <th>ID Cliente</th><th>ID Venta</th><th>Subtotal</th><th>Impuestos</th>
+                            <th>Descuentos</th><th>Total</th><th>Estado</th><th>Tipo Factura</th>
+                            <th>Forma Pago</th><th>Uso CFDI</th><th>Método Pago</th>
+                            <th>UUID Fiscal</th><th>ID Usuario</th><th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="f : ${facturas}">
+                            <td th:text="${f.id_factura}"></td>
+                            <td th:text="${f.numero_factura}"></td>
+                            <td th:text="${f.serie}"></td>
+                            <td th:text="${f.folio}"></td>
+                            <td th:text="${f.fecha_emision != null ? #temporals.format(f.fecha_emision, 'yyyy-MM-dd') : ''}"></td>
+<td th:text="${f.fecha_vencimiento != null ? #temporals.format(f.fecha_vencimiento, 'yyyy-MM-dd') : ''}"></td>
+<td th:text="${f.fecha_creacion != null ? #temporals.format(f.fecha_creacion, 'yyyy-MM-dd HH:mm') : ''}"></td>
+
+                            <td th:text="${f.id_cliente}"></td>
+                            <td th:text="${f.id_venta}"></td>
+                            <td th:text="${f.subtotal}"></td>
+                            <td th:text="${f.impuestos}"></td>
+                            <td th:text="${f.descuentos}"></td>
+                            <td th:text="${f.total}"></td>
+                            <td th:text="${f.estado}"></td>
+                            <td th:text="${f.tipo_factura}"></td>
+                            <td th:text="${f.forma_pago}"></td>
+                            <td th:text="${f.uso_cfdi}"></td>
+                            <td th:text="${f.metodo_pago}"></td>
+                            <td th:text="${f.uuid_fiscal}"></td>
+                            <td th:text="${f.id_usuario}"></td>
+                            <td>
+                                <a th:href="@{'/factura/editar/' + ${f.id_factura}}" class="btn-action btn-edit">Modificar</a>
+                                <a th:href="@{'/factura/eliminar/' + ${f.id_factura}}" class="btn-action btn-delete">Eliminar</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
