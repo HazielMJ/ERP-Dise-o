@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ErpDashboardApplication<erp-dashboard>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.erp.dashboard.erp_dashboard.ErpDashboardApplication",
+            "projectName": "erp-dashboard",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
