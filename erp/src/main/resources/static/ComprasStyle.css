@@ -40,7 +40,7 @@ body {
     min-height: 100vh;
 }
 
-/* ==================== SIDEBAR ==================== */
+
 .sidebar {
     width: 280px;
     background: linear-gradient(180deg, var(--azul-principal) 0%, var(--azul-principal-gradient) 100%);
@@ -217,14 +217,14 @@ body {
     background: linear-gradient(135deg, var(--rojo-peligro-dark), #a71d2a);
 }
 
-/* ==================== MAIN CONTENT ==================== */
+
 .main-content {
     flex: 1;
     margin-left: 280px;
     min-height: 100vh;
 }
 
-/* ==================== PAGE HEADER ==================== */
+
 .page-header {
     background: var(--blanco-fondo);
     padding: 25px 35px;
@@ -296,7 +296,7 @@ body {
     transition: all 0.3s ease;
 }
 
-/* ==================== TABS NAVIGATION ==================== */
+
 .tabs-container {
     background: var(--blanco-fondo);
     padding: 0 35px;
@@ -365,7 +365,7 @@ body {
     text-align: center;
 }
 
-/* ==================== TAB CONTENT ==================== */
+
 .content-section {
     padding: 35px;
     animation: fadeIn 0.4s ease;
@@ -380,7 +380,7 @@ body {
     animation: fadeIn 0.4s ease;
 }
 
-/* ==================== TOOLBAR ==================== */
+
 .toolbar {
     display: flex;
     justify-content: space-between;
@@ -450,7 +450,7 @@ body {
     flex-wrap: wrap;
 }
 
-/* ==================== BUTTONS ==================== */
+
 .btn {
     padding: 12px 24px;
     border: none;
@@ -531,7 +531,7 @@ body {
     font-size: 13px;
 }
 
-/* ==================== STATS CARDS ==================== */
+
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -595,7 +595,7 @@ body {
     font-weight: 600;
 }
 
-/* ==================== TABLE ==================== */
+
 .table-container {
     background: var(--blanco-fondo);
     border-radius: 16px;
@@ -658,7 +658,7 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* ==================== BADGES ==================== */
+
 .badge {
     padding: 6px 12px;
     border-radius: 20px;
@@ -694,7 +694,7 @@ body {
     color: var(--gris-texto-secundario);
 }
 
-/* ==================== MODAL ==================== */
+
 .modal {
     display: none;
     position: fixed;
@@ -782,7 +782,7 @@ body {
     bottom: 0;
 }
 
-/* ==================== FORM ==================== */
+
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -847,7 +847,7 @@ body {
     opacity: 0.6;
 }
 
-/* ==================== PRODUCTOS TABLE (DENTRO DEL MODAL) ==================== */
+
 .productos-section {
     margin-top: 25px;
     padding-top: 25px;
@@ -913,7 +913,7 @@ body {
     color: var(--azul-principal);
 }
 
-/* ==================== EMPTY STATE ==================== */
+
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -932,7 +932,7 @@ body {
     color: var(--gris-texto);
 }
 
-/* ==================== ANIMATIONS ==================== */
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -954,7 +954,7 @@ body {
     50% { transform: scale(1.05); }
 }
 
-/* ==================== RESPONSIVE ==================== */
+
 @media (max-width: 1200px) {
     .stats-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -1028,7 +1028,7 @@ body {
     }
 }
 
-/* ==================== SCROLLBAR ==================== */
+
 ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
@@ -1047,7 +1047,7 @@ body {
     background: var(--azul-principal-gradient);
 }
 
-/* ==================== INFO CARD (PARA PROVEEDORES) ==================== */
+
 .info-card {
     background: var(--gris-suave-3);
     padding: 20px;
@@ -1081,14 +1081,14 @@ body {
     color: var(--gris-texto);
 }
 
-/* ==================== ACCIONES RÁPIDAS ==================== */
+
 .quick-actions {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
 }
 
-/* ==================== ESTADO VISUAL ==================== */
+
 .estado-visual {
     display: inline-flex;
     align-items: center;
@@ -1126,7 +1126,7 @@ body {
     box-shadow: 0 0 8px var(--rojo-peligro);
 }
 
-/* ==================== LOADING SPINNER ==================== */
+
 .loading-spinner {
     display: inline-block;
     width: 20px;
@@ -1141,7 +1141,7 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* ==================== ALERT BOX ==================== */
+
 .alert-box {
     padding: 15px 20px;
     border-radius: 10px;
@@ -1181,7 +1181,7 @@ body {
     color: var(--rojo-peligro);
 }
 
-/* ==================== DETALLES EXPANDIBLES ==================== */
+
 .detalle-expandible {
     background: var(--blanco-fondo);
     border-radius: 12px;
@@ -1225,7 +1225,7 @@ body {
     background: var(--azul-hover);
 }
 
-/* ==================== PAGINATION ==================== */
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -1261,7 +1261,7 @@ body {
     cursor: not-allowed;
 }
 
-/* ==================== GRID LAYOUT (ALTERNATIVA A TABLA) ==================== */
+
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -1309,7 +1309,7 @@ body {
     border-top: 1px solid var(--gris-suave-2);
 }
 
-/* ==================== TOOLTIPS ==================== */
+
 .tooltip {
     position: relative;
     display: inline-block;
@@ -1338,7 +1338,7 @@ body {
     opacity: 1;
 }
 
-/* ==================== UTILITIES ==================== */
+
 .text-center { text-align: center; }
 .text-right { text-align: right; }
 .text-left { text-align: left; }
