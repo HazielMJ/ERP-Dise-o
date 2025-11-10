@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Módulo de Nómina - Sistema ERP</title>
+
+  <!-- Iconos -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <!-- MISMO CSS QUE COMPRAS -->
+<link rel="stylesheet" th:href="@{/css/ComprasStyle.css}">
+
+  <script>
+    // ===== Tabs (mismo comportamiento que compras) =====
+    let tabActual = 'nomina';
+    function cambiarTab(nombreTab) {
+      tabActual = nombreTab;
+
+      document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === nombreTab);
+      });
+
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.toggle('active', content.id === `tab-${nombreTab}`);
+      });
+
+      const btnAccion = document.getElementById('btnAccionPrincipal');
+      if (nombreTab === 'nomina') {
+        btnAccion.innerHTML = '<i class="fas fa-plus"></i> Nueva Nómina';
+        btnAccion.onclick = abrirModalNuevaNomina;
+      } else if (nombreTab === 'detalle') {
+        btnAccion.innerHTML = '<i class="fas fa-plus"></i> Nuevo Concepto';
+        btnAccion.onclick = abrirModalDetalleNomina;
+      }
+    }
+
+    // ===== Buscador en Nómina =====
+    function filtrarNominas() {
+      const q = (document.getElementById('searchNomina').value || '').toLowerCase();
+      const estado = document.getElementById('estadoFilterNomina').value;
+      const filas = document.querySelectorAll('#nominaTableBody tr');
+
+      filas.forEach(tr => {
+        const texto = tr.innerText.toLowerCase();
+        const estadoTd = tr.querySelector('[data-col="estado"]')?.innerText || '';
+        const coincideTexto = texto.includes(q);
+        const coincideEstado = !estado || estadoTd === estado;
+        tr.style.display = (coincideTexto && coincideEstado) ? '' : 'none';
+      });
+    }
+
+    // ===== Cálculo automático de totales en el formulario =====
+    function calcularNomina() {
+      const dias = parseFloat(document.getElementById('dias_trabajados').value) || 0;
+      const salario = parseFloat(document.getElementById('salario_diario').value) || 0;
+
+      const percepciones = dias * salario;
+      document.getElementById('total_percepciones').value = percepciones.toFixed(2);
+
+      const deducciones = percepciones * 0.10; // regla simple (ajústala si tu lógica cambia)
+      document.getElementById('total_deducciones').value = deducciones.toFixed(2);
+
+      const neto = percepciones - deducciones;
+      document.getElementById('total_neto').value = neto.toFixed(2);
+    }
+
+    // ===== Modales (misma UX que Compras) =====
+    function abrirModalNuevaNomina() {
+      document.getElementById('modalNominaTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Nueva Nómina';
+      document.getElementById('modalNomina').classList.add('active');
+    }
+    function abrirModalDetalleNomina() {
+      document.getElementById('modalDetalleTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Nuevo Concepto';
+      document.getElementById('modalDetalle').classList.add('active');
+    }
+    function cerrarModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    // ===== Sidebar móvil =====
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // set tab inicial
+      cambiarTab('nomina');
+      // wire filtros
+      document.getElementById('searchNomina').addEventListener('input', filtrarNominas);
+      document.getElementById('estadoFilterNomina').addEventListener('change', filtrarNominas);
+      // cálculo en vivo
+      const calcInputs = ['dias_trabajados','salario_diario'];
+      calcInputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', calcularNomina);
+      });
+    });
+  </script>
+</head>
+<body>
+  <div class="main-container">
+
+    <!-- ==== Sidebar igual que Compras ==== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-chart-line"></i> ERP System</h2>
+        <p>Sistema Integral de Gestión</p>
+      </div>
+
+      <ul class="nav-menu">
+        <li class="nav-section"><div class="nav-section-title">PRINCIPAL</div></li>
+        <li class="nav-item">
+          <a href="/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+        </li>
+
+        <li class="nav-section"><div class="nav-section-title">ADMINISTRACIÓN</div></li>
+        <li class="nav-item">
+          <a href="/usuarios" class="nav-link"><i class="fas fa-user-shield"></i><span>Usuarios</span></a>
+        </li>
+        <li class="nav-item">
+          <a href="/contabilidad" class="nav-link"><i class="fas fa-calculator"></i><span>Contabilidad</span></a>
+        </li>
+<li class="nav-item">
+  <a href="/impuesto" class="nav-link">
+    <i class="fas fa-percent"></i><span>Impuestos</span>
+  </a>
+</li>
+
+        <li class="nav-section"><div class="nav-section-title">VENTAS</div></li>
+        <li class="nav-item">
+          <a href="/clientes" class="nav-link"><i class="fas fa-users"></i><span>Clientes</span></a>
+        </li>
+        <li class="nav-item">
+          <a href="/ventas" class="nav-link"><i class="fas fa-shopping-cart"></i><span>Ventas</span></a>
+        </li>
+        <li class="nav-item">
+          <a href="/factura" class="nav-link"><i class="fas fa-file-invoice"></i><span>Facturación</span></a>
+        </li>
+        <li class="nav-item">
+          <a href="/punto-venta" class="nav-link"><i class="fas fa-cash-register"></i><span>Punto de Venta</span></a>
+        </li>
+
+        <li class="nav-section"><div class="nav-section-title">COMPRAS</div></li>
+        <li class="nav-item">
+          <a href="/proveedores" class="nav-link"><i class="fas fa-truck"></i><span>Proveedores</span></a>
+        </li>
+        <li class="nav-item">
+          <a href="/compras" class="nav-link"><i class="fas fa-shopping-bag"></i><span>Compras</span></a>
+        </li>
+
+        <li class="nav-section"><div class="nav-section-title">INVENTARIO</div></li>
+        <li class="nav-item">
+          <a href="/inventario" class="nav-link"><i class="fas fa-boxes"></i><span>Inventario</span></a>
+        </li>
+        <li class="nav-item">
+          <a href="/almacenes" class="nav-link"><i class="fas fa-warehouse"></i><span>Almacenes</span></a>
+        </li>
+
+        <li class="nav-section"><div class="nav-section-title">RECURSOS HUMANOS</div></li>
+        <li class="nav-item">
+          <a href="/rrhh" class="nav-link"><i class="fas fa-user-tie"></i><span>Empleados</span></a>
+        </li>
+        <li class="nav-item">
+          <a href="/nomina" class="nav-link active"><i class="fas fa-money-bill-wave"></i><span>Nómina</span></a>
+        </li>
+
+        <li class="nav-section"><div class="nav-section-title">ANÁLISIS</div></li>
+        <li class="nav-item">
+          <a href="/reportes" class="nav-link"><i class="fas fa-chart-bar"></i><span>Reportes</span></a>
+        </li>
+
+        <li class="nav-section"><div class="nav-section-title">SISTEMA</div></li>
+        <li class="nav-item">
+          <a href="/configuracion" class="nav-link"><i class="fas fa-cog"></i><span>Configuración</span></a>
+        </li>
+      </ul>
+
+      <div class="logout-section">
+        <button class="btn-logout"><i class="fas fa-sign-out-alt"></i><span>Cerrar Sesión</span></button>
+      </div>
+    </aside>
+
+    <!-- ==== Contenido principal ==== -->
+    <div class="main-content">
+
+      <!-- Header -->
+      <header class="page-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+          <div>
+            <h1><i class="fas fa-money-bill-wave"></i> Módulo de Nómina</h1>
+            <div class="breadcrumb">
+              <a href="/dashboard"><i class="fas fa-home"></i> Inicio</a>
+              <span>/</span>
+              <span>Nómina</span>
+            </div>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="btn btn-primary" id="btnAccionPrincipal">
+            <i class="fas fa-plus"></i> Nueva Nómina
+          </button>
+        </div>
+      </header>
+
+      <!-- Tabs -->
+      <div class="tabs-container">
+        <div class="tabs-nav">
+          <button class="tab-button active" onclick="cambiarTab('nomina')" data-tab="nomina">
+            <i class="fas fa-money-bill"></i><span>Nómina</span>
+          </button>
+          <button class="tab-button" onclick="cambiarTab('detalle')" data-tab="detalle">
+            <i class="fas fa-list"></i><span>Detalle Nómina</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ====== TAB NÓMINA ====== -->
+      <div class="tab-content active" id="tab-nomina">
+        <section class="content-section">
+
+          <!-- KPIs opcionales (mismo estilo de tarjetas) -->
+          <div class="stats-grid">
+            <div class="stat-card" style="border-left-color: var(--azul-principal)">
+              <div class="stat-header">
+                <div class="stat-icon" style="background: linear-gradient(135deg,var(--azul-principal),var(--azul-secundario));">
+                  <i class="fas fa-users"></i>
+                </div>
+              </div>
+              <div class="stat-value" th:text="${#lists.size(nominas)}">0</div>
+              <div class="stat-label">Nóminas registradas</div>
+            </div>
+
+            <div class="stat-card" style="border-left-color: var(--verde-exito)">
+              <div class="stat-header">
+                <div class="stat-icon" style="background: linear-gradient(135deg,var(--verde-exito),var(--verde-exito-gradient));">
+                  <i class="fas fa-check-circle"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="nominasPagadas">—</div>
+              <div class="stat-label">Pagadas (vista)</div>
+            </div>
+
+            <div class="stat-card" style="border-left-color: var(--amarillo-advertencia)">
+              <div class="stat-header">
+                <div class="stat-icon" style="background: linear-gradient(135deg,var(--amarillo-advertencia),var(--amarillo-advertencia-dark));">
+                  <i class="fas fa-clock"></i>
+                </div>
+              </div>
+              <div class="stat-value" id="nominasPendientes">—</div>
+              <div class="stat-label">Pendientes (vista)</div>
+            </div>
+          </div>
+
+          <!-- Toolbar con buscador / filtros -->
+          <div class="toolbar">
+            <div class="search-box">
+              <i class="fas fa-search input-icon"></i>
+              <input type="text" id="searchNomina" class="search-input" placeholder="Buscar por periodo, empleado, tipo..." />
+            </div>
+            <div class="toolbar-actions">
+              <select class="filter-select" id="estadoFilterNomina">
+                <option value="">Todos los estados</option>
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="PAGADA">Pagada</option>
+                <option value="ANULADA">Anulada</option>
+              </select>
+              <a class="btn btn-secondary" th:href="@{/nomina}">
+                <i class="fas fa-sync-alt"></i> Actualizar
+              </a>
+              <button class="btn btn-primary" type="button" onclick="abrirModalNuevaNomina()">
+                <i class="fas fa-plus"></i> Nueva Nómina
+              </button>
+            </div>
+          </div>
+
+          <!-- Tabla -->
+          <div class="table-container">
+            <div class="table-header">
+              <h3 class="table-title"><i class="fas fa-list"></i> Listado de Nómina</h3>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Empleado</th>
+                  <th>Asiento</th>
+                  <th>Periodo</th>
+                  <th>Inicio</th>
+                  <th>Fin</th>
+                  <th>Pago</th>
+                  <th>Días</th>
+                  <th>Salario</th>
+                  <th>Percepciones</th>
+                  <th>Deducciones</th>
+                  <th>Neto</th>
+                  <th>Tipo</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="nominaTableBody">
+                <tr th:if="${#lists.isEmpty(nominas)}">
+                  <td colspan="15" class="empty-state">
+                    <i class="fas fa-money-bill"></i>
+                    <h3>No hay nóminas registradas</h3>
+                    <p>Comienza creando tu primera nómina</p>
+                  </td>
+                </tr>
+
+                <tr th:each="n : ${nominas}">
+                  <td th:text="${n.id_nomina}"></td>
+                  <td th:text="${n.id_empleado}"></td>
+                  <td th:text="${n.id_asiento_contable}"></td>
+                  <td th:text="${n.periodo_nomina}"></td>
+                  <td th:text="${#dates.format(n.fecha_inicio, 'yyyy-MM-dd')}"></td>
+                  <td th:text="${#dates.format(n.fecha_fin, 'yyyy-MM-dd')}"></td>
+                  <td th:text="${#dates.format(n.fecha_pago, 'yyyy-MM-dd')}"></td>
+                  <td th:text="${n.dias_trabajados}"></td>
+                  <td th:text="${n.salario_diario}"></td>
+                  <td th:text="${n.total_percepciones}"></td>
+                  <td th:text="${n.total_deducciones}"></td>
+                  <td th:text="${n.total_neto}"></td>
+                  <td th:text="${n.tipo_nomina}"></td>
+                  <td data-col="estado" th:text="${n.estado}"></td>
+                  <td>
+                    <a class="btn btn-icon btn-danger" th:href="@{'/nomina/eliminar/' + ${n.id_nomina}}" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- ====== TAB DETALLE NÓMINA ====== -->
+      <div class="tab-content" id="tab-detalle">
+        <section class="content-section">
+
+          <div class="toolbar">
+            <div class="search-box">
+              <i class="fas fa-search input-icon"></i>
+              <input type="text" id="searchDetalle" class="search-input" placeholder="Buscar por concepto, tipo..." oninput="
+                const q=(this.value||'').toLowerCase();
+                document.querySelectorAll('#detalleTableBody tr').forEach(tr=>{
+                  tr.style.display = tr.innerText.toLowerCase().includes(q)?'':'none';
+                });
+              "/>
+            </div>
+            <div class="toolbar-actions">
+              <a class="btn btn-secondary" th:href="@{/detallenomina}">
+                <i class="fas fa-sync-alt"></i> Actualizar
+              </a>
+              <button class="btn btn-primary" type="button" onclick="abrirModalDetalleNomina()">
+                <i class="fas fa-plus"></i> Nuevo Concepto
+              </button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <div class="table-header">
+              <h3 class="table-title"><i class="fas fa-list"></i> Detalle de Nómina</h3>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>ID Nómina</th>
+                  <th>Tipo</th>
+                  <th>Concepto</th>
+                  <th>Clave SAT</th>
+                  <th>Monto</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="detalleTableBody">
+                <tr th:if="${#lists.isEmpty(detallenomina)}">
+                  <td colspan="7" class="empty-state">
+                    <i class="fas fa-list"></i>
+                    <h3>No hay conceptos registrados</h3>
+                    <p>Agrega tu primer concepto de nómina</p>
+                  </td>
+                </tr>
+
+                <tr th:each="d : ${detallenomina}">
+                  <td th:text="${d.id_detalle_nomina}"></td>
+                  <td th:text="${d.id_nomina}"></td>
+                  <td th:text="${d.tipo}"></td>
+                  <td th:text="${d.concepto}"></td>
+                  <td th:text="${d.clave_sat}"></td>
+                  <td th:text="${d.monto}"></td>
+                  <td>
+                    <a class="btn btn-icon btn-danger" th:href="@{'/detallenomina/eliminar/' + ${d.id_detalle_nomina}}" title="Eliminar">
+                      <i class="fas fa-trash"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== Modal: Nueva Nómina ===== -->
+  <div class="modal" id="modalNomina">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalNominaTitle">
+          <i class="fas fa-plus-circle"></i> Nueva Nómina
+        </h3>
+        <button class="modal-close" onclick="cerrarModal('modalNomina')"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <form th:action="@{/nomina/guardar}" method="post" id="formNomina" oninput="calcularNomina()">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">ID Empleado <span class="required">*</span></label>
+              <input type="number" class="form-input" name="id_empleado" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">ID Asiento Contable <span class="required">*</span></label>
+              <input type="number" class="form-input" name="id_asiento_contable" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Periodo Nómina <span class="required">*</span></label>
+              <input type="text" class="form-input" name="periodo_nomina" placeholder="YYYY-MM" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Fecha Inicio <span class="required">*</span></label>
+              <input type="date" class="form-input" name="fecha_inicio" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Fecha Fin <span class="required">*</span></label>
+              <input type="date" class="form-input" name="fecha_fin" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Fecha Pago <span class="required">*</span></label>
+              <input type="date" class="form-input" name="fecha_pago" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Días Trabajados <span class="required">*</span></label>
+              <input type="number" class="form-input" name="dias_trabajados" id="dias_trabajados" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Salario Diario <span class="required">*</span></label>
+              <input type="number" step="0.01" class="form-input" name="salario_diario" id="salario_diario" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Total Percepciones</label>
+              <input type="number" step="0.01" class="form-input" name="total_percepciones" id="total_percepciones" readonly>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Total Deducciones</label>
+              <input type="number" step="0.01" class="form-input" name="total_deducciones" id="total_deducciones" readonly>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Total Neto</label>
+              <input type="number" step="0.01" class="form-input" name="total_neto" id="total_neto" readonly>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tipo Nómina <span class="required">*</span></label>
+              <select class="form-select" name="tipo_nomina" required>
+                <option value="Mensual">Mensual</option>
+                <option value="Quincenal">Quincenal</option>
+                <option value="Semanal">Semanal</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Estado <span class="required">*</span></label>
+              <select class="form-select" name="estado" required>
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="PAGADA">PAGADA</option>
+                <option value="ANULADA">ANULADA</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Observaciones</label>
+              <textarea class="form-textarea" name="observaciones" placeholder="Notas internas (opcional)"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalNomina')"><i class="fas fa-times"></i> Cancelar</button>
+        <button type="submit" class="btn btn-primary" form="formNomina"><i class="fas fa-save"></i> Guardar Nómina</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Modal: Detalle Nómina ===== -->
+  <div class="modal" id="modalDetalle">
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalDetalleTitle">
+          <i class="fas fa-plus-circle"></i> Nuevo Concepto
+        </h3>
+        <button class="modal-close" onclick="cerrarModal('modalDetalle')"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <form th:action="@{/detallenomina/guardar}" method="post" id="formDetalle">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">ID Nómina <span class="required">*</span></label>
+              <input type="number" class="form-input" name="id_nomina" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tipo <span class="required">*</span></label>
+              <select class="form-select" name="tipo" required>
+                <option value="PERCEPCION">Percepción</option>
+                <option value="DEDUCCION">Deducción</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Concepto <span class="required">*</span></label>
+              <input type="text" class="form-input" name="concepto" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Clave SAT</label>
+              <input type="text" class="form-input" name="clave_sat" maxlength="10">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Monto <span class="required">*</span></label>
+              <input type="number" step="0.01" class="form-input" name="monto" required>
+            </div>
+
+            <div class="form-group full-width">
+              <label class="form-label">Notas</label>
+              <textarea class="form-textarea" name="notas" placeholder="Opcional"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalDetalle')"><i class="fas fa-times"></i> Cancelar</button>
+        <button type="submit" class="btn btn-primary" form="formDetalle"><i class="fas fa-save"></i> Guardar Concepto</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
