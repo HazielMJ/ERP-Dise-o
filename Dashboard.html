@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sidebar -->
+
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2><i class="fas fa-chart-line"></i> ERP System</h2>
@@ -19,90 +19,146 @@
                 <li class="nav-section">
                     <div class="nav-section-title">PRINCIPAL</div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link active">
+                <li class="nav-item" data-modulo="dashboard">
+                    <a href="/dashboard" class="nav-link active">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 
-                <li class="nav-section">
+                <li class="nav-section" data-seccion="administracion">
                     <div class="nav-section-title">ADMINISTRACIÓN</div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
+                <li class="nav-item" data-modulo="usuarios">
+                    <a href="/usuarios" class="nav-link">
                         <i class="fas fa-user-shield"></i>
                         <span>Usuarios</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
+                <li class="nav-item" data-modulo="contabilidad">
+                    <a href="/contabilidad" class="nav-link">
                         <i class="fas fa-calculator"></i>
                         <span>Contabilidad</span>
                     </a>
                 </li>
                 
-                <li class="nav-section">
+                <li class="nav-section" data-seccion="ventas">
                     <div class="nav-section-title">VENTAS</div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
+                <li class="nav-item" data-modulo="clientes">
+                    <a href="/clientes" class="nav-link">
                         <i class="fas fa-users"></i>
                         <span>Clientes</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
+                <li class="nav-item" data-modulo="ventas">
+                    <a href="/ventas" class="nav-link">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Ventas</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
+                <li class="nav-item" data-modulo="facturacion">
+                    <a href="/facturacion" class="nav-link">
                         <i class="fas fa-file-invoice"></i>
                         <span>Facturación</span>
                     </a>
                 </li>
+                <li class="nav-item" data-modulo="punto-venta">
+                    <a href="/punto-venta" class="nav-link">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Punto de Venta</span>
+                    </a>
+                </li>
                 
-                <li class="nav-section">
+                <li class="nav-section" data-seccion="compras">
+                    <div class="nav-section-title">COMPRAS</div>
+                </li>
+                <li class="nav-item" data-modulo="proveedores">
+                    <a href="/proveedores" class="nav-link">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-modulo="compras">
+                    <a href="/Compras" class="nav-link">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+                
+                <li class="nav-section" data-seccion="inventario">
                     <div class="nav-section-title">INVENTARIO</div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
+                <li class="nav-item" data-modulo="inventario">
+                    <a href="/inventario" class="nav-link">
                         <i class="fas fa-boxes"></i>
                         <span>Inventario</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
+                <li class="nav-item" data-modulo="almacenes">
+                    <a href="/almacenes" class="nav-link">
                         <i class="fas fa-warehouse"></i>
                         <span>Almacenes</span>
                     </a>
                 </li>
                 
-                <li class="nav-section">
+                <li class="nav-section" data-seccion="rrhh">
+                    <div class="nav-section-title">RECURSOS HUMANOS</div>
+                </li>
+                <li class="nav-item" data-modulo="rrhh">
+                    <a href="/rrhh" class="nav-link">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Empleados</span>
+                    </a>
+                </li>
+                <li class="nav-item" data-modulo="nomina">
+                    <a href="/nomina" class="nav-link">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Nómina</span>
+                    </a>
+                </li>
+                
+                <li class="nav-section" data-seccion="logistica">
+                    <div class="nav-section-title">LOGÍSTICA</div>
+                </li>
+                <li class="nav-item" data-modulo="logistica">
+                    <a href="/logistica" class="nav-link">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span>Envíos</span>
+                    </a>
+                </li>
+                
+                <li class="nav-section" data-seccion="analisis">
                     <div class="nav-section-title">ANÁLISIS</div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link">
+                <li class="nav-item" data-modulo="reportes">
+                    <a href="/reportes" class="nav-link">
                         <i class="fas fa-chart-bar"></i>
                         <span>Reportes</span>
                     </a>
                 </li>
-            </ul>
-            
-            <!-- Botón de cerrar sesión -->
+                
+                <li class="nav-section" data-seccion="sistema">
+                    <div class="nav-section-title">SISTEMA</div>
+                </li>
+                <li class="nav-item" data-modulo="configuracion">
+                    <a href="/configuracion" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+                <li>
             <div class="logout-section">
                 <button class="btn-logout" onclick="cerrarSesion()">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Cerrar Sesión</span>
                 </button>
             </div>
+                </li>
+            </ul>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Header -->
             <header class="header">
                 <div class="header-left">
                     <button class="mobile-menu-btn" onclick="toggleSidebar()">
@@ -111,39 +167,38 @@
                     <div>
                         <h1><i class="fas fa-tachometer-alt"></i> Dashboard Principal</h1>
                         <div class="breadcrumb">
-                            <a href="#"><i class="fas fa-home"></i> Inicio</a>
+                            <a href="/dashboard"><i class="fas fa-home"></i> Inicio</a>
                             <span>/</span>
                             <span>Dashboard</span>
                         </div>
                     </div>
                 </div>
                 <div class="header-right">
-                    <button class="header-btn">
+                    <button class="header-btn" onclick="buscarRapido()">
                         <i class="fas fa-search"></i>
                     </button>
-                    <button class="header-btn" style="position: relative;">
+                    <button class="header-btn" onclick="verNotificaciones()" style="position: relative;">
                         <i class="fas fa-bell"></i>
                         <span class="notification-badge">3</span>
                     </button>
-                    <button class="header-btn">
+                    <button class="header-btn" onclick="verMensajes()">
                         <i class="fas fa-envelope"></i>
                     </button>
-                    <div class="user-info">
-                        <div class="user-avatar">AD</div>
+                    <div class="user-info" onclick="verPerfil()">
+                        <div class="user-avatar" id="userAvatar">AD</div>
                         <div>
                             <div style="font-weight: 700; color: var(--gris-texto); font-size: 14px;">
-                                <span class="status-indicator status-online"></span>Admin
+                                <span class="status-indicator status-online"></span><span id="userName">Admin</span>
                             </div>
-                            <div style="font-size: 12px; color: var(--gris-texto-secundario);">Administrador</div>
+                            <div style="font-size: 12px; color: var(--gris-texto-secundario);" id="userRole">Administrador</div>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <!-- Dashboard Content -->
             <section class="content-section">
                 <div class="stats-grid">
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="window.location.href='/ventas'">
                         <div class="stat-content">
                             <div class="stat-header">
                                 <div class="stat-icon" style="background: linear-gradient(135deg, var(--verde-exito), var(--verde-exito-gradient));">
@@ -158,7 +213,7 @@
                         </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="window.location.href='/ventas'">
                         <div class="stat-content">
                             <div class="stat-header">
                                 <div class="stat-icon" style="background: linear-gradient(135deg, var(--azul-principal), var(--azul-principal-gradient));">
@@ -173,7 +228,7 @@
                         </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="window.location.href='/inventario'">
                         <div class="stat-content">
                             <div class="stat-header">
                                 <div class="stat-icon" style="background: linear-gradient(135deg, var(--amarillo-advertencia), var(--amarillo-advertencia-dark));">
@@ -188,7 +243,7 @@
                         </div>
                     </div>
 
-                    <div class="stat-card">
+                    <div class="stat-card" onclick="window.location.href='/clientes'">
                         <div class="stat-content">
                             <div class="stat-header">
                                 <div class="stat-icon" style="background: linear-gradient(135deg, var(--morado), var(--morado-dark));">
@@ -269,28 +324,28 @@
                             </div>
                             <span style="font-weight: 700; color: var(--verde-exito); font-size: 18px;">$2,150.00</span>
                         </div>
-                        <button class="btn btn-primary" style="width: 100%; margin-top: 15px;">
+                        <button class="btn btn-primary" onclick="window.location.href='/ventas'" style="width: 100%; margin-top: 15px;">
                             <i class="fas fa-eye"></i> Ver Todas las Ventas
                         </button>
                     </div>
 
                     <div class="card">
                         <h3><i class="fas fa-exclamation-triangle"></i> Alertas del Sistema</h3>
-                        <div class="alert-item alert-warning">
+                        <div class="alert-item alert-warning" onclick="window.location.href='/inventario'">
                             <i class="fas fa-boxes" style="margin-right: 12px; font-size: 20px;"></i>
                             <div style="flex: 1;">
                                 <div style="font-weight: 600;">Stock bajo en 12 productos</div>
                                 <div style="font-size: 12px; opacity: 0.8;">Es necesario reabastecer inventario</div>
                             </div>
                         </div>
-                        <div class="alert-item alert-danger">
+                        <div class="alert-item alert-danger" onclick="window.location.href='/facturacion'">
                             <i class="fas fa-file-invoice" style="margin-right: 12px; font-size: 20px;"></i>
                             <div style="flex: 1;">
                                 <div style="font-weight: 600;">5 facturas vencidas</div>
                                 <div style="font-size: 12px; opacity: 0.8;">Requieren atención inmediata</div>
                             </div>
                         </div>
-                        <div class="alert-item alert-info">
+                        <div class="alert-item alert-info" onclick="window.location.href='/nomina'">
                             <i class="fas fa-user-tie" style="margin-right: 12px; font-size: 20px;"></i>
                             <div style="flex: 1;">
                                 <div style="font-weight: 600;">Nómina próxima a procesar</div>
@@ -348,27 +403,265 @@
                 </div>
             </section>
         </main>
+        </div>
+<footer class="footer">
+    <div class="footer-content">
+        <div class="footer-left">
+            <p>&copy; 2025 Sistema ERP. Todos los derechos reservados.</p>
+        </div>
+        <div class="footer-right">
+            <a href="https://mycleth.com.mx/" onclick="showNotification('MyCleth', 'info'); ">MyCleth</a>
+            <a href="#" onclick="showNotification('Versión 1.0.0', 'info'); return false;">Versión 1.0.0</a>
+            <span class="footer-divider">|</span>
+            <a href="#" onclick="showNotification('Soporte técnico en desarrollo', 'info'); return false;">Soporte</a>
+            <span class="footer-divider">|</span>
+            <a href="#" onclick="showNotification('Términos y condiciones en desarrollo', 'info'); return false;">Términos</a>
+        </div>
     </div>
+</footer>
 
     <script>
-        // Toggle sidebar en móvil
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+        
+        let usuarioActual = null;
+        let rolUsuario = null;
+
+        const PERMISOS_POR_ROL = {
+            'ADMIN': ['*'], 
+            
+            'GERENTE': [
+                'dashboard', 'clientes', 'ventas', 'compras', 'proveedores',
+                'inventario', 'almacenes', 'reportes', 'facturacion', 'punto-venta'
+            ],
+            
+            'VENDEDOR': [
+                'dashboard', 'clientes', 'ventas', 'punto-venta', 'facturacion', 'inventario'
+            ],
+            
+            'CONTADOR': [
+                'dashboard', 'contabilidad', 'facturacion', 'reportes'
+            ],
+            
+            'ALMACENISTA': [
+                'dashboard', 'inventario', 'compras', 'proveedores', 'almacenes', 'logistica'
+            ],
+            
+            'RRHH': [
+                'dashboard', 'rrhh', 'nomina', 'usuarios'
+            ],
+            
+            'EMPLEADO': [
+                'dashboard'  
+            ]
+        };
+
+        const NOMBRES_ROLES = {
+            'ADMIN': 'Administrador',
+            'GERENTE': 'Gerente',
+            'VENDEDOR': 'Vendedor',
+            'CONTADOR': 'Contador',
+            'ALMACENISTA': 'Almacenista',
+            'RRHH': 'Recursos Humanos',
+            'EMPLEADO': 'Empleado'
+        };
+
+        function tienePermiso(modulo) {
+            if (!rolUsuario) return false;
+            
+            const permisos = PERMISOS_POR_ROL[rolUsuario] || [];
+            
+            if (permisos.includes('*')) return true;
+            
+            return permisos.includes(modulo);
         }
 
-        // Función de cerrar sesión
-        function cerrarSesion() {
-            if (confirm('¿Está seguro que desea cerrar sesión?')) {
-                showNotification('Cerrando sesión...', 'info');
-                setTimeout(() => {
-                    showNotification('Sesión cerrada exitosamente. ¡Hasta pronto!', 'success');
-                    // Aquí puedes redirigir a la página de login
-                    // window.location.href = '/login';
-                }, 1000);
+        function cargarUsuarioActual() {
+            const usuarioStorage = localStorage.getItem('usuario');
+            
+            if (!usuarioStorage) {
+                console.warn('No hay sesión activa, redirigiendo al login...');
+                window.location.href = '/';
+                return false;
+            }
+            
+            try {
+                usuarioActual = JSON.parse(usuarioStorage);
+                rolUsuario = usuarioActual.rol || 'EMPLEADO';
+                
+                const iniciales = usuarioActual.nombre.substring(0, 2).toUpperCase();
+                document.getElementById('userAvatar').textContent = iniciales;
+                document.getElementById('userName').textContent = usuarioActual.nombreEmpleado || usuarioActual.nombre;
+                document.getElementById('userRole').textContent = NOMBRES_ROLES[rolUsuario] || rolUsuario;
+                
+                console.log('✅ Usuario cargado:', {
+                    nombre: usuarioActual.nombre,
+                    rol: rolUsuario,
+                    empleado: usuarioActual.nombreEmpleado
+                });
+                
+                return true;
+            } catch (error) {
+                console.error('Error al cargar usuario:', error);
+                window.location.href = '/';
+                return false;
             }
         }
 
-        // Sistema de notificaciones
+        function aplicarPermisosMenu() {
+            const navItems = document.querySelectorAll('.nav-item[data-modulo]');
+            
+            navItems.forEach(item => {
+                const modulo = item.getAttribute('data-modulo');
+                
+                if (!tienePermiso(modulo)) {
+                    item.style.display = 'none';
+                } else {
+                    item.style.display = 'list-item';
+                }
+            });
+            
+            ocultarSeccionesVacias();
+            
+            console.log(`🔒 Permisos aplicados para rol: ${rolUsuario}`);
+        }
+
+        function ocultarSeccionesVacias() {
+            const secciones = document.querySelectorAll('.nav-section[data-seccion]');
+            
+            secciones.forEach(seccion => {
+                let siguienteElemento = seccion.nextElementSibling;
+                let tieneItemsVisibles = false;
+                
+                while (siguienteElemento && !siguienteElemento.hasAttribute('data-seccion')) {
+                    if (siguienteElemento.classList.contains('nav-item') && 
+                        siguienteElemento.style.display !== 'none') {
+                        tieneItemsVisibles = true;
+                        break;
+                    }
+                    siguienteElemento = siguienteElemento.nextElementSibling;
+                }
+                
+                if (!tieneItemsVisibles) {
+                    seccion.style.display = 'none';
+                } else {
+                    seccion.style.display = 'list-item';
+                }
+            });
+        }
+
+        function protegerNavegacion() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (!href || href === '#' || href === '/dashboard') return;
+                    
+                    const modulo = href.replace('/', '');
+                    
+                    if (!tienePermiso(modulo)) {
+                        e.preventDefault();
+                        showNotification('⛔ No tienes permisos para acceder a este módulo', 'error');
+                        console.warn(`Acceso denegado a: ${modulo}`);
+                    }
+                });
+            });
+        }
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!cargarUsuarioActual()) {
+                return; 
+            }
+            
+            aplicarPermisosMenu();
+            
+            protegerNavegacion();
+            
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.nav-link').forEach(link => {
+                const href = link.getAttribute('href');
+                if (href === currentPath) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            animarStatsCards();
+            
+            setTimeout(() => {
+                const nombreBienvenida = usuarioActual.nombreEmpleado || usuarioActual.nombre;
+                showNotification(`¡Bienvenido ${nombreBienvenida}! 🚀`, 'success');
+            }, 800);
+        });
+
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        
+        function cerrarSesion() {
+            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                showNotification('Cerrando sesión...', 'info');
+                
+                localStorage.removeItem('usuario');
+                
+                fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(() => {
+                    console.log('Logout registrado');
+                })
+                .catch(error => {
+                    console.error('Error al registrar logout:', error);
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        showNotification('Sesión cerrada exitosamente. ¡Hasta pronto!', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1000);
+                    }, 1000);
+                });
+            }
+        }
+
+        
+        function buscarRapido() {
+            showNotification('Búsqueda rápida (función en desarrollo)', 'info');
+        }
+
+        function verNotificaciones() {
+            showNotification('Tienes 3 notificaciones nuevas:\n• Stock bajo en productos\n• Facturas vencidas\n• Nómina próxima', 'warning');
+        }
+
+        function verMensajes() {
+            showNotification('No tienes mensajes nuevos', 'info');
+        }
+
+        function verPerfil() {
+            if (tienePermiso('configuracion')) {
+                window.location.href = '/configuracion';
+            } else {
+                showNotification('⛔ No tienes permiso para acceder a Configuración', 'error');
+            }
+        }
+
+        
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             let bgColor = 'var(--azul-principal)';
@@ -416,34 +709,76 @@
             }, 3500);
         }
 
-        // Animaciones de entrada
-        document.addEventListener('DOMContentLoaded', function() {
+        
+        function animarStatsCards() {
             const statCards = document.querySelectorAll('.stat-card');
             statCards.forEach((card, index) => {
                 card.style.animation = `fadeIn 0.5s ease ${index * 0.1}s forwards`;
                 card.style.opacity = '0';
             });
+        }
 
-            setTimeout(() => {
-                showNotification('¡Bienvenido al Sistema ERP! 🚀', 'success');
-            }, 800);
+        document.querySelectorAll('.stat-card, .alert-item').forEach(card => {
+            card.style.cursor = 'pointer';
         });
 
-        // Cerrar sidebar al hacer clic en cualquier parte en móvil
-        document.addEventListener('click', function(e) {
-            const sidebar = document.getElementById('sidebar');
-            const menuBtn = document.querySelector('.mobile-menu-btn');
+        
+        function refreshStats() {
+            showNotification('Actualizando estadísticas...', 'info');
             
-            if (window.innerWidth <= 768) {
-                if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
-                    sidebar.classList.remove('active');
+            setTimeout(() => {
+                showNotification('Estadísticas actualizadas', 'success');
+                animarStatsCards();
+            }, 1500);
+        }
+
+        
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K para búsqueda rápida
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                buscarRapido();
+            }
+            
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                refreshStats();
+            }
+            
+            if (e.key === 'Escape') {
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('active');
                 }
             }
         });
 
-        // Log de información
+        
+        const styleAnimations = document.createElement('style');
+        styleAnimations.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(styleAnimations);
+
+        
         console.log('%c🚀 Sistema ERP Dashboard', 'color: #4a90e2; font-size: 20px; font-weight: bold;');
         console.log('%c✨ Sistema cargado exitosamente', 'color: #28a745; font-size: 14px;');
+        console.log('%c👤 Usuario:', 'color: #333; font-size: 13px; font-weight: bold;', usuarioActual?.nombre);
+        console.log('%c🔒 Rol:', 'color: #333; font-size: 13px; font-weight: bold;', rolUsuario);
+        console.log('%c\n⌨️ Atajos de teclado:', 'color: #333; font-size: 13px; font-weight: bold;');
+        console.log('%c  • Ctrl/Cmd + K: Búsqueda rápida', 'color: #6c757d; font-size: 12px;');
+        console.log('%c  • Ctrl/Cmd + R: Refrescar estadísticas', 'color: #6c757d; font-size: 12px;');
+        console.log('%c  • ESC: Cerrar sidebar (móvil)', 'color: #6c757d; font-size: 12px;');
     </script>
 </body>
 </html>
