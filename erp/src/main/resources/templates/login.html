@@ -164,9 +164,9 @@
                         empleado: data.nombreEmpleado
                     });
                     
-                    // Redirigir después de 1.5 segundos
+                    
                     setTimeout(() => {
-                        // Si necesita cambiar contraseña, redirigir a página de cambio
+                        
                         if (data.cambiarPassword) {
                             window.location.href = '/cambiar-password';
                         } else {
@@ -174,7 +174,7 @@
                         }
                     }, 1500);
                 } else {
-                    // Error de autenticación
+                    
                     showError(data.error || 'Credenciales inválidas');
                     document.getElementById('password').value = '';
                     document.getElementById('password').focus();
@@ -188,12 +188,11 @@
             }
         });
         
-        // Enfocar el campo de email al cargar
+        
         window.addEventListener('load', function() {
             document.getElementById('email').focus();
         });
         
-        // Permitir Enter para enviar
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
                 document.getElementById('loginForm').dispatchEvent(new Event('submit'));
