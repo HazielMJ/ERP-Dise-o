@@ -104,7 +104,6 @@
             </ul>
         </aside>
         <main class="main-content">
-            <!-- Header -->
             <header class="header">
                 <div class="header-left">
                     <h1><i class="fas fa-shipping-fast"></i> Logística y Envíos</h1>
@@ -123,6 +122,8 @@
                     </button>
                 </div>
             </header>
+
+            <!-- Content Area -->
             <div class="content-area">
                 <!-- Estadísticas -->
                 <div class="stats-grid">
@@ -164,6 +165,7 @@
                     </div>
                 </div>
 
+                <!-- Tabs -->
                 <div class="tabs">
                     <button class="tab active" onclick="switchTab('envios')">
                         <i class="fas fa-box"></i> Envíos
@@ -190,6 +192,8 @@
                             <i class="fas fa-plus"></i> Nuevo Envío
                         </button>
                     </div>
+
+                    <!-- Filtros -->
                     <div class="filter-bar">
                         <select class="filter-select" id="filterEstadoEnvio" onchange="filtrarEnvios()">
                             <option value="">Todos los estados</option>
@@ -471,7 +475,6 @@
             </form>
         </div>
     </div>
-
     <div class="modal" id="modalMetodo">
         <div class="modal-content">
             <div class="modal-header">
@@ -643,10 +646,9 @@
             </div>
         </div>
     </div>
-    
+
 <script>
 const API_BASE = 'http://localhost:8082/api';
-    
 document.addEventListener('DOMContentLoaded', function() {
     inicializarSidebar();
     inicializarEventListeners();
@@ -673,7 +675,6 @@ function inicializarSidebar() {
         });
     }
 }
-
 function inicializarEventListeners() {
     // Búsquedas
     const searchEnvios = document.getElementById('searchEnvios');
@@ -697,7 +698,6 @@ function inicializarEventListeners() {
         });
     });
 }
-
 function switchTab(tabName) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -710,7 +710,6 @@ function switchTab(tabName) {
     if (tabName === 'transportistas') cargarTransportistas();
     if (tabName === 'rutas') cargarRutas();
 }
-
 function cerrarSesion() {
     if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
         showNotification('Cerrando sesión...', 'info');
@@ -769,8 +768,6 @@ function formatearMoneda(valor) {
         maximumFractionDigits: 2 
     });
 }
-
-// ==================== ESTADÍSTICAS ====================
 async function actualizarEstadisticas() {
     try {
         const response = await fetch(`${API_BASE}/envios/en-proceso`);
@@ -791,7 +788,6 @@ async function actualizarEstadisticas() {
         console.error('Error al actualizar estadísticas:', error);
     }
 }
-
 async function cargarEnvios() {
     const loading = document.getElementById('loadingEnvios');
     const tbody = document.getElementById('enviosBody');
@@ -1234,7 +1230,6 @@ function buscarMetodos() {
         row.style.display = text.includes(searchTerm) ? '' : 'none';
     });
 }
-
 async function cargarTransportistas() {
     const loading = document.getElementById('loadingTransportistas');
     const tbody = document.getElementById('transportistasBody');
@@ -1519,7 +1514,6 @@ function buscarRutas() {
         row.style.display = text.includes(searchTerm) ? '' : 'none';
     });
 }
-
 async function cargarClientesSelect() {
     try {
         const response = await fetch(`${API_BASE}/clientes`);
@@ -1567,7 +1561,6 @@ async function cargarRutasSelect() {
         showNotification('Error al cargar rutas', 'warning');
     }
 }
-
 const styleAnimations = document.createElement('style');
 styleAnimations.textContent = `
     @keyframes slideInRight {
