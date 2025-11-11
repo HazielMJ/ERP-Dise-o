@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema ERP - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Estilodash.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-chart-line"></i> ERP System</h2>
+                <p>Sistema Integral de Gestión</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-section">
+                    <div class="nav-section-title">PRINCIPAL</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="nav-section">
+                    <div class="nav-section-title">ADMINISTRACIÓN</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-calculator"></i>
+                        <span>Contabilidad</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">VENTAS</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/clientes" class="nav-link active">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/ventas" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/facturacion" class="nav-link active">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Facturación</span>
+                    </a>
+                </li>
+                <li href="/pd" class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Punto de Venta</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">COMPRAS</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fa-sharp fa-solid fa-bag-shopping"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">INVENTARIO</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/inventario" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/almacen " class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Almacenes</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">RECURSOS HUMANOS</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/empleados" class="nav-link">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Empleados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/nomina" class="nav-link">
+                        <i class="fa-sharp fa-solid fa-money-bill-wave"></i>
+                        <span>Nómina</span>
+                    </a>
+                </li>
+                <li class="nav-section">
+                    <div class="nav-section-title">LOGÍSTICA</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/logistica" class="nav-link">
+                        <i class="fa-sharp fa-solid fa-truck-fast"></i>
+                        <span>Envíos</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">ANÁLISIS</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fa-sharp fa-solid fa-gear"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+                                <li class="nav-section">
+                    <div class="nav-section-title">SISTEMA</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- Botón de cerrar sesión -->
+            <div class="logout-section">
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1><i class="fas fa-tachometer-alt"></i> Clientes</h1>
+                        <div class="breadcrumb">
+                            <a href="/"><i class="fas fa-home"></i> Inicio</a>
+                            <span>/</span>
+                            <span>Clientes</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="header-btn" style="position: relative;">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="header-btn">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                    <div class="user-info">
+                        <div class="user-avatar">AD</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--gris-texto); font-size: 14px;">
+                                <span class="status-indicator status-online"></span>Admin
+                            </div>
+                            <div style="font-size: 12px; color: var(--gris-texto-secundario);">Administrador</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <section class="content-section">
+
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Toggle sidebar en móvil
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Función de cerrar sesión
+        function cerrarSesion() {
+            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                showNotification('Cerrando sesión...', 'info');
+                setTimeout(() => {
+                    showNotification('Sesión cerrada exitosamente. ¡Hasta pronto!', 'success');
+                    // Aquí puedes redirigir a la página de login
+                    // window.location.href = '/login';
+                }, 1000);
+            }
+        }
+
+        // Sistema de notificaciones
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            let bgColor = 'var(--azul-principal)';
+            let icon = 'fa-info-circle';
+            
+            if (type === 'success') {
+                bgColor = 'var(--verde-exito)';
+                icon = 'fa-check-circle';
+            } else if (type === 'error') {
+                bgColor = 'var(--rojo-peligro)';
+                icon = 'fa-exclamation-circle';
+            } else if (type === 'warning') {
+                bgColor = 'var(--amarillo-advertencia)';
+                icon = 'fa-exclamation-triangle';
+            }
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: ${type === 'warning' ? 'var(--gris-texto)' : 'white'};
+                padding: 18px 24px;
+                border-radius: 12px;
+                box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.4s ease;
+                max-width: 350px;
+                white-space: pre-line;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-weight: 500;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas ${icon}" style="font-size: 20px;"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.4s ease';
+                setTimeout(() => notification.remove(), 400);
+            }, 3500);
+        }
+
+        // Animaciones de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.animation = `fadeIn 0.5s ease ${index * 0.1}s forwards`;
+                card.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                showNotification('¡Bienvenido al Sistema ERP! 🚀', 'success');
+            }, 800);
+        });
+
+        // Cerrar sidebar al hacer clic en cualquier parte en móvil
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Log de información
+        console.log('%c🚀 Sistema ERP Dashboard', 'color: #4a90e2; font-size: 20px; font-weight: bold;');
+        console.log('%c✨ Sistema cargado exitosamente', 'color: #28a745; font-size: 14px;');
+
+
+    </script>
+</body>
+</html>

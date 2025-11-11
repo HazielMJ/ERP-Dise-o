@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema ERP - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Estilodash.css">
+    <link rel="stylesheet" href="/css/formulariostyle.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-chart-line"></i> ERP System</h2>
+                <p>Sistema Integral de Gestión</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-section">
+                    <div class="nav-section-title">PRINCIPAL</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="nav-section">
+                    <div class="nav-section-title">ADMINISTRACIÓN</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-calculator"></i>
+                        <span>Contabilidad</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">VENTAS</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/clientes" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/ventas" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/facturacion" class="nav-link">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Facturación</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/caja" class="nav-link active">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Punto de Venta</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">COMPRAS</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fa-sharp fa-solid fa-bag-shopping"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">INVENTARIO</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/productos" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/almacen " class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Almacenes</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">RECURSOS HUMANOS</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/empleados" class="nav-link">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Empleados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/nomina" class="nav-link">
+                        <i class="fa-sharp fa-solid fa-money-bill-wave"></i>
+                        <span>Nómina</span>
+                    </a>
+                </li>
+                <li class="nav-section">
+                    <div class="nav-section-title">LOGÍSTICA</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/logistica" class="nav-link">
+                        <i class="fa-sharp fa-solid fa-truck-fast"></i>
+                        <span>Envíos</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">ANÁLISIS</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fa-sharp fa-solid fa-gear"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+                                <li class="nav-section">
+                    <div class="nav-section-title">SISTEMA</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+            </ul>
+            
+            
+            <!-- Botón de cerrar sesión -->
+            <div class="logout-section">
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1><i class="fas fa-tachometer-alt"></i>Caja</h1>
+                        <div class="breadcrumb">
+                            <a href="/"><i class="fas fa-home"></i> Inicio</a>
+                            <span>/</span>
+                            <span>Caja</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="header-btn" style="position: relative;">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="header-btn">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                    <div class="user-info">
+                        <div class="user-avatar">AD</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--gris-texto); font-size: 14px;">
+                                <span class="status-indicator status-online"></span>Admin
+                            </div>
+                            <div style="font-size: 12px; color: var(--gris-texto-secundario);">Administrador</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+<!-- Dashboard Content -->
+<section class="content-section">
+<div class="tab-content active">
+
+  <!-- Acciones -->
+<button id="toggleCajaBtn" class="btn btn-primary" data-open="false">
+  <i class="fa-solid fa-plus" aria-hidden="true"></i>
+  <span class="btn-label">Nueva Caja</span>
+</button>
+
+  <!-- Formulario de Cajas -->
+  <div id="cajaFormWrap" class="table-container" style="display:none;">
+    <div class="table-header">
+      <h3 class="table-title">
+        <i class="fas fa-cash-register"></i>
+        <span id="cajaFormTitulo"></span>
+      </h3>
+    </div>
+
+    <!-- Alerta embebida -->
+    <div id="cajaAlerta" class="alert-box alert-warning" style="display:none;">
+      <i class="fas fa-exclamation-triangle"></i>
+      <span id="cajaAlertaMsg">Completa los campos obligatorios.</span>
+    </div>
+
+    <form id="cajaForm">
+      <input type="hidden" id="idCaja">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="numeroCaja" class="form-label">Número de Caja <span class="required">*</span></label>
+          <input type="text" id="numeroCaja" class="form-input" placeholder="Ej. CAJ-01" required>
+        </div>
+
+        <div class="form-group">
+          <label for="nombreCaja" class="form-label">Nombre de Caja <span class="required">*</span></label>
+          <input type="text" id="nombreCaja" class="form-input" placeholder="Caja Principal" required>
+        </div>
+
+        <div class="form-group">
+          <label for="ubicacion" class="form-label">Ubicación</label>
+          <input type="text" id="ubicacion" class="form-input" placeholder="Mostrador A">
+        </div>
+
+        <div class="form-group">
+          <label for="estado" class="form-label">Estado</label>
+          <select id="estado" class="form-select" required>
+            <option value="ACTIVA">ACTIVA</option>
+            <option value="INACTIVA">INACTIVA</option>
+            <option value="MANTENIMIENTO">MANTENIMIENTO</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="toolbar" style="padding:0;background:transparent;box-shadow:none;justify-content:flex-end;">
+        <div class="toolbar-actions">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Guardar
+          </button>
+          <button type="button" id="cancelarCajaBtn" class="btn btn-secondary">Cancelar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Tabla de Cajas -->
+  <div class="table-container" style="margin-top:20px;">
+    <div class="table-header">
+      <div class="table-title">
+        <i class="fas fa-cash-register"></i> Cajas
+      </div>
+    </div>
+
+    <table id="tablaCajas" class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Número</th>
+          <th>Nombre</th>
+          <th>Ubicación</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- APERTURA DE CAJA -->
+<div id="aperturaCajaWrap" class="table-container" style="display:none; margin-top:20px;">
+  <div class="table-header">
+    <h3 class="table-title">
+      <i class="fas fa-door-open"></i> Apertura de Caja
+    </h3>
+  </div>
+
+  <form id="aperturaCajaForm">
+    <input type="hidden" id="idCajaApertura">
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Saldo Inicial <span class="required">*</span></label>
+        <input type="number" id="saldoInicial" class="form-input" placeholder="0.00" min="0" step="0.01" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Observaciones</label>
+        <textarea id="observacionesApertura" class="form-input" rows="2" placeholder="Notas u observaciones..."></textarea>
+      </div>
+    </div>
+
+    <div class="toolbar" style="padding:0;background:transparent;box-shadow:none;justify-content:flex-end;">
+      <div class="toolbar-actions">
+        <button type="submit" class="btn btn-success">
+          <i class="fas fa-door-open"></i> Abrir Caja
+        </button>
+        <button type="button" id="cancelarAperturaBtn" class="btn btn-secondary">Cancelar</button>
+      </div>
+    </div>
+  </form>
+</div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Toggle sidebar en móvil
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Función de cerrar sesión
+        function cerrarSesion() {
+            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                showNotification('Cerrando sesión...', 'info');
+                setTimeout(() => {
+                    showNotification('Sesión cerrada exitosamente. ¡Hasta pronto!', 'success');
+                    // Aquí puedes redirigir a la página de login
+                    // window.location.href = '/login';
+                }, 1000);
+            }
+        }
+
+        // Sistema de notificaciones
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            let bgColor = 'var(--azul-principal)';
+            let icon = 'fa-info-circle';
+            
+            if (type === 'success') {
+                bgColor = 'var(--verde-exito)';
+                icon = 'fa-check-circle';
+            } else if (type === 'error') {
+                bgColor = 'var(--rojo-peligro)';
+                icon = 'fa-exclamation-circle';
+            } else if (type === 'warning') {
+                bgColor = 'var(--amarillo-advertencia)';
+                icon = 'fa-exclamation-triangle';
+            }
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: ${type === 'warning' ? 'var(--gris-texto)' : 'white'};
+                padding: 18px 24px;
+                border-radius: 12px;
+                box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.4s ease;
+                max-width: 350px;
+                white-space: pre-line;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-weight: 500;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas ${icon}" style="font-size: 20px;"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.4s ease';
+                setTimeout(() => notification.remove(), 400);
+            }, 3500);
+        }
+
+        // Animaciones de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.animation = `fadeIn 0.5s ease ${index * 0.1}s forwards`;
+                card.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                showNotification('¡Bienvenido al Sistema ERP! 🚀', 'success');
+            }, 800);
+        });
+
+        // Cerrar sidebar al hacer clic en cualquier parte en móvil
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Log de información
+        console.log('%c🚀 Sistema ERP Dashboard', 'color: #4a90e2; font-size: 20px; font-weight: bold;');
+        console.log('%c✨ Sistema cargado exitosamente', 'color: #28a745; font-size: 14px;');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const API_URL = 'http://localhost:8080/api/cajas';
+  const API_APERTURA = 'http://localhost:8080/api/aperturas';
+
+  // Referencias UI (Cajas)
+  const formWrap    = document.getElementById('cajaFormWrap');
+  const form        = document.getElementById('cajaForm');
+  const titulo      = document.getElementById('cajaFormTitulo');
+  const alerta      = document.getElementById('cajaAlerta');
+  const alertaMsg   = document.getElementById('cajaAlertaMsg');
+  const toggleBtn   = document.getElementById('toggleCajaBtn');
+  const icon        = toggleBtn.querySelector('i');
+  const label       = toggleBtn.querySelector('.btn-label');
+  const cancelarBtn = document.getElementById('cancelarCajaBtn');
+  const tbody       = document.querySelector('#tablaCajas tbody');
+
+  // Campos (Cajas)
+  const idCaja      = document.getElementById('idCaja');
+  const numeroCaja  = document.getElementById('numeroCaja');
+  const nombreCaja  = document.getElementById('nombreCaja');
+  const ubicacion   = document.getElementById('ubicacion');
+  const estado      = document.getElementById('estado');
+
+  // Referencias (Apertura de Caja)
+  const aperturaWrap         = document.getElementById('aperturaCajaWrap');
+  const aperturaForm         = document.getElementById('aperturaCajaForm');
+  const idCajaApertura       = document.getElementById('idCajaApertura');
+  const saldoInicial         = document.getElementById('saldoInicial');
+  const observacionesApertura= document.getElementById('observacionesApertura');
+  const cancelarAperturaBtn  = document.getElementById('cancelarAperturaBtn');
+
+  // Utilidades
+  function showAlerta(msg, type = 'warning') {
+    alerta.classList.remove('alert-info','alert-success','alert-warning','alert-danger');
+    alerta.classList.add(`alert-${type}`);
+    alertaMsg.textContent = msg;
+    alerta.style.display = 'flex';
+  }
+  function hideAlerta() { alerta.style.display = 'none'; }
+
+  // Estado del botón y del formulario
+  function setToggle(open) {
+    toggleBtn.dataset.open = open ? 'true' : 'false';
+    icon.classList.toggle('fa-plus', !open);
+    icon.classList.toggle('fa-xmark', open);
+    label.textContent = open ? 'Cerrar' : 'Nueva Caja';
+    formWrap.style.display = open ? 'block' : 'none';
+    if (!open) titulo.textContent = 'Agregar Caja';
+  }
+
+  // Botón abrir/cerrar formulario de Cajas
+  toggleBtn.addEventListener('click', () => {
+    const open = toggleBtn.dataset.open === 'true';
+    setToggle(!open);
+    if (!open) {
+      form.reset();
+      idCaja.value = '';
+      hideAlerta();
+    }
+  });
+
+  // Cancelar edición/alta de Caja
+  cancelarBtn.addEventListener('click', () => {
+    form.reset();
+    idCaja.value = '';
+    hideAlerta();
+    setToggle(false);
+  });
+
+  // Badges de estado
+  function badgeEstado(est) {
+    if (est === 'ACTIVA') return '<span class="badge badge-success">ACTIVA</span>';
+    if (est === 'INACTIVA') return '<span class="badge badge-danger">INACTIVA</span>';
+    return '<span class="badge badge-warning">MANTENIMIENTO</span>';
+  }
+
+  // Fila de la tabla
+  function filaCajaHTML(c) {
+    return `
+      <tr data-id="${c.idCaja}">
+        <td>${c.idCaja}</td>
+        <td>${c.numeroCaja}</td>
+        <td>${c.nombreCaja}</td>
+        <td>${c.ubicacion ?? ''}</td>
+        <td>${badgeEstado(c.estado)}</td>
+        <td class="action-buttons">
+          <button type="button" class="btn btn-sm btn-primary" data-action="apertura">
+            <i class="fas fa-door-open"></i> Apertura
+          </button>
+          <button type="button" class="btn btn-sm btn-secondary" data-action="edit">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          <button type="button" class="btn btn-sm btn-danger" data-action="del">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </td>
+      </tr>
+    `;
+  }
+
+  // Cargar lista de Cajas
+  async function cargarCajas() {
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      const data = await res.json();
+      tbody.innerHTML = data.map(filaCajaHTML).join('');
+    } catch {
+      showAlerta('No se pudieron cargar las cajas.', 'danger');
+    }
+  }
+
+  // Validación de formulario de Cajas
+  function validar() {
+    const errores = [];
+    if (!numeroCaja.value.trim()) errores.push('El número de caja es obligatorio.');
+    if (!nombreCaja.value.trim()) errores.push('El nombre de caja es obligatorio.');
+    if (!estado.value) errores.push('Selecciona un estado.');
+    if (errores.length) { showAlerta(errores.join('\n'), 'warning'); return false; }
+    hideAlerta(); return true;
+  }
+
+  // Guardar/Actualizar Caja
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validar()) return;
+
+    const payload = {
+      numeroCaja: numeroCaja.value.trim(),
+      nombreCaja: nombreCaja.value.trim(),
+      ubicacion:  ubicacion.value.trim(),
+      estado:     estado.value
+    };
+    const id = idCaja.value;
+    const method = id ? 'PUT' : 'POST';
+    const url = id ? `${API_URL}/${id}` : API_URL;
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const msg = await res.text().catch(()=> '');
+        throw new Error(msg || `Error ${res.status}`);
+      }
+      showAlerta('Caja guardada correctamente.', 'success');
+      await cargarCajas();
+      form.reset();
+      idCaja.value = '';
+      setToggle(false);
+    } catch (err) {
+      showAlerta(`No se pudo guardar la caja. ${err.message || ''}`, 'danger');
+    }
+  });
+
+  // Delegación: apertura, editar, eliminar
+  tbody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    const tr  = btn.closest('tr');
+    const id  = tr?.dataset?.id;
+    if (!id) { showAlerta('No se encontró el id de la caja en la fila.', 'danger'); return; }
+
+    // Apertura de Caja
+    if (btn.dataset.action === 'apertura') {
+      idCajaApertura.value = id;
+      aperturaForm.reset();
+      aperturaWrap.style.display = 'block';
+      window.scrollTo({ top: aperturaWrap.offsetTop - 100, behavior: 'smooth' });
+      return;
+    }
+
+    // Editar Caja
+    if (btn.dataset.action === 'edit') {
+      try {
+        const res = await fetch(`${API_URL}/${id}`);
+        let c;
+        if (res.ok) {
+          c = await res.json();
+        } else {
+          c = {
+            idCaja: id,
+            numeroCaja: tr.children[1].textContent.trim(),
+            nombreCaja: tr.children[2].textContent.trim(),
+            ubicacion:  tr.children[3].textContent.trim(),
+            estado:     tr.children[4].textContent.replace(/<[^>]*>/g,'').trim()
+          };
+        }
+        idCaja.value      = c.idCaja ?? '';
+        numeroCaja.value  = c.numeroCaja ?? '';
+        nombreCaja.value  = c.nombreCaja ?? '';
+        ubicacion.value   = c.ubicacion ?? '';
+        estado.value      = c.estado ?? 'ACTIVA';
+        titulo.textContent = 'Editar Caja';
+        hideAlerta();
+        setToggle(true);
+      } catch {
+        showAlerta('No se pudo cargar la caja para editar.', 'danger');
+      }
+      return;
+    }
+
+    // Eliminar Caja
+    if (btn.dataset.action === 'del') {
+      if (!confirm('¿Eliminar caja?')) return;
+      try {
+        const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error(`Error ${res.status}`);
+        await cargarCajas();
+        showAlerta('Caja eliminada.', 'success');
+      } catch {
+        showAlerta('No se pudo eliminar la caja.', 'danger');
+      }
+    }
+  });
+
+  // Cancelar apertura
+  cancelarAperturaBtn.addEventListener('click', () => {
+    aperturaWrap.style.display = 'none';
+    aperturaForm.reset();
+  });
+
+  // Enviar apertura
+  aperturaForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const payload = {
+  id_caja: parseInt(idCajaApertura.value, 10),
+  saldo_inicial: parseFloat(saldoInicial.value),
+  observaciones: observacionesApertura.value.trim(),
+    };
+
+    try {
+      const res = await fetch(API_APERTURA, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error(`Error ${res.status}`);
+      // Reutiliza tu sistema de notificaciones si lo tienes disponible
+      // showNotification('Caja abierta correctamente.', 'success');
+      aperturaForm.reset();
+      aperturaWrap.style.display = 'none';
+    } catch (err) {
+      // showNotification(`No se pudo abrir la caja. ${err.message}`, 'error');
+      console.error(err);
+      alert(`No se pudo abrir la caja. ${err.message}`);
+    }
+  });
+
+  // Estado inicial
+  toggleBtn.dataset.open = 'false';
+  icon.classList.add('fa-plus');
+  label.textContent = 'Nueva Caja';
+  formWrap.style.display = 'none';
+
+  cargarCajas();
+});
+</script>
+
+</body>
+</html>
