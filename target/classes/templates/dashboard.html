@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema ERP - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Estilodash.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-chart-line"></i> ERP System</h2>
+                <p>Sistema Integral de Gestión</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-section">
+                    <div class="nav-section-title">PRINCIPAL</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="nav-section">
+                    <div class="nav-section-title">ADMINISTRACIÓN</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-calculator"></i>
+                        <span>Contabilidad</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">VENTAS</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/clientes" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/ventas" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/facturacion" class="nav-link">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Facturación</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/caja" class="nav-link">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Punto de Venta</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">COMPRAS</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fa-sharp fa-solid fa-bag-shopping"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">INVENTARIO</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/productos" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/almacen " class="nav-link">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Almacenes</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">RECURSOS HUMANOS</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/empleados" class="nav-link">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Empleados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/nomina" class="nav-link">
+                        <i class="fa-sharp fa-solid fa-money-bill-wave"></i>
+                        <span>Nómina</span>
+                    </a>
+                </li>
+                <li class="nav-section">
+                    <div class="nav-section-title">LOGÍSTICA</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/logistica" class="nav-link">
+                        <i class="fa-sharp fa-solid fa-truck-fast"></i>
+                        <span>Envíos</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">ANÁLISIS</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fa-sharp fa-solid fa-gear"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+                                <li class="nav-section">
+                    <div class="nav-section-title">SISTEMA</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- Botón de cerrar sesión -->
+            <div class="logout-section">
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1><i class="fas fa-tachometer-alt"></i> Dashboard Principal</h1>
+                        <div class="breadcrumb">
+                            <a href="#"><i class="fas fa-home"></i> Inicio</a>
+                            <span>/</span>
+                            <span>Dashboard</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="header-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button class="header-btn" style="position: relative;">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <button class="header-btn">
+                        <i class="fas fa-envelope"></i>
+                    </button>
+                    <div class="user-info">
+                        <div class="user-avatar">AD</div>
+                        <div>
+                            <div style="font-weight: 700; color: var(--gris-texto); font-size: 14px;">
+                                <span class="status-indicator status-online"></span>Admin
+                            </div>
+                            <div style="font-size: 12px; color: var(--gris-texto-secundario);">Administrador</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <section class="content-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+<div class="stat-content">
+    <div class="stat-header">
+        <div class="stat-icon" style="background: linear-gradient(45deg, var(--verde-exito), var(--verde-exito-gradient));">
+            <i class="fas fa-dollar-sign"></i>
+        </div>
+        <span class="stat-trend trend-up">
+            <i class="fas fa-arrow-up"></i> +12.5%
+        </span>
+    </div>
+    <div id="total-ventas" class="stat-number">$0</div>
+    <div class="stat-label">Ventas del Mes</div>
+</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, var(--azul-principal), var(--azul-principal-gradient));">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <span class="stat-trend trend-up">
+                                    <i class="fas fa-arrow-up"></i> +8.3%
+                                </span>
+                            </div>
+                            <div class="stat-number">1,247</div>
+                            <div class="stat-label">Pedidos Totales</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, var(--amarillo-advertencia), var(--amarillo-advertencia-dark));">
+                                    <i class="fas fa-boxes"></i>
+                                </div>
+                                <span class="stat-trend trend-down">
+                                    <i class="fas fa-arrow-down"></i> -2.1%
+                                </span>
+                            </div>
+                            <div class="stat-number">5,847</div>
+                            <div class="stat-label">Productos en Stock</div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, var(--morado), var(--morado-dark));">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <span class="stat-trend trend-up">
+                                    <i class="fas fa-arrow-up"></i> +5.7%
+                                </span>
+                            </div>
+                            <div class="stat-number">342</div>
+                            <div class="stat-label">Clientes Activos</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="card">
+                        <h3><i class="fas fa-chart-line"></i> Resumen Financiero</h3>
+                        <div class="quick-stat">
+                            <div class="quick-stat-icon" style="background: linear-gradient(135deg, var(--verde-exito), var(--verde-exito-gradient));">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="quick-stat-content">
+                                <div class="quick-stat-value">$247,890</div>
+                                <div class="quick-stat-label">Ingresos del Mes</div>
+                            </div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-icon" style="background: linear-gradient(135deg, var(--rojo-peligro), var(--rojo-peligro-dark));">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="quick-stat-content">
+                                <div class="quick-stat-value">$156,420</div>
+                                <div class="quick-stat-label">Egresos del Mes</div>
+                            </div>
+                        </div>
+                        <div class="quick-stat">
+                            <div class="quick-stat-icon" style="background: linear-gradient(135deg, var(--azul-principal), var(--azul-principal-gradient));">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="quick-stat-content">
+                                <div class="quick-stat-value">$91,470</div>
+                                <div class="quick-stat-label">Ganancia Neta</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span>Meta Mensual</span>
+                                <span>82%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 82%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-shopping-cart"></i> Últimas Ventas</h3>
+                        <div class="activity-item">
+    <div class="module-icon" style="background: linear-gradient(45deg, var(--verde-exito), var(--verde-exito-gradient));">
+        <i class="fas fa-shopping-cart"></i>
+    </div>
+    <div>
+        <div class="module-title">Últimas Ventas</div>
+        <div style="font-size: 12px; color: var(--gris-texto-secundario);">
+            Hoy, <span id="hora-actual"></span>
+        </div>
+    </div>
+</div>
+
+<div id="ultimas-ventas" style="margin-top: 15px;">
+    <p style="text-align:center; color: gray;">Cargando ventas...</p>
+</div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Alertas del Sistema</h3>
+                        <div class="alert-item alert-warning">
+                            <i class="fas fa-boxes" style="margin-right: 12px; font-size: 20px;"></i>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Stock bajo en 12 productos</div>
+                                <div style="font-size: 12px; opacity: 0.8;">Es necesario reabastecer inventario</div>
+                            </div>
+                        </div>
+                        <div class="alert-item alert-danger">
+                            <i class="fas fa-file-invoice" style="margin-right: 12px; font-size: 20px;"></i>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">5 facturas vencidas</div>
+                                <div style="font-size: 12px; opacity: 0.8;">Requieren atención inmediata</div>
+                            </div>
+                        </div>
+                        <div class="alert-item alert-info">
+                            <i class="fas fa-user-tie" style="margin-right: 12px; font-size: 20px;"></i>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Nómina próxima a procesar</div>
+                                <div style="font-size: 12px; opacity: 0.8;">Fecha de pago: 31 de Enero</div>
+                            </div>
+                        </div>
+                        <div class="alert-item alert-success">
+                            <i class="fas fa-check-circle" style="margin-right: 12px; font-size: 20px;"></i>
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600;">Respaldo completado</div>
+                                <div style="font-size: 12px; opacity: 0.8;">Último respaldo: Hoy a las 3:00 AM</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-chart-pie"></i> Distribución de Ventas</h3>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span><i class="fas fa-laptop" style="color: var(--azul-principal);"></i> Electrónicos</span>
+                                <span>45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%; background: linear-gradient(90deg, var(--azul-principal), var(--azul-secundario));"></div>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span><i class="fas fa-briefcase" style="color: var(--verde-exito);"></i> Oficina</span>
+                                <span>30%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%; background: linear-gradient(90deg, var(--verde-exito), var(--verde-exito-gradient));"></div>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span><i class="fas fa-home" style="color: var(--amarillo-advertencia);"></i> Hogar</span>
+                                <span>15%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%; background: linear-gradient(90deg, var(--amarillo-advertencia), var(--amarillo-advertencia-dark));"></div>
+                            </div>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">
+                                <span><i class="fas fa-ellipsis-h" style="color: var(--gris-texto-secundario);"></i> Otros</span>
+                                <span>10%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 10%; background: linear-gradient(90deg, var(--gris-texto-secundario), var(--gris-texto));"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Toggle sidebar en móvil
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // Función de cerrar sesión
+        function cerrarSesion() {
+            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                showNotification('Cerrando sesión...', 'info');
+                setTimeout(() => {
+                    showNotification('Sesión cerrada exitosamente. ¡Hasta pronto!', 'success');
+                    // Aquí puedes redirigir a la página de login
+                    // window.location.href = '/login';
+                }, 1000);
+            }
+        }
+
+        // Sistema de notificaciones
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            let bgColor = 'var(--azul-principal)';
+            let icon = 'fa-info-circle';
+            
+            if (type === 'success') {
+                bgColor = 'var(--verde-exito)';
+                icon = 'fa-check-circle';
+            } else if (type === 'error') {
+                bgColor = 'var(--rojo-peligro)';
+                icon = 'fa-exclamation-circle';
+            } else if (type === 'warning') {
+                bgColor = 'var(--amarillo-advertencia)';
+                icon = 'fa-exclamation-triangle';
+            }
+            
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: ${type === 'warning' ? 'var(--gris-texto)' : 'white'};
+                padding: 18px 24px;
+                border-radius: 12px;
+                box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.4s ease;
+                max-width: 350px;
+                white-space: pre-line;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-weight: 500;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas ${icon}" style="font-size: 20px;"></i>
+                <span>${message}</span>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.4s ease';
+                setTimeout(() => notification.remove(), 400);
+            }, 3500);
+        }
+
+        // Animaciones de entrada
+        document.addEventListener('DOMContentLoaded', function() {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                card.style.animation = `fadeIn 0.5s ease ${index * 0.1}s forwards`;
+                card.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                showNotification('¡Bienvenido al Sistema ERP! 🚀', 'success');
+            }, 800);
+        });
+
+        // Cerrar sidebar al hacer clic en cualquier parte en móvil
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Log de información
+        console.log('%c🚀 Sistema ERP Dashboard', 'color: #4a90e2; font-size: 20px; font-weight: bold;');
+        console.log('%c✨ Sistema cargado exitosamente', 'color: #28a745; font-size: 14px;');
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const contenedor = document.getElementById("ultimas-ventas");
+    const horaActual = document.getElementById("hora-actual");
+
+    // Mostrar la hora actual
+    const ahora = new Date();
+    horaActual.textContent = ahora.toLocaleTimeString("es-MX", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+
+    // Llamar al backend
+    fetch("/api/ventas")
+        .then(res => res.json())
+        .then(data => {
+            if (!Array.isArray(data) || data.length === 0) {
+                contenedor.innerHTML = `<p style="text-align:center; color: gray;">No hay ventas registradas.</p>`;
+                return;
+            }
+
+            // Tomar las últimas 3 ventas
+            const ultimas = data.slice(-3).reverse();
+
+            // Construir HTML dinámico
+            contenedor.innerHTML = ultimas.map(venta => `
+                <div style="
+                    display: flex; 
+                    justify-content: space-between; 
+                    align-items: center; 
+                    margin-bottom: 10px; 
+                    padding: 10px; 
+                    background: var(--gris-suave-3); 
+                    border-radius: 8px;
+                ">
+                    <div style="display:flex; flex-direction:column;">
+                        <span style="font-size: 14px;">Venta #${venta.id}</span>
+                        <span style="font-size: 12px; color: var(--gris-texto-secundario);">
+                            ${venta.cliente} - ${new Date(venta.fecha).toLocaleDateString("es-MX")}
+                        </span>
+                    </div>
+                    <span style="font-weight: 600; color: var(--verde-exito);">
+                        $${venta.total.toFixed(2)}
+                    </span>
+                </div>
+            `).join("");
+        })
+        .catch(err => {
+            console.error("Error al cargar ventas:", err);
+            contenedor.innerHTML = `<p style="text-align:center; color:red;">Error al cargar las ventas.</p>`;
+        });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const contador = document.getElementById("contador-ventas");
+
+    fetch("/api/ventas")
+        .then(res => res.json())
+        .then(data => {
+            const totalVentas = Array.isArray(data) ? data.length : 0;
+            contador.innerHTML = `
+                <span class="status-indicator status-active"></span>
+                ${totalVentas} ${totalVentas === 1 ? "venta" : "ventas"} registradas
+            `;
+        })
+        .catch(err => {
+            console.error("Error al obtener el total de ventas:", err);
+            contador.innerHTML = `<span style="color:red;">Error al contar ventas</span>`;
+        });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const totalVentasElement = document.getElementById("total-ventas");
+
+    fetch("/api/ventas")
+        .then(res => res.json())
+        .then(data => {
+            // Sumar todos los totales de ventas
+            const total = data.reduce((acc, venta) => acc + (venta.total || 0), 0);
+
+            // Formatear el total en pesos mexicanos
+            const totalFormateado = total.toLocaleString("es-MX", {
+                style: "currency",
+                currency: "MXN"
+            });
+
+            totalVentasElement.textContent = totalFormateado;
+        })
+        .catch(err => {
+            console.error("Error al obtener el total de ventas:", err);
+            totalVentasElement.textContent = "Error";
+        });
+});
+
+
+
+    </script>
+</body>
+</html>

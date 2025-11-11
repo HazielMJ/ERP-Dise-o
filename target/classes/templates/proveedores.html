@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema ERP - Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 25px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+    }
+
+    .form-grid textarea {
+      grid-column: 1 / -1;
+      height: 80px;
+      resize: vertical;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .btn {
+      background-color: #004AAD;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #003080;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background-color: #545b62;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #004AAD;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #004AAD;
+      margin: 0 3px;
+    }
+
+    .action-btn:hover {
+      color: #003080;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div>
+                    <h2><i class="fas fa-chart-line"></i> ERP System</h2>
+                    <p>Sistema Integral de Gestión</p>
+                </div>
+                <button class="toggle-btn" id="toggleSidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/" class="nav-link" data-module="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="contabilidad">
+                        <i class="fas fa-calculator"></i>
+                        <span>Contabilidad</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="ventas">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="compras">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+<li class="nav-item pos-menu">
+    <a href="/inventario" class="nav-link active" data-module="pos">
+        <i class="fas fa-cash-register"></i>
+        <span>Inventario</span>
+        <i class="fas fa-chevron-down submenu-toggle" style="margin-left:auto;"></i>
+    </a>
+    <ul class="submenu">
+        <li><a href="/almacen" class="nav-link" data-module="inv-almacen">Almacen</a></li>
+        <li><a href="/kardex" class="nav-link" data-module="inv-kardex">Kardex</a></li>
+        <li><a href="/movimientos" class="nav-link" data-module="inv-movientos">Movimientos</a></li>
+        <li><a href="/productos" class="nav-link" data-module="inv-productos">Productos</a></li>
+        <li><a href="/proveedores" class="nav-link active" data-module="inv-proveedores">Proveedores</a></li>
+        <li><a href="/reportes" class="nav-link" data-module="inv-reportes">Reportes</a></li>
+    </ul>
+</li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="clientes">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="proveedores">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="rrhh">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Recursos Humanos</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="logistica">
+                        <i class="fas fa-shipping-fast"></i>
+                        <span>Logística</span>
+                    </a>
+                </li>
+<li class="nav-item pos-menu">
+    <a href="/pd" class="nav-link" data-module="pos">
+        <i class="fas fa-cash-register"></i>
+        <span>Punto de Venta</span>
+        <i class="fas fa-chevron-down submenu-toggle" style="margin-left:auto;"></i>
+    </a>
+    <ul class="submenu">
+        <li><a href="/clientes" class="nav-link" data-module="pos-clientes">Clientes</a></li>
+        <li><a href="/ventas" class="nav-link active" data-module="pos-ventas">Ventas</a></li>
+        <li><a href="/reportes" class="nav-link" data-module="pos-reportes">Reportes</a></li>
+        <li><a href="/caja" class="nav-link" data-module="pos-caja">Caja</a></li>
+        <li><a href="/apertura-caja" class="nav-link" data-module="pos-caja">Abrir Caja</a></li>
+    </ul>
+</li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="facturacion">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Facturación</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="reportes">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-module="configuracion">
+                        <i class="fas fa-cog"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1 id="page-title">Proveedores</h1>
+                </div>
+                <div class="header-right">
+                    <button class="action-btn btn-primary">
+                        <i class="fas fa-bell"></i>
+                        Notificaciones
+                        <span class="notification-badge">3</span>
+                    </button>
+                    <div class="user-info">
+                        <div class="user-avatar">AD</div>
+                        <div>
+                            <div style="font-weight: 600; color: var(--gris-texto);">Admin User</div>
+                            <div style="font-size: 12px; color: var(--gris-texto-secundario);">Administrador</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div class="dashboard-content">
+ <!-- === Formulario de Registro / Edición === -->
+    <div class="card">
+
+
+    <!-- === Tabla de Proveedores === -->
+    <div class="card">
+      <h3>Listado de Proveedores</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Empresa</th>
+            <th>RFC</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Contacto</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="prov : ${proveedores}">
+            <td th:text="${prov.idProveedor}"></td>
+            <td th:text="${prov.nombreEmpresa}"></td>
+            <td th:text="${prov.rfc}"></td>
+            <td th:text="${prov.email}"></td>
+            <td th:text="${prov.telefono}"></td>
+            <td th:text="${prov.contactoNombre}"></td>
+            <td th:text="${prov.estado}"></td>
+            <td>
+              <a th:href="@{'/proveedores/editar/' + ${prov.idProveedor}}" class="action-btn" title="Editar">
+                <i class="fas fa-edit"></i>
+              </a>
+              <a th:href="@{'/proveedores/eliminar/' + ${prov.idProveedor}}" class="action-btn" title="Eliminar"
+                 onclick="return confirm('¿Seguro que deseas eliminar este proveedor?')">
+                <i class="fas fa-trash-alt"></i>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        © 2024 ERP. Todos los derechos reservados. Diseñado por Mycleth
+    </footer>
+
+    <script>
+// Listeners por cada menú
+document.querySelectorAll('.pos-menu').forEach(menu => {
+  const link = menu.querySelector('.nav-link');
+  const submenu = menu.querySelector('.submenu');
+
+  if (!link || !submenu) return;
+
+  link.addEventListener('click', (e) => {
+    // Este click es para abrir/cerrar el submenú, no para navegar
+    e.preventDefault();                                  // evita la navegación del <a> [web:18]
+    menu.classList.toggle('open');                       // alterna el submenú
+  });
+});
+
+
+
+    </script>
+</body>
+</html>
