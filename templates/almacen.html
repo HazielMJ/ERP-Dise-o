@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema ERP - Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/Estilodash.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-chart-line"></i> ERP System</h2>
+                <p>Sistema Integral de Gestión</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-section">
+                    <div class="nav-section-title">PRINCIPAL</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/dashboard" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                
+                <li class="nav-section">
+                    <div class="nav-section-title">ADMINISTRACIÓN</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-calculator"></i>
+                        <span>Contabilidad</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">VENTAS</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/Clientes" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/ventas" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/facturacion" class="nav-link">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Facturación</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/caja" class="nav-link">
+                        <i class="fas fa-cash-register"></i>
+                        <span>Punto de Venta</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">COMPRAS</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-truck"></i>
+                        <span>Proveedores</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fa-sharp fa-solid fa-bag-shopping"></i>
+                        <span>Compras</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">INVENTARIO</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/productos" class="nav-link">
+                        <i class="fas fa-boxes"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/almacen " class="nav-link active">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Almacenes</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">RECURSOS HUMANOS</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/empleados" class="nav-link">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Empleados</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/nomina" class="nav-link">
+                        <i class="fa-sharp fa-solid fa-money-bill-wave"></i>
+                        <span>Nómina</span>
+                    </a>
+                </li>
+                <li class="nav-section">
+                    <div class="nav-section-title">LOGÍSTICA</div>
+                </li>
+                <li class="nav-item">
+                    <a href="/logistica" class="nav-link">
+                        <i class="fa-sharp fa-solid fa-truck-fast"></i>
+                        <span>Envíos</span>
+                    </a>
+                </li>
+
+                <li class="nav-section">
+                    <div class="nav-section-title">ANÁLISIS</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fa-sharp fa-solid fa-gear"></i>
+                        <span>Reportes</span>
+                    </a>
+                </li>
+                                <li class="nav-section">
+                    <div class="nav-section-title">SISTEMA</div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Configuración</span>
+                    </a>
+                </li>
+            </ul>
+            
+            
+            <!-- Botón de cerrar sesión -->
+            <div class="logout-section">
+                <button class="btn-logout" onclick="cerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div>
+                        <h1><i class="fas fa-tachometer-alt"></i>Almacen</h1>
+                        <div class="breadcrumb">
+                            <a href="/"><i class="fas fa-home"></i> Inicio</a>
+                            <span>/</span>
+                            <span>Almacen</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+<section class="content-section">
+  <div class="tab-content active">
+      <div class="toolbar-actions mb-20">
+        <button class="btn btn-primary" onclick="mostrarFormularioAlmacen()">
+          <i class="fas fa-plus"></i> Nuevo Almacén
+        </button>
+      </div>
+
+<div id="almacenModal" class="modal">
+    <div class="modal-content">
+        
+        <div class="modal-header">
+            <h3 class="modal-title">
+                <i class="fas fa-warehouse"></i>
+                <span id="formTitulo">Agregar Almacén</span>
+            </h3>
+            <button type="button" class="modal-close" id="cerrarAlmacenBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div id="alertaForm" class="alert-box alert-warning" style="display:none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="alertaFormMsg">Por favor completa los campos obligatorios.</span>
+            </div>
+            
+            <form id="formAlmacen">
+                <input type="hidden" id="almacenId">
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="codigoAlmacen" class="form-label">
+                            Código de Almacén <span class="required">*</span>
+                        </label>
+                        <input type="text" id="codigoAlmacen" class="form-input" placeholder="Ej. ALM-001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombreAlmacen" class="form-label">
+                            Nombre del Almacén <span class="required">*</span>
+                        </label>
+                        <input type="text" id="nombreAlmacen" class="form-input" placeholder="Ej. Almacén Central" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ubicacionAlmacen" class="form-label">
+                            Ubicación <span class="required">*</span>
+                        </label>
+                        <input type="text" id="ubicacionAlmacen" class="form-input" placeholder="Ej. Zona Industrial" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="capacidadAlmacen" class="form-label">Capacidad Total</label>
+                        <input type="number" id="capacidadAlmacen" class="form-input" placeholder="Ej. 10000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="espacioAlmacen" class="form-label">Espacio Utilizado</label>
+                        <input type="number" id="espacioAlmacen" class="form-input" placeholder="Ej. 4500">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estadoAlmacen" class="form-label">Estatus</label>
+                        <select id="estadoAlmacen" class="form-select" required>
+                            <option value="ACTIVO">ACTIVO</option>
+                            <option value="INACTIVO">INACTIVO</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-success" id="guardarAlmacenBtn">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <button type="button" class="btn btn-secondary" id="cancelarAlmacenBtn">
+                Cancelar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+    <div class="table-container">
+      <div class="table-header">
+        <div class="table-title">
+          <i class="fas fa-warehouse"></i> Almacenes
+        </div>
+      </div>
+
+      <table id="tablaAlmacenes" class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Código de Almacén</th>
+            <th>Nombre</th>
+            <th>Ubicación</th>
+            <th>Capacidad</th>
+            <th>Espacio Utilizado</th>
+            <th>Estatus</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoAlmacenes">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+    <script>
+function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.toggle('active');
+        }
+    }
+
+    function cerrarSesion() {
+        if (confirm('¿Está seguro que desea cerrar sesión?')) {
+            showNotification('Cerrando sesión...', 'info');
+            setTimeout(() => {
+                showNotification('Sesión cerrada exitosamente. ¡Hasta pronto!', 'success');
+            }, 1000);
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        let bgColor = 'var(--azul-principal)';
+        let icon = 'fa-info-circle';
+        
+        if (type === 'success') {
+            bgColor = 'var(--verde-exito)';
+            icon = 'fa-check-circle';
+        } else if (type === 'error') {
+            bgColor = 'var(--rojo-peligro)';
+            icon = 'fa-exclamation-circle';
+        } else if (type === 'warning') {
+            bgColor = 'var(--amarillo-advertencia)';
+            icon = 'fa-exclamation-triangle';
+        }
+        
+        notification.style.cssText = `
+            position: fixed; top: 20px; right: 20px; background: ${bgColor};
+            color: ${type === 'warning' ? 'var(--gris-texto)' : 'white'};
+            padding: 18px 24px; border-radius: 12px; box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+            z-index: 10000; animation: slideIn 0.4s ease; max-width: 350px;
+            white-space: pre-line; display: flex; align-items: center;
+            gap: 12px; font-weight: 500;
+        `;
+        
+        notification.innerHTML = `
+            <i class="fas ${icon}" style="font-size: 20px;"></i>
+            <span>${message}</span>
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'fadeOut 0.4s ease';
+            setTimeout(() => notification.remove(), 400);
+        }, 3500);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const statCards = document.querySelectorAll('.stat-card');
+        statCards.forEach((card, index) => {
+            card.style.animation = `fadeIn 0.5s ease ${index * 0.1}s forwards`;
+            card.style.opacity = '0';
+        });
+
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            if (window.innerWidth <= 768) {
+                if (sidebar && menuBtn && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        console.log('%c🚀 Sistema ERP Dashboard', 'color: #4a90e2; font-size: 20px; font-weight: bold;');
+        console.log('%c✨ Sistema cargado exitosamente', 'color: #28a745; font-size: 14px;');
+
+        
+const API_URL = 'http://localhost:8082/api/almacenes';
+
+        const modal = document.getElementById("almacenModal");
+        const cuerpo = document.getElementById("cuerpoAlmacenes");
+        const form = document.getElementById("formAlmacen");
+        const titulo = document.getElementById("formTitulo");
+        
+        const abrirBtn = document.querySelector('button[onclick="mostrarFormularioAlmacen()"]'); 
+        const cerrarBtn = document.getElementById("cerrarAlmacenBtn");
+        const cancelarBtn = document.getElementById("cancelarAlmacenBtn");
+        const guardarBtn = document.getElementById("guardarAlmacenBtn");
+        
+        const idInput = document.getElementById("almacenId");
+        const codigoInput = document.getElementById("codigoAlmacen");
+        const nombreInput = document.getElementById("nombreAlmacen");
+        const ubicacionInput = document.getElementById("ubicacionAlmacen");
+        const capacidadInput = document.getElementById("capacidadAlmacen");
+        const espacioInput = document.getElementById("espacioAlmacen");
+        const estadoSelect = document.getElementById("estadoAlmacen");
+        
+        const alertaForm = document.getElementById("alertaForm");
+        const alertaFormMsg = document.getElementById("alertaFormMsg");
+
+        if (!modal || !cuerpo || !form) {
+             console.warn('Módulo de Almacenes no cargado. Faltan elementos HTML clave (modal, cuerpo de tabla, o form).');
+             return; 
+        }
+         if (!abrirBtn) {
+            console.warn("No se encontró el botón 'Nuevo Almacén'. Asegúrate de que tenga el onclick='mostrarFormularioAlmacen()' o un id.");
+        }
+
+
+        console.log('%c📦 Módulo de Almacenes inicializado.', 'color: #28a745;');
+
+        function abrirModalParaAlta() {
+            titulo.innerText = "Agregar Almacén";
+            limpiarFormulario();
+            ocultarAlerta();
+            modal.classList.add('active');
+        }
+
+        function cerrarModal() {
+            modal.classList.remove('active');
+            ocultarAlerta();
+        }
+
+        function mostrarAlerta(mensaje) {
+            alertaFormMsg.textContent = mensaje;
+            alertaForm.style.display = "flex";
+        }
+
+        function ocultarAlerta() {
+            if (alertaForm) {
+                alertaForm.style.display = "none";
+            }
+        }
+
+        function limpiarFormulario() {
+            if(form) form.reset();
+            idInput.value = "";
+            estadoSelect.value = "ACTIVO";
+        }
+
+        function validarFormulario() {
+            const errores = [];
+            if (!codigoInput.value.trim()) errores.push("El código de almacén es obligatorio.");
+            if (!nombreInput.value.trim()) errores.push("El nombre del almacén es obligatorio.");
+            if (!ubicacionInput.value.trim()) errores.push("La ubicación es obligatoria.");
+
+            const capacidad = capacidadInput.value.trim() === "" ? null : parseFloat(capacidadInput.value);
+            const espacio = espacioInput.value.trim() === "" ? null : parseFloat(espacioInput.value);
+
+            if (capacidad !== null && (isNaN(capacidad) || capacidad < 0)) errores.push("Capacidad total inválida.");
+            if (espacio !== null && (isNaN(espacio) || espacio < 0)) errores.push("Espacio utilizado inválido.");
+            if (capacidad !== null && espacio !== null && espacio > capacidad) errores.push("El espacio utilizado no puede exceder la capacidad.");
+
+            if (errores.length > 0) {
+                mostrarAlerta(errores.join("\n"));
+                return false;
+            }
+            ocultarAlerta();
+            return true;
+        }
+
+        async function guardarAlmacen() {
+            if (!validarFormulario()) return;
+
+            const almacen = {
+                codigoAlmacen: codigoInput.value.trim(),
+                nombreAlmacen: nombreInput.value.trim(),
+                ubicacion: ubicacionInput.value.trim(),
+                capacidadTotal: capacidadInput.value.trim() === "" ? null : parseFloat(capacidadInput.value),
+                espacioUtilizado: espacioInput.value.trim() === "" ? null : parseFloat(espacioInput.value),
+                estado: estadoSelect.value
+            };
+
+            const id = idInput.value;
+            const metodo = id ? "PUT" : "POST";
+            const url = id ? `${API_URL}/${id}` : API_URL;
+
+            try {
+                const res = await fetch(url, {
+                    method: metodo,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(almacen),
+                });
+
+                if (!res.ok) {
+                    const errorMsg = await res.text();
+                    throw new Error(errorMsg || `Error ${res.status}`);
+                }
+
+                cerrarModal();
+                await listarAlmacenes();
+                showNotification(`Almacén ${id ? 'actualizado' : 'creado'} con éxito.`, 'success');
+
+            } catch (err) {
+                mostrarAlerta(err.message); 
+            }
+        }
+        
+        async function editarAlmacen(id) {
+            try {
+                const res = await fetch(`${API_URL}/${id}`);
+                if (!res.ok) throw new Error('No se pudo cargar el almacén.');
+                const a = await res.json(); 
+
+                ocultarAlerta();
+                titulo.innerText = "Editar Almacén";
+
+                idInput.value = a.idAlmacen; 
+                codigoInput.value = a.codigoAlmacen ?? ""; 
+                nombreInput.value = a.nombreAlmacen ?? ""; 
+                ubicacionInput.value = a.ubicacion ?? "";
+                capacidadInput.value = a.capacidadTotal ?? ""; 
+                espacioInput.value = a.espacioUtilizado ?? ""; 
+                estadoSelect.value = a.estado ?? "ACTIVO";
+
+                modal.classList.add('active'); 
+
+            } catch (err) {
+                console.error("Error al cargar para editar:", err);
+                showNotification('Error al cargar datos para editar.', 'error');
+            }
+        }
+
+        async function eliminarAlmacen(id) {
+            if (confirm("¿Deseas eliminar este almacén?")) {
+                try {
+                    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+                    
+                    if (!res.ok) {
+                         const errorMsg = await res.text();
+                        throw new Error(errorMsg || `Error ${res.status}`);
+                    }
+                    
+                    await listarAlmacenes();
+                    showNotification('Almacén eliminado.', 'success');
+                } catch (err) {
+                    showNotification(`Error al eliminar: ${err.message}`, 'error');
+                }
+            }
+        }
+
+        async function listarAlmacenes() {
+            try {
+                const res = await fetch(API_URL);
+                if (!res.ok) throw new Error('No se pudo conectar a la API.');
+                const almacenes = await res.json();
+                
+                if (almacenes.length === 0) {
+                    cuerpo.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-warehouse"></i><h3>No hay almacenes</h3><p>Crea el primer almacén para empezar.</p></td></tr>';
+                    return;
+                }
+
+                cuerpo.innerHTML = almacenes.map((a) => {
+                    const badgeClass = a.estado === "ACTIVO" ? "badge badge-success" : "badge badge-danger";
+                    
+                    return `
+                        <tr data-id="${a.idAlmacen}">
+                            <td>${a.idAlmacen}</td>
+                            <td>${a.codigoAlmacen}</td>
+                            <td>${a.nombreAlmacen}</td>
+                            <td>${a.ubicacion}</td>
+                            <td>${a.capacidadTotal ?? 0}</td>
+                            <td>${a.espacioUtilizado ?? 0}</td>
+                            <td><span class="${badgeClass}">${a.estado}</span></td>
+                            <td>
+                                <div style="display: flex; gap: 5px;">
+                                    <button class="btn btn-sm btn-secondary" data-action="edit">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" data-action="del">
+                                        <i class="fas fa-trash-alt"></i> Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join("");
+            } catch (err) {
+                if (typeof showNotification === 'function') {
+                    showNotification(`No se pudieron cargar los almacenes.\n${err.message}`, 'error');
+                }
+                cuerpo.innerHTML = `<tr><td colspan="8" class="empty-state alert-danger"><i class="fas fa-exclamation-triangle"></i><h3>Error al cargar</h3><p>${err.message}</p></td></tr>`;
+            }
+        }
+
+        
+        if (abrirBtn) {
+            if (abrirBtn.getAttribute('onclick')) {
+                 abrirBtn.setAttribute('onclick', '');
+            }
+            abrirBtn.addEventListener('click', abrirModalParaAlta);
+        }
+        
+        if(cerrarBtn) cerrarBtn.addEventListener('click', cerrarModal);
+        if(cancelarBtn) cancelarBtn.addEventListener('click', cerrarModal);
+        if(guardarBtn) guardarBtn.addEventListener('click', guardarAlmacen);
+        
+        if(modal) {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    cerrarModal();
+                }
+            });
+        }
+
+        if(cuerpo) {
+            cuerpo.addEventListener('click', e => {
+                const btn = e.target.closest('button[data-action]');
+                if (!btn) return;
+
+                const tr = btn.closest('tr');
+                const id = tr.dataset.id;
+                if (!id) return;
+
+                if (btn.dataset.action === 'edit') {
+                    editarAlmacen(id);
+                }
+                if (btn.dataset.action === 'del') {
+                    eliminarAlmacen(id);
+                }
+            });
+        }
+
+        listarAlmacenes();
+
+    });
+    </script>
+</body>
+</html>
