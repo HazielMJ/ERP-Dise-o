@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.erp.dashboard.erp_dashboard.ErpDashboardApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.141 s -- in com.erp.dashboard.erp_dashboard.ErpDashboardApplicationTests
