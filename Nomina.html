@@ -5,14 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Módulo de Nómina - Sistema ERP</title>
 
-  <!-- Iconos -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
-  <!-- MISMO CSS QUE COMPRAS -->
-<link rel="stylesheet" th:href="@{/css/ComprasStyle.css}">
+  <link rel="stylesheet" th:href="@{/css/Finanzas.css}">
 
   <script>
-    // ===== Tabs (mismo comportamiento que compras) =====
+    function verDetalleNomina(id, emp, asiento, periodo, inicio, fin, pago, dias, salario, perc, dedu, neto, tipo, estado, obs) {
+      document.getElementById('d_id_nomina').value = id;
+      document.getElementById('d_id_empleado').value = emp;
+      document.getElementById('d_id_asiento').value = asiento;
+      document.getElementById('d_periodo').value = periodo;
+      document.getElementById('d_inicio').value = inicio;
+      document.getElementById('d_fin').value = fin;
+      document.getElementById('d_pago').value = pago;
+      document.getElementById('d_dias').value = dias;
+      document.getElementById('d_salario').value = salario;
+      document.getElementById('d_perc').value = perc;
+      document.getElementById('d_dedu').value = dedu;
+      document.getElementById('d_neto').value = neto;
+      document.getElementById('d_tipo').value = tipo;
+      document.getElementById('d_estado').value = estado;
+      document.getElementById('d_obs').value = obs;
+
+      document.getElementById('modalDetalleNominaFull').classList.add('active');
+    }
+
     let tabActual = 'nomina';
     function cambiarTab(nombreTab) {
       tabActual = nombreTab;
@@ -26,6 +43,8 @@
       });
 
       const btnAccion = document.getElementById('btnAccionPrincipal');
+      if (!btnAccion) return;
+
       if (nombreTab === 'nomina') {
         btnAccion.innerHTML = '<i class="fas fa-plus"></i> Nueva Nómina';
         btnAccion.onclick = abrirModalNuevaNomina;
@@ -35,37 +54,65 @@
       }
     }
 
-    // ===== Buscador en Nómina =====
+    function actualizarKPIs() {
+      const filas = document.querySelectorAll('#nominaTableBody tr[data-estado]');
+      let pagadas = 0;
+      let pendientes = 0;
+
+      filas.forEach(tr => {
+        const estado = tr.getAttribute('data-estado');
+        if (estado === 'PAGADA') pagadas++;
+        else if (estado === 'PENDIENTE') pendientes++;
+      });
+
+      const elPagadas = document.getElementById('nominasPagadas');
+      const elPendientes = document.getElementById('nominasPendientes');
+      if (elPagadas) elPagadas.textContent = pagadas;
+      if (elPendientes) elPendientes.textContent = pendientes;
+    }
+
     function filtrarNominas() {
-      const q = (document.getElementById('searchNomina').value || '').toLowerCase();
-      const estado = document.getElementById('estadoFilterNomina').value;
+      const searchInput = document.getElementById('searchNomina');
+      const estadoSelect = document.getElementById('estadoFilterNomina');
+      if (!searchInput || !estadoSelect) return;
+
+      const q = (searchInput.value || '').toLowerCase();
+      const estado = estadoSelect.value;
       const filas = document.querySelectorAll('#nominaTableBody tr');
 
       filas.forEach(tr => {
         const texto = tr.innerText.toLowerCase();
-        const estadoTd = tr.querySelector('[data-col="estado"]')?.innerText || '';
+        const estadoAttr = tr.getAttribute('data-estado') || '';
+
         const coincideTexto = texto.includes(q);
-        const coincideEstado = !estado || estadoTd === estado;
+        const coincideEstado = !estado || estadoAttr === estado;
+
         tr.style.display = (coincideTexto && coincideEstado) ? '' : 'none';
       });
     }
 
-    // ===== Cálculo automático de totales en el formulario =====
     function calcularNomina() {
-      const dias = parseFloat(document.getElementById('dias_trabajados').value) || 0;
-      const salario = parseFloat(document.getElementById('salario_diario').value) || 0;
+      const diasInput = document.getElementById('dias_trabajados');
+      const salarioInput = document.getElementById('salario_diario');
+      const totalPercepcionesInput = document.getElementById('total_percepciones');
+      const totalDeduccionesInput = document.getElementById('total_deducciones');
+      const totalNetoInput = document.getElementById('total_neto');
+
+      if (!diasInput || !salarioInput || !totalPercepcionesInput || !totalDeduccionesInput || !totalNetoInput) return;
+
+      const dias = parseFloat(diasInput.value) || 0;
+      const salario = parseFloat(salarioInput.value) || 0;
 
       const percepciones = dias * salario;
-      document.getElementById('total_percepciones').value = percepciones.toFixed(2);
+      totalPercepcionesInput.value = percepciones.toFixed(2);
 
-      const deducciones = percepciones * 0.10; // regla simple (ajústala si tu lógica cambia)
-      document.getElementById('total_deducciones').value = deducciones.toFixed(2);
+      const deducciones = percepciones * 0.10; 
+      totalDeduccionesInput.value = deducciones.toFixed(2);
 
       const neto = percepciones - deducciones;
-      document.getElementById('total_neto').value = neto.toFixed(2);
+      totalNetoInput.value = neto.toFixed(2);
     }
 
-    // ===== Modales (misma UX que Compras) =====
     function abrirModalNuevaNomina() {
       document.getElementById('modalNominaTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Nueva Nómina';
       document.getElementById('modalNomina').classList.add('active');
@@ -75,33 +122,55 @@
       document.getElementById('modalDetalle').classList.add('active');
     }
     function cerrarModal(id) {
-      document.getElementById(id).classList.remove('active');
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('active');
     }
 
-    // ===== Sidebar móvil =====
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('open');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // set tab inicial
       cambiarTab('nomina');
-      // wire filtros
-      document.getElementById('searchNomina').addEventListener('input', filtrarNominas);
-      document.getElementById('estadoFilterNomina').addEventListener('change', filtrarNominas);
-      // cálculo en vivo
-      const calcInputs = ['dias_trabajados','salario_diario'];
+
+      const searchInput = document.getElementById('searchNomina');
+      const estadoSelect = document.getElementById('estadoFilterNomina');
+      if (searchInput) searchInput.addEventListener('input', filtrarNominas);
+      if (estadoSelect) estadoSelect.addEventListener('change', filtrarNominas);
+
+      const calcInputs = ['dias_trabajados', 'salario_diario'];
       calcInputs.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', calcularNomina);
       });
+      actualizarKPIs();
     });
+    function abrirDetalleDesdeData(btn) {
+
+  document.getElementById("d_id_nomina").value = btn.dataset.id;
+  document.getElementById("d_id_empleado").value = btn.dataset.emp;
+  document.getElementById("d_id_asiento").value = btn.dataset.asiento;
+  document.getElementById("d_periodo").value = btn.dataset.periodo;
+  document.getElementById("d_inicio").value = btn.dataset.inicio;
+  document.getElementById("d_fin").value = btn.dataset.fin;
+  document.getElementById("d_pago").value = btn.dataset.pago;
+  document.getElementById("d_dias").value = btn.dataset.dias;
+  document.getElementById("d_salario").value = btn.dataset.salario;
+  document.getElementById("d_perc").value = btn.dataset.perc;
+  document.getElementById("d_dedu").value = btn.dataset.dedu;
+  document.getElementById("d_neto").value = btn.dataset.neto;
+  document.getElementById("d_tipo").value = btn.dataset.tipo;
+  document.getElementById("d_estado").value = btn.dataset.estado;
+  document.getElementById("d_obs").value = btn.dataset.obs;
+
+  document.getElementById("modalDetalleNominaFull").classList.add("active");
+}
+
   </script>
 </head>
 <body>
   <div class="main-container">
 
-    <!-- ==== Sidebar igual que Compras ==== -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <h2><i class="fas fa-chart-line"></i> ERP System</h2>
@@ -113,20 +182,25 @@
         <li class="nav-item">
           <a href="/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
         </li>
+<li class="nav-section"><div class="nav-section-title">Finanzas</div></li>
+        <li class="nav-item">
+          <a href="/contabilidad" class="nav-link">
+            <i class="fas fa-calculator"></i><span>Contabilidad</span>
+          </a>
+        </li>
+              <li class="nav-item">
+          <a href="/impuesto" class="nav-link">
+            <i class="fas fa-percent"></i><span>Impuestos</span>
+          </a>
+        </li>
+          <li class="nav-item">
+          <a href="/nomina" class="nav-link active"><i class="fas fa-money-bill-wave"></i><span>Nómina</span></a>
+        </li>
 
         <li class="nav-section"><div class="nav-section-title">ADMINISTRACIÓN</div></li>
         <li class="nav-item">
           <a href="/usuarios" class="nav-link"><i class="fas fa-user-shield"></i><span>Usuarios</span></a>
         </li>
-        <li class="nav-item">
-          <a href="/contabilidad" class="nav-link"><i class="fas fa-calculator"></i><span>Contabilidad</span></a>
-        </li>
-<li class="nav-item">
-  <a href="/impuesto" class="nav-link">
-    <i class="fas fa-percent"></i><span>Impuestos</span>
-  </a>
-</li>
-
         <li class="nav-section"><div class="nav-section-title">VENTAS</div></li>
         <li class="nav-item">
           <a href="/clientes" class="nav-link"><i class="fas fa-users"></i><span>Clientes</span></a>
@@ -161,10 +235,6 @@
         <li class="nav-item">
           <a href="/rrhh" class="nav-link"><i class="fas fa-user-tie"></i><span>Empleados</span></a>
         </li>
-        <li class="nav-item">
-          <a href="/nomina" class="nav-link active"><i class="fas fa-money-bill-wave"></i><span>Nómina</span></a>
-        </li>
-
         <li class="nav-section"><div class="nav-section-title">ANÁLISIS</div></li>
         <li class="nav-item">
           <a href="/reportes" class="nav-link"><i class="fas fa-chart-bar"></i><span>Reportes</span></a>
@@ -181,10 +251,8 @@
       </div>
     </aside>
 
-    <!-- ==== Contenido principal ==== -->
     <div class="main-content">
 
-      <!-- Header -->
       <header class="page-header">
         <div class="header-left">
           <button class="mobile-menu-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
@@ -204,7 +272,6 @@
         </div>
       </header>
 
-      <!-- Tabs -->
       <div class="tabs-container">
         <div class="tabs-nav">
           <button class="tab-button active" onclick="cambiarTab('nomina')" data-tab="nomina">
@@ -216,11 +283,9 @@
         </div>
       </div>
 
-      <!-- ====== TAB NÓMINA ====== -->
       <div class="tab-content active" id="tab-nomina">
         <section class="content-section">
 
-          <!-- KPIs opcionales (mismo estilo de tarjetas) -->
           <div class="stats-grid">
             <div class="stat-card" style="border-left-color: var(--azul-principal)">
               <div class="stat-header">
@@ -238,7 +303,7 @@
                   <i class="fas fa-check-circle"></i>
                 </div>
               </div>
-              <div class="stat-value" id="nominasPagadas">—</div>
+              <div class="stat-value" id="nominasPagadas">0</div>
               <div class="stat-label">Pagadas (vista)</div>
             </div>
 
@@ -248,12 +313,11 @@
                   <i class="fas fa-clock"></i>
                 </div>
               </div>
-              <div class="stat-value" id="nominasPendientes">—</div>
+              <div class="stat-value" id="nominasPendientes">0</div>
               <div class="stat-label">Pendientes (vista)</div>
             </div>
           </div>
 
-          <!-- Toolbar con buscador / filtros -->
           <div class="toolbar">
             <div class="search-box">
               <i class="fas fa-search input-icon"></i>
@@ -274,8 +338,6 @@
               </button>
             </div>
           </div>
-
-          <!-- Tabla -->
           <div class="table-container">
             <div class="table-header">
               <h3 class="table-title"><i class="fas fa-list"></i> Listado de Nómina</h3>
@@ -285,60 +347,136 @@
                 <tr>
                   <th>ID</th>
                   <th>Empleado</th>
-                  <th>Asiento</th>
                   <th>Periodo</th>
-                  <th>Inicio</th>
-                  <th>Fin</th>
                   <th>Pago</th>
-                  <th>Días</th>
-                  <th>Salario</th>
-                  <th>Percepciones</th>
-                  <th>Deducciones</th>
                   <th>Neto</th>
-                  <th>Tipo</th>
                   <th>Estado</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
+
               <tbody id="nominaTableBody">
                 <tr th:if="${#lists.isEmpty(nominas)}">
-                  <td colspan="15" class="empty-state">
+                  <td colspan="7" class="empty-state">
                     <i class="fas fa-money-bill"></i>
                     <h3>No hay nóminas registradas</h3>
                     <p>Comienza creando tu primera nómina</p>
                   </td>
                 </tr>
 
-                <tr th:each="n : ${nominas}">
+                <tr th:each="n : ${nominas}" th:attr="data-estado=${n.estado}">
                   <td th:text="${n.id_nomina}"></td>
                   <td th:text="${n.id_empleado}"></td>
-                  <td th:text="${n.id_asiento_contable}"></td>
                   <td th:text="${n.periodo_nomina}"></td>
-                  <td th:text="${#dates.format(n.fecha_inicio, 'yyyy-MM-dd')}"></td>
-                  <td th:text="${#dates.format(n.fecha_fin, 'yyyy-MM-dd')}"></td>
                   <td th:text="${#dates.format(n.fecha_pago, 'yyyy-MM-dd')}"></td>
-                  <td th:text="${n.dias_trabajados}"></td>
-                  <td th:text="${n.salario_diario}"></td>
-                  <td th:text="${n.total_percepciones}"></td>
-                  <td th:text="${n.total_deducciones}"></td>
                   <td th:text="${n.total_neto}"></td>
-                  <td th:text="${n.tipo_nomina}"></td>
-                  <td data-col="estado" th:text="${n.estado}"></td>
+                  <td th:text="${n.estado}" data-col="estado"></td>
                   <td>
-                    <a class="btn btn-icon btn-danger" th:href="@{'/nomina/eliminar/' + ${n.id_nomina}}" title="Eliminar">
+                    <button class="btn btn-icon btn-info"
+        type="button"
+        th:attr="
+            data-id=${n.id_nomina},
+            data-emp=${n.id_empleado},
+            data-asiento=${n.id_asiento_contable},
+            data-periodo=${n.periodo_nomina},
+            data-inicio=${#dates.format(n.fecha_inicio,'yyyy-MM-dd')},
+            data-fin=${#dates.format(n.fecha_fin,'yyyy-MM-dd')},
+            data-pago=${#dates.format(n.fecha_pago,'yyyy-MM-dd')},
+            data-dias=${n.dias_trabajados},
+            data-salario=${n.salario_diario},
+            data-perc=${n.total_percepciones},
+            data-dedu=${n.total_deducciones},
+            data-neto=${n.total_neto},
+            data-tipo=${n.tipo_nomina},
+            data-estado=${n.estado},
+            data-obs='Sin observaciones'
+        "
+        onclick="abrirDetalleDesdeData(this)">
+  <i class="fas fa-eye"></i>
+</button>
+
+
+                    <a class="btn btn-icon btn-danger"
+                       th:href="@{'/nomina/eliminar/' + ${n.id_nomina}}"
+                       title="Eliminar">
                       <i class="fas fa-trash"></i>
                     </a>
                   </td>
                 </tr>
               </tbody>
+
             </table>
           </div>
         </section>
       </div>
-
-      <!-- ====== TAB DETALLE NÓMINA ====== -->
       <div class="tab-content" id="tab-detalle">
         <section class="content-section">
+<div class="stats-grid" style="margin-bottom: 25px;">
+
+  <div class="stat-card" style="border-left-color: var(--azul-principal);">
+    <div class="stat-header">
+      <div class="stat-icon" style="background: linear-gradient(135deg, var(--azul-principal), var(--azul-secundario));">
+        <i class="fas fa-list"></i>
+      </div>
+    </div>
+    <div class="stat-value" th:text="${#lists.size(detallenomina)}">0</div>
+    <div class="stat-label">Conceptos Registrados</div>
+  </div>
+
+  <div class="stat-card" style="border-left-color: var(--verde-exito);">
+    <div class="stat-header">
+      <div class="stat-icon" style="background: linear-gradient(135deg, var(--verde-exito), var(--verde-exito-gradient));">
+        <i class="fas fa-arrow-up"></i>
+      </div>
+    </div>
+    <div class="stat-value" id="kpiDetallePercepciones">0.00</div>
+    <div class="stat-label">Total Percepciones</div>
+  </div>
+
+  <div class="stat-card" style="border-left-color: var(--amarillo-advertencia);">
+    <div class="stat-header">
+      <div class="stat-icon" style="background: linear-gradient(135deg, var(--amarillo-advertencia), var(--amarillo-advertencia-dark));">
+        <i class="fas fa-arrow-down"></i>
+      </div>
+    </div>
+    <div class="stat-value" id="kpiDetalleDeducciones">0.00</div>
+    <div class="stat-label">Total Deducciones</div>
+  </div>
+
+  <div class="stat-card" style="border-left-color: var(--rojo-error);">
+    <div class="stat-header">
+      <div class="stat-icon" style="background: linear-gradient(135deg, var(--rojo-error), #ff6b6b);">
+        <i class="fas fa-wallet"></i>
+      </div>
+    </div>
+    <div class="stat-value" id="kpiDetalleNeto">0.00</div>
+    <div class="stat-label">Neto Total</div>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const filas = document.querySelectorAll("#detalleTableBody tr[th\\:each], #detalleTableBody tr[data-row]");
+
+  let percepciones = 0;
+  let deducciones = 0;
+
+  filas.forEach(tr => {
+    const tipo = tr.children[2]?.innerText?.trim() || "";
+    const monto = parseFloat(tr.children[5]?.innerText || 0);
+
+    if (tipo === "PERCEPCION") percepciones += monto;
+    if (tipo === "DEDUCCION") deducciones += monto;
+  });
+
+  const neto = percepciones - deducciones;
+
+  document.getElementById("kpiDetallePercepciones").textContent = percepciones.toFixed(2);
+  document.getElementById("kpiDetalleDeducciones").textContent = deducciones.toFixed(2);
+  document.getElementById("kpiDetalleNeto").textContent = neto.toFixed(2);
+});
+</script>
 
           <div class="toolbar">
             <div class="search-box">
@@ -401,14 +539,12 @@
               </tbody>
             </table>
           </div>
-
         </section>
       </div>
 
     </div>
   </div>
 
-  <!-- ===== Modal: Nueva Nómina ===== -->
   <div class="modal" id="modalNomina">
     <div class="modal-content">
       <div class="modal-header">
@@ -509,7 +645,6 @@
     </div>
   </div>
 
-  <!-- ===== Modal: Detalle Nómina ===== -->
   <div class="modal" id="modalDetalle">
     <div class="modal-content" style="max-width: 800px;">
       <div class="modal-header">
@@ -564,5 +699,108 @@
       </div>
     </div>
   </div>
+
+  <div class="modal" id="modalDetalleNominaFull">
+    <div class="modal-content" style="max-width: 950px;">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-file-invoice"></i> Detalles de la Nómina
+        </h3>
+        <button class="modal-close" onclick="cerrarModal('modalDetalleNominaFull')">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>ID Nómina</label>
+            <input id="d_id_nomina" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>ID Empleado</label>
+            <input id="d_id_empleado" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>ID Asiento C.</label>
+            <input id="d_id_asiento" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Periodo</label>
+            <input id="d_periodo" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha Inicio</label>
+            <input id="d_inicio" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha Fin</label>
+            <input id="d_fin" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Fecha Pago</label>
+            <input id="d_pago" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Días Trabajados</label>
+            <input id="d_dias" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Salario Diario</label>
+            <input id="d_salario" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Percepciones</label>
+            <input id="d_perc" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Deducciones</label>
+            <input id="d_dedu" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Neto</label>
+            <input id="d_neto" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Tipo Nómina</label>
+            <input id="d_tipo" class="form-input" readonly>
+          </div>
+
+          <div class="form-group">
+            <label>Estado</label>
+            <input id="d_estado" class="form-input" readonly>
+          </div>
+
+          <div class="form-group full-width">
+            <label>Observaciones</label>
+            <textarea id="d_obs" class="form-textarea" readonly></textarea>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="cerrarModal('modalDetalleNominaFull')">
+          <i class="fas fa-times"></i> Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
+
+
