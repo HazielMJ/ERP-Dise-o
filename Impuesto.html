@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Módulo de Impuestos - Sistema ERP</title>
-  <!-- Iconos y estilos tal cual Compras -->
+  
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <!-- Si tu CSS está en /css, cambia a th:href="@{/css/ComprasStyle.css}" -->
-  <link rel="stylesheet" th:href="@{/css/ComprasStyle.css}">
+  
+  <link rel="stylesheet" th:href="@{/css/Finanzas.css}">
 </head>
 <body>
   <div class="main-container">
@@ -25,7 +25,20 @@
             <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
           </a>
         </li>
-
+<li class="nav-section"><div class="nav-section-title">Finanzas</div></li>
+        <li class="nav-item">
+          <a href="/contabilidad" class="nav-link">
+            <i class="fas fa-calculator"></i><span>Contabilidad</span>
+          </a>
+        </li>
+              <li class="nav-item">
+          <a href="/impuesto" class="nav-link active">
+            <i class="fas fa-percent"></i><span>Impuestos</span>
+          </a>
+        </li>
+          <li class="nav-item">
+          <a href="/nomina" class="nav-link"><i class="fas fa-money-bill-wave"></i><span>Nómina</span></a>
+        </li>
         <li class="nav-section"><div class="nav-section-title">ADMINISTRACIÓN</div></li>
         <li class="nav-item">
           <a href="/usuarios" class="nav-link">
@@ -37,11 +50,6 @@
             <i class="fas fa-calculator"></i><span>Contabilidad</span>
           </a>
         </li>
-<li class="nav-item">
-  <a href="/impuesto" class="nav-link">
-    <i class="fas fa-percent"></i><span>Impuestos</span>
-  </a>
-</li>
 
         <li class="nav-section"><div class="nav-section-title">VENTAS</div></li>
         <li class="nav-item">
@@ -95,11 +103,6 @@
             <i class="fas fa-user-tie"></i><span>Empleados</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="/nomina" class="nav-link">
-            <i class="fas fa-money-bill-wave"></i><span>Nómina</span>
-          </a>
-        </li>
 
         <li class="nav-section"><div class="nav-section-title">ANÁLISIS</div></li>
         <li class="nav-item">
@@ -114,12 +117,6 @@
             <i class="fas fa-cog"></i><span>Configuración</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="/impuesto" class="nav-link active">
-            <i class="fas fa-percent"></i><span>Impuestos</span>
-          </a>
-        </li>
-      </ul>
 
       <div class="logout-section">
         <button class="btn-logout" onclick="cerrarSesion()">
@@ -128,7 +125,6 @@
       </div>
     </aside>
 
-    <!-- CONTENIDO -->
     <div class="main-content">
       <!-- Header -->
       <header class="page-header">
@@ -149,7 +145,6 @@
         </div>
       </header>
 
-      <!-- (Opcional) Tabs-container como en Compras; aquí no usamos pestañas, solo contenido -->
       <div class="tabs-container">
         <div class="tabs-nav">
           <button class="tab-button active" data-tab="impuestos">
@@ -159,9 +154,7 @@
         </div>
       </div>
 
-      <!-- Sección principal -->
       <section class="content-section">
-        <!-- Tarjetas de stats -->
         <div class="stats-grid">
           <div class="stat-card" style="border-left-color: var(--azul-principal)">
             <div class="stat-header">
@@ -204,7 +197,6 @@
           </div>
         </div>
 
-        <!-- Toolbar con buscador y filtros -->
         <div class="toolbar">
           <div class="search-box">
             <i class="fas fa-search input-icon"></i>
@@ -229,7 +221,6 @@
           </div>
         </div>
 
-        <!-- Tabla -->
         <div class="table-container">
           <div class="table-header">
             <h3 class="table-title"><i class="fas fa-list"></i> Listado de Impuestos</h3>
@@ -269,9 +260,18 @@
               th:text="${i.estado}">ACTIVO</span>
       </td>
       <td>
-        <a th:href="@{'/impuesto/editar/' + ${i.id_impuesto}}" class="btn btn-icon btn-warning" title="Editar">
-          <i class="fas fa-edit"></i>
-        </a>
+<button class="btn btn-icon btn-warning"
+        data-id="[[${i.id_impuesto}]]"
+        data-nombre="[[${i.nombre}]]"
+        data-tipo="[[${i.tipo}]]"
+        data-tasa="[[${i.tasa}]]"
+        data-estado="[[${i.estado}]]"
+        data-descripcion="[[${i.descripcion}]]"
+        onclick="abrirEdicion(this)"
+        title="Editar">
+    <i class="fas fa-edit"></i>
+</button>
+
         <a th:href="@{'/impuesto/eliminar/' + ${i.id_impuesto}}" class="btn btn-icon btn-danger" title="Eliminar"
            onclick="return confirm('¿Eliminar impuesto?');">
           <i class="fas fa-trash"></i>
@@ -286,74 +286,77 @@
     </div>
   </div>
 
-  <!-- Modal: Nuevo/Editar Impuesto -->
-  <div class="modal" id="modalImpuesto">
+<div class="modal" id="modalImpuesto">
     <div class="modal-content" style="max-width: 700px;">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modalImpuestoTitle">
-          <i class="fas fa-plus-circle"></i> Nuevo Impuesto
-        </h3>
-        <button class="modal-close" onclick="cerrarModal('modalImpuesto')"><i class="fas fa-times"></i></button>
-      </div>
-      <div class="modal-body">
-        <form th:action="@{/impuesto/guardar}" method="post" id="formImpuesto">
-          <input type="hidden" name="id_impuesto" th:value="${impuesto?.id_impuesto}">
-          <div class="form-grid">
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-file-signature"></i> Nombre <span class="required">*</span></label>
-              <input type="text" class="form-input" name="nombre" required th:value="${impuesto?.nombre}">
-            </div>
+        <div class="modal-header">
+            <h3 class="modal-title" id="modalImpuestoTitle">
+                <i class="fas fa-plus-circle"></i> Nuevo Impuesto
+            </h3>
+            <button class="modal-close" onclick="cerrarModal('modalImpuesto')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
 
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-tags"></i> Tipo <span class="required">*</span></label>
-              <select class="form-select" name="tipo" required th:value="${impuesto?.tipo}">
-                <option value="IVA">IVA</option>
-                <option value="ISR">ISR</option>
-                <option value="IEPS">IEPS</option>
-                <option value="OTRO">OTRO</option>
-              </select>
-            </div>
+        <div class="modal-body">
+            <form action="/impuesto/guardar" method="post" id="formImpuesto">
 
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-percentage"></i> Tasa (%) <span class="required">*</span></label>
-              <input type="number" class="form-input" name="tasa" step="0.01" min="0" required th:value="${impuesto?.tasa}">
-            </div>
+                <input type="hidden" name="id_impuesto">
 
-            <div class="form-group">
-              <label class="form-label"><i class="fas fa-toggle-on"></i> Estado</label>
-              <select class="form-select" name="estado" th:value="${impuesto?.estado}">
-                <option value="ACTIVO">ACTIVO</option>
-                <option value="INACTIVO">INACTIVO</option>
-              </select>
-            </div>
+                <div class="form-grid">
+                    
+                    <div class="form-group">
+                        <label class="form-label">Nombre *</label>
+                        <input type="text" class="form-input" name="nombre" required>
+                    </div>
 
-            <div class="form-group full-width">
-              <label class="form-label"><i class="fas fa-comment"></i> Descripción</label>
-              <textarea class="form-textarea" name="descripcion" th:text="${impuesto?.descripcion}"></textarea>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalImpuesto')">
-          <i class="fas fa-times"></i> Cancelar
-        </button>
-        <button type="submit" class="btn btn-primary" form="formImpuesto">
-          <i class="fas fa-save"></i> Guardar
-        </button>
-      </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo *</label>
+                        <select class="form-select" name="tipo" required>
+                            <option value="IVA">IVA</option>
+                            <option value="ISR">ISR</option>
+                            <option value="IEPS">IEPS</option>
+                            <option value="OTRO">OTRO</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Tasa (%) *</label>
+                        <input type="number" class="form-input" name="tasa" step="0.01" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select class="form-select" name="estado">
+                            <option value="ACTIVO">ACTIVO</option>
+                            <option value="INACTIVO">INACTIVO</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Descripción</label>
+                        <textarea class="form-textarea" name="descripcion"></textarea>
+                    </div>
+
+                </div>
+
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="cerrarModal('modalImpuesto')">Cancelar</button>
+            <button type="submit" class="btn btn-primary" form="formImpuesto">Guardar</button>
+        </div>
     </div>
-  </div>
+</div>
+
 
   <script>
-    // Toggle sidebar (móvil)
     function toggleSidebar() {
       const s = document.getElementById('sidebar');
       s.style.display = (s.style.display === 'none') ? '' : 'none';
     }
     function cerrarSesion(){ /* integra tu lógica */ }
 
-    // Modal helpers
     function abrirModalImpuesto() {
       document.getElementById('modalImpuestoTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Nuevo Impuesto';
       document.getElementById('formImpuesto').reset();
@@ -361,7 +364,6 @@
     }
     function cerrarModal(id){ document.getElementById(id).classList.remove('active'); }
 
-    // Filtros/busqueda en tabla
     const search = document.getElementById('searchImpuestos');
     const tipoF = document.getElementById('tipoFilter');
     const estadoF = document.getElementById('estadoFilter');
@@ -404,8 +406,36 @@
 
     function refrescarContadores(){ filtrarTabla(); }
 
-    // Inicial: calcula contadores al cargar
     document.addEventListener('DOMContentLoaded', filtrarTabla);
+
+
+
+function abrirEdicion(btn) {
+
+    const id = btn.dataset.id;
+    const nombre = btn.dataset.nombre;
+    const tipo = btn.dataset.tipo;
+    const tasa = btn.dataset.tasa;
+    const estado = btn.dataset.estado;
+    const descripcion = btn.dataset.descripcion;
+
+    document.getElementById('modalImpuestoTitle').innerHTML =
+        '<i class="fas fa-edit"></i> Editar Impuesto';
+
+    document.querySelector('input[name="id_impuesto"]').value = id;
+    document.querySelector('input[name="nombre"]').value = nombre;
+    document.querySelector('select[name="tipo"]').value = tipo;
+    document.querySelector('input[name="tasa"]').value = tasa;
+    document.querySelector('select[name="estado"]').value = estado;
+    document.querySelector('textarea[name="descripcion"]').value = descripcion;
+
+    document.getElementById('modalImpuesto').classList.add('active');
+}
+
+
+
   </script>
 </body>
 </html>
+
+
