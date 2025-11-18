@@ -4,13 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Módulo de Facturación - Sistema ERP</title>
-  <!-- Iconos y CSS del módulo de Compras -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-   <link rel="stylesheet" th:href="@{/css/ComprasStyle.css}">
+   <link rel="stylesheet" th:href="@{/css/Finanzas.css}">
 </head>
 <body>
   <div class="main-container">
-    <!-- Sidebar (idéntica a Compras) -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <h2><i class="fas fa-chart-line"></i> ERP System</h2>
@@ -22,7 +20,20 @@
         <li class="nav-item">
           <a href="/dashboard" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
         </li>
-
+<li class="nav-section"><div class="nav-section-title">Finanzas</div></li>
+        <li class="nav-item">
+          <a href="/contabilidad" class="nav-link ">
+            <i class="fas fa-calculator"></i><span>Contabilidad</span>
+          </a>
+        </li>
+              <li class="nav-item">
+          <a href="/impuesto" class="nav-link">
+            <i class="fas fa-percent"></i><span>Impuestos</span>
+          </a>
+        </li>
+          <li class="nav-item">
+          <a href="/nomina" class="nav-link"><i class="fas fa-money-bill-wave"></i><span>Nómina</span></a>
+        </li>
         <li class="nav-section"><div class="nav-section-title">ADMINISTRACIÓN</div></li>
         <li class="nav-item">
           <a href="/usuarios" class="nav-link"><i class="fas fa-user-shield"></i><span>Usuarios</span></a>
@@ -97,9 +108,7 @@
       </div>
     </aside>
 
-    <!-- Contenido principal -->
     <div class="main-content">
-      <!-- Header superior (idéntico a Compras) -->
       <header class="page-header">
         <div class="header-left">
           <button class="mobile-menu-btn" onclick="toggleSidebar()">
@@ -122,7 +131,6 @@
         </div>
       </header>
 
-      <!-- Tabs (opcional, uno solo visible para mantener idéntica barra) -->
       <div class="tabs-container">
         <div class="tabs-nav">
           <button class="tab-button active" data-tab="facturas" onclick="cambiarTab('facturas')">
@@ -138,7 +146,6 @@
         </div>
       </div>
 
-      <!-- TAB FACTURAS -->
       <div class="tab-content active" id="tab-facturas">
         <section class="content-section">
           <!-- Tarjetas de métricas -->
@@ -184,7 +191,6 @@
             </div>
           </div>
 
-          <!-- Barra de búsqueda/filtros -->
           <div class="toolbar">
             <div class="search-box">
               <i class="fas fa-search input-icon"></i>
@@ -205,36 +211,22 @@
             </div>
           </div>
 
-          <!-- Tabla de facturas (Thymeleaf) -->
           <div class="table-container">
             <div class="table-header">
               <h3 class="table-title"><i class="fas fa-list"></i> Listado de Facturas</h3>
             </div>
             <table class="table" id="tablaFacturas">
               <thead>
-                <tr>
-                     <th>ID Factura</th>
-                <th>ID Compra</th>
-                  <th>N°</th>
-                  <th>Serie</th>
-                  <th>Folio</th>
-                  <th>Emisión</th>
-                  <th>Vence</th>
-                  <th>Creación</th>
-                  <th>Cliente</th>
-                  <th>Subtotal</th>
-                  <th>IVA</th>
-                  <th>Descuento</th>
-                  <th>Total</th>
-                  <th>Estado</th>
-                  <th>Tipo</th>
-                  <th>Pago</th>
-                  <th>UUID</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
+  <tr>
+    <th>N°</th>
+    <th>Cliente</th>
+    <th>Total</th>
+    <th>Estado</th>
+    <th>Fecha</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
               <tbody id="facturasTableBody">
-                <!-- Si no usas Thymeleaf aún, deja vacío, el JS poblará la tabla -->
                 <tr th:if="${facturas == null or #lists.isEmpty(facturas)}">
                   <td colspan="15" class="empty-state">
                     <i class="fas fa-file-invoice"></i>
@@ -243,39 +235,40 @@
                   </td>
                 </tr>
 
-                <tr th:each="f : ${facturas}">
-                    <td th:text="${f.id_factura}"></td>
-                <td th:text="${f.id_compra}"></td>
-                  <td th:text="${f.numero_factura}"></td>
-                  <td th:text="${f.serie}"></td>
-                  <td th:text="${f.folio}"></td>
-                  <td th:text="${f.fecha_emision != null ? #temporals.format(f.fecha_emision, 'yyyy-MM-dd') : ''}"></td>
-                  <td th:text="${f.fecha_vencimiento != null ? #temporals.format(f.fecha_vencimiento, 'yyyy-MM-dd') : ''}"></td>
-                   <td th:text="${#temporals.format(f.fecha_creacion, 'yyyy-MM-dd HH:mm')}"></td>
-                  <td th:text="${f.id_cliente}"></td>
-                  <td th:text="${#numbers.formatDecimal(f.subtotal,1,2)}"></td>
-                  <td th:text="${#numbers.formatDecimal(f.impuestos,1,2)}"></td>
-                  <td th:text="${#numbers.formatDecimal(f.descuentos,1,2)}"></td>
-                  <td><strong style="color: var(--verde-exito)" th:text="${#numbers.formatDecimal(f.total,1,2)}"></strong></td>
-                  <td th:utext="${f.estado == 'PAGADA' ? '<span class=&quot;badge badge-success&quot;><i class=&quot;fas fa-check-circle&quot;></i> Pagada</span>' :
-                                  (f.estado == 'PENDIENTE' ? '<span class=&quot;badge badge-warning&quot;><i class=&quot;fas fa-clock&quot;></i> Pendiente</span>' :
-                                  (f.estado == 'VENCIDA' ? '<span class=&quot;badge badge-danger&quot;><i class=&quot;fas fa-exclamation-circle&quot;></i> Vencida</span>' :
-                                   '<span class=&quot;badge badge-secondary&quot;>Anulada</span>'))}"></td>
-                  <td th:text="${f.tipo_factura}"></td>
-                  <td th:text="${f.forma_pago}"></td>
-                  <td th:text="${f.uuid_fiscal}"></td>
-                  <td>
-                    <a class="btn btn-icon btn-primary" th:href="@{'/factura/editar/' + ${f.id_factura}}" title="Editar"><i class="fas fa-edit"></i></a>
-                    <a class="btn btn-icon btn-danger" th:href="@{'/factura/eliminar/' + ${f.id_factura}}" title="Eliminar"><i class="fas fa-trash"></i></a>
-                  </td>
-                </tr>
+                 <tr th:each="f : ${facturas}">
+    <td th:text="${f.numero_factura}"></td>
+    <td th:text="${f.id_cliente}"></td>
+    <td>
+      <strong style="color: var(--verde-exito)" th:text="${#numbers.formatDecimal(f.total,1,2)}"></strong>
+    </td>
+    <td th:utext="${f.estado == 'PAGADA' ? '<span class=&quot;badge badge-success&quot;>Pagada</span>' :
+                  (f.estado == 'PENDIENTE' ? '<span class=&quot;badge badge-warning&quot;>Pendiente</span>' :
+                  (f.estado == 'VENCIDA' ? '<span class=&quot;badge badge-danger&quot;>Vencida</span>' :
+                   '<span class=&quot;badge badge-secondary&quot;>Anulada</span>'))}"></td>
+    <td th:text="${f.fecha_emision != null ? #temporals.format(f.fecha_emision,'yyyy-MM-dd') : ''}"></td>
+
+    <td class="acciones">
+      <!-- 👁 ÍCONO OJO PARA VER DETALLES -->
+      <button class="btn btn-icon btn-info"
+        th:onclick="'verDetallesFactura(' + ${f.id_factura} + ')'">
+    <i class="fas fa-eye"></i>
+</button>
+
+      <a class="btn btn-icon btn-primary" th:href="@{'/factura/editar/' + ${f.id_factura}}" title="Editar">
+        <i class="fas fa-edit"></i>
+      </a>
+
+      <a class="btn btn-icon btn-danger" th:href="@{'/factura/eliminar/' + ${f.id_factura}}" title="Eliminar">
+        <i class="fas fa-trash"></i>
+      </a>
+    </td>
+  </tr>
               </tbody>
             </table>
           </div>
         </section>
       </div>
 
-      <!-- TAB CLIENTES (placeholder para mantener la misma UX de tabs que Compras) -->
       <div class="tab-content" id="tab-clientes">
         <section class="content-section">
           <div class="table-container">
@@ -304,7 +297,6 @@
     </div>
   </div>
 
-  <!-- MODAL: Nueva/Editar Factura -->
   <div class="modal" id="modalFactura">
     <div class="modal-content" style="max-width: 960px;">
       <div class="modal-header">
@@ -453,7 +445,6 @@
   </div>
 
   <script>
-    // ---- Helpers visuales iguales a Compras ----
     function toggleSidebar() {
       document.getElementById('sidebar').classList.toggle('open');
     }
@@ -471,7 +462,7 @@
         btn.onclick = abrirModalNuevaFactura;
       } else {
         btn.innerHTML = '<i class="fas fa-user-plus"></i> Nuevo Cliente';
-        btn.onclick = function(){ /* abrirModalNuevoCliente() */ };
+        btn.onclick = function(){          };
       }
     }
 
@@ -488,7 +479,6 @@
       document.getElementById(id).classList.remove('active');
     }
 
-    // ---- Búsqueda y filtro en tabla ----
     const searchInput = document.getElementById('searchFacturas');
     const estadoFilter = document.getElementById('estadoFilterFacturas');
     searchInput.addEventListener('input', filtrarTabla);
@@ -501,7 +491,6 @@
 
       let visibles = 0;
       rows.forEach(row => {
-        // Saltar fila vacía de “no hay datos”
         if (row.classList.contains('empty')) return;
 
         const t = row.innerText.toLowerCase();
@@ -518,7 +507,6 @@
       document.getElementById('badgeFacturas').textContent = visibles;
     }
 
-    // ---- Cálculo automático de totales (igual UX que Compras) ----
     const inpSubtotal   = document.getElementById('inpSubtotal');
     const inpImpuestos  = document.getElementById('inpImpuestos');
     const inpDescuentos = document.getElementById('inpDescuentos');
@@ -533,7 +521,6 @@
       let   impuestos  = parseFloat(inpImpuestos?.value)  || 0;
       const descuentos = parseFloat(inpDescuentos?.value) || 0;
 
-      // Si el campo de impuestos está vacío o 0, calcula 16% automáticamente
       if ((!inpImpuestos?.value || impuestos === 0) && subtotal > 0) {
         impuestos = +(subtotal * 0.16).toFixed(2);
         if (inpImpuestos) inpImpuestos.value = impuestos.toFixed(2);
@@ -548,7 +535,6 @@
       document.getElementById('totalDisplay').textContent      = '$' + total.toFixed(2);
     }
 
-    // ---- KPIs desde la tabla (cuando renderiza el servidor) ----
     function refrescarKPIsDesdeTabla() {
       const filas = [...document.querySelectorAll('#facturasTableBody tr')].filter(tr => tr.children.length > 1);
       const hoy = new Date();
@@ -567,7 +553,7 @@
         if (estadoTxt.includes('PENDIENTE')) pend++;
         if (estadoTxt.includes('PAGADA'))    pag++;
 
-        // monto del mes actual
+
         if (fechaEmision) {
           const f = new Date(fechaEmision);
           if (f.getMonth() === mes && f.getFullYear() === anio) {
@@ -584,17 +570,14 @@
     }
 
     function refrescarFacturas() {
-      // Si más adelante cambias a fetch('/api/facturas'), puedes recargar aquí.
       refrescarKPIsDesdeTabla();
       filtrarTabla();
     }
 
-    // ---- Acciones de UI idénticas a Compras ----
     function formatearNumero(n) {
       return (parseFloat(n) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // Inicialización
     document.addEventListener('DOMContentLoaded', () => {
       refrescarKPIsDesdeTabla();
       filtrarTabla();
@@ -602,3 +585,4 @@
   </script>
 </body>
 </html>
+
